@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.springframework.boot:spring-boot-starter-oauth2-resource-server:2.7.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-oauth2-resource-server/2.7.1/51ccbdffb7a0bf97bd20d0600972f748fb7d5cda/spring-boot-starter-oauth2-resource-server-2.7.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-oauth2-resource-server/2.7.1/1a7b45864ba5eae8b732d9adc3c7aba718fb3c7e/spring-boot-starter-oauth2-resource-server-2.7.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
