@@ -1,6 +1,7 @@
 package com.sparta.finalproject6.model;
 
 
+import com.sparta.finalproject6.dto.requestDto.SignUpRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "Users")
 @SequenceGenerator(
         name = "USER_A",
         sequenceName = "USER_B",
@@ -43,6 +45,11 @@ public class User {
         this.username = username;
         this.nickname = nickname;
         this.password = password;
+    }
+    public User(SignUpRequestDto dto){
+        this.username = dto.getUsername();
+        this.password = dto.getPassword();
+        this.nickname = dto.getNickname();
     }
 
 }
