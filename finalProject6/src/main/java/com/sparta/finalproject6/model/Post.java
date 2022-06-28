@@ -36,6 +36,7 @@ public class Post {
 //    private PriceCategory priceCategory;
 
     @ManyToOne
+    @JoinColumn(name = "USER_ID")
     private User user;
 
 }
