@@ -17,6 +17,7 @@ import java.util.List;
         name = "USER_A",
         sequenceName = "USER_B",
         initialValue = 1, allocationSize = 50)
+@Table(name = "Users")
 public class User {
 
     @Id
