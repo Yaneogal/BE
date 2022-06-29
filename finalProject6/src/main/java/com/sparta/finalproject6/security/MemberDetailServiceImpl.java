@@ -3,6 +3,8 @@ package com.sparta.finalproject6.security;
 
 import com.sparta.finalproject6.model.User;
 import com.sparta.finalproject6.repository.UserRepository;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

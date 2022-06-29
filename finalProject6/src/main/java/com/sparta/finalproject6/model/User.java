@@ -38,6 +38,9 @@ public class User {
     @Column
     private String userImgUrl;
 
+    @Column
+    private Long kakaoId;
+
     @OneToMany
     private List<Post> posts = new ArrayList<>();
 
@@ -52,4 +55,11 @@ public class User {
         this.nickname = dto.getNickname();
     }
 
+    public User(String username, String nickname, String password, String thumbnailImage, Long kakaoId) {
+        this.username = username;
+        this.nickname = nickname;
+        this.password = password;
+        this.userImgUrl = thumbnailImage;
+        this.kakaoId = kakaoId;
+    }
 }
