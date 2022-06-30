@@ -28,9 +28,8 @@ public class CommentService {
         commentRepository.save(comment);
         return commentResponseDto;
 
-        // github test
-        // commit
-        // 테스트
+        // 댓글 삭제
+
 
         
     }

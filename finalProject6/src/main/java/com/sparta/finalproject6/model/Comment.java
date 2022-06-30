@@ -37,10 +37,10 @@ public class Comment {
     @JsonBackReference
     private Post post;
 
-    @ManyToOne
-    @JoinColumn(name = "USER_ID")
-    @JsonBackReference // 순환참조 방지
-    private User user;
+//    @ManyToOne
+//    @JoinColumn(name = "USER_ID")
+//    @JsonBackReference // 순환참조 방지
+//    private User user;
 
 
     public Comment(CommentRequestDto commentRequestDto, Post post, String nickname) {
