@@ -89,8 +89,8 @@ public class PostService {
         List<Love> loves = post.getLoves();
         List<LoveResponseDto> loveUserList = new ArrayList<>();
         for (Love love : loves) {
-            Long userId = love.getUserId();
-            LoveResponseDto loveResponseDto = new LoveResponseDto(userId);
+//            Long userId = love.getUserId();
+            LoveResponseDto loveResponseDto = new LoveResponseDto(love.getId());
             loveUserList.add(loveResponseDto);
         }
 

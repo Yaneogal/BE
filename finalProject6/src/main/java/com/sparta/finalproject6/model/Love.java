@@ -30,10 +30,16 @@ public class Love {
     private User user;
 
     @Column
-    private Long userId;
+    private Boolean postLoveStatus;
 
     public Love(PostLoveDto loveDto) {
         this.user = loveDto.getUser();
         this.post = loveDto.getPost();
+    }
+
+    public Love(User user, Post post, Boolean postLoveStatus) {
+        this.user = user;
+        this.post = post;
+        this.postLoveStatus = postLoveStatus;
     }
 }
