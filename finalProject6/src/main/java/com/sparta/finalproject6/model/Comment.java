@@ -1,6 +1,7 @@
 package com.sparta.finalproject6.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.sparta.finalproject6.dto.requestDto.CommentRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,11 +42,10 @@ public class Comment {
     @JsonBackReference // 순환참조 방지
     private User user;
 
-    @Builder
-    public Comment(User user, Post post, String nickname) {
-        this.user = user;
-        this.post = post;
-        this.nickname = nickname;
-    }
 
+    public Comment(CommentRequestDto commentRequestDto, Post post, String nickname) {
+        this.comment = commentRequestDto.getComment();
+        this.nickname = nickname;
+        this.post = post;
+    }
 }
