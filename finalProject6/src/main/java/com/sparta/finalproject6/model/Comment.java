@@ -37,11 +37,17 @@ public class Comment {
     @JsonBackReference
     private Post post;
 
-//    @ManyToOne
-//    @JoinColumn(name = "USER_ID")
-//    @JsonBackReference // 순환참조 방지
-//    private User user;
+    @ManyToOne
+    @JoinColumn(name = "USER_ID")
+    @JsonBackReference // 순환참조 방지
+    private User user;
 
+    @Builder
+    public Comment(User user, Post post, String getComment) {
+        this.user = user;
+        this.post = post;
+        this.comment = getComment;
+    }
 
     public Comment(CommentRequestDto commentRequestDto, Post post, String nickname) {
         this.comment = commentRequestDto.getComment();
