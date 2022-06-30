@@ -1,6 +1,7 @@
 package com.sparta.finalproject6.model;
 
 
+import com.sparta.finalproject6.dto.requestDto.SignUpRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "Users")
 @SequenceGenerator(
         name = "USER_A",
         sequenceName = "USER_B",
@@ -37,6 +39,9 @@ public class User {
     @Column
     private String userImgUrl;
 
+    @Column
+    private Long kakaoId;
+
     @OneToMany
     private List<Post> posts = new ArrayList<>();
 
@@ -45,5 +50,17 @@ public class User {
         this.nickname = nickname;
         this.password = password;
     }
+    public User(SignUpRequestDto dto){
+        this.username = dto.getUsername();
+        this.password = dto.getPassword();
+        this.nickname = dto.getNickname();
+    }
 
+    public User(String username, String nickname, String password, String thumbnailImage, Long kakaoId) {
+        this.username = username;
+        this.nickname = nickname;
+        this.password = password;
+        this.userImgUrl = thumbnailImage;
+        this.kakaoId = kakaoId;
+    }
 }
