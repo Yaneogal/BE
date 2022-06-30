@@ -18,7 +18,6 @@ import java.io.IOException;
 public class JwtAuthFilter extends GenericFilterBean {
     private final JwtProvider provider;
 
-
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         // 헤더에서 JWT 를 받아옵니다.

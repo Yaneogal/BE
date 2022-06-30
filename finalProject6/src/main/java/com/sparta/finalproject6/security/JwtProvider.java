@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +22,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtProvider {
 
+    @Value("${jwtToken}")
     private final String secretKey = Base64.getEncoder().encodeToString("LeeJunho".getBytes());
     private static final long TOKEN_VALID_TIME = 1000L * 60 * 60;
 

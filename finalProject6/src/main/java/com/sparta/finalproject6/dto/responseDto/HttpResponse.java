@@ -12,4 +12,5 @@ public class HttpResponse {
     private Integer statusCode;
     private String message;
     private HttpStatus status;
+    private Long KakaoId;
 }

@@ -64,20 +64,23 @@ public class UserService {
         String result = "사용 가능한 ID입니다.";
 
         Optional<User> user = userRepo.findByUsername(username);
-        if(user.isPresent()) result = "이미 사용중인 ID입니다.";
+        if(user.isPresent()) {
+            throw new IllegalArgumentException("이미 사용중인 ID입니다.");
+        }
 
         return result;
     }
+
     public String checkDupNick(String nickname){
         String result = "사용 가능한 nickname입니다.";
+
         Optional<User> user = userRepo.findByNickname(nickname);
-        if(user.isPresent()) result = "이미 사용중인 nickname입니다.";
+        if(user.isPresent()) {
+            throw new IllegalArgumentException("이미 사용중인 nickname입니다.");
+        }
 
         return result;
     }
-
-
-
 
     public HttpResponse checkSignupdto(SignUpRequestDto dto){
         String message = "회원 가입에 성공하였습니다.";

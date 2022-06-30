@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,14 +42,15 @@ public class UserController {
 
     //로그인
     @PostMapping("/api/user/login")
-    public ResponseEntity<HttpResponse> logIn(HttpServletResponse reponse , @RequestBody @Valid logInRequestDto dto){
+    public ResponseEntity<HttpResponse> logIn(HttpServletResponse response, @RequestBody @Valid logInRequestDto dto){
         HttpResponse httpResponse = new HttpResponse();
         httpResponse = service.logIn(dto);
 
         if(httpResponse.getStatus().equals(HttpStatus.CREATED)){
             String token = provider.createToken(dto.getUsername());
             System.out.println(token);
-            reponse.addHeader("Authorization",token);
+//          httpResponse.setToken(token); //body에 토큰 실어서 전달
+            response.addHeader("Authorization",token);
         }
         return new ResponseEntity<>(httpResponse,httpResponse.getStatus());
     }
