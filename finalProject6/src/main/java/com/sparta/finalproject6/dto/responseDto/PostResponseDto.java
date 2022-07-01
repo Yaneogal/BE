@@ -22,8 +22,8 @@ public class PostResponseDto {
     private int loveCount;
     private int bookmarkCount;
     private int commentCount;
-    private RegionCategory regionCategory;
-    private PriceCategory priceCategory;
+    private String regionCategory;
+    private String priceCategory;
     private Boolean LoveStatus;
     private Boolean BookmarkStatus;
     private LocalDateTime createdAt;
