@@ -5,7 +5,6 @@ import com.sparta.finalproject6.dto.requestDto.PostRequestDto;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.xml.bind.annotation.XmlAnyElement;
 import java.util.List;
 
 @Entity
@@ -28,17 +27,7 @@ public class Post extends Timestamped{
     private String title;
 
     @Column
-    @ElementCollection
-    @CollectionTable(name = "postImagesUrl",joinColumns = {@JoinColumn(name = "post_id",referencedColumnName = "POST_ID")})
-    private List<String> imgUrl;
-
-    //TODO : 20220701
-    //S3에서 기존 파일을 삭제하기 위해 추가한 파일네임.
-
-    @Column
-    @ElementCollection
-    @CollectionTable(name = "postImagesFileName",joinColumns = {@JoinColumn(name = "post_id",referencedColumnName = "POST_ID")})
-    private List<String> imgFileName;
+    private String imgUrl;
 
     @Column(nullable = false)
     private String content;
@@ -69,25 +58,24 @@ public class Post extends Timestamped{
     @JsonManagedReference
     private List<Bookmark> bookmarks;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "USER_ID")
     private User user;
 
-    public Post(User user, PostRequestDto requestDto,List<String> imgUrls) {
+    public Post(User user, PostRequestDto requestDto) {
         this.user = user;
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
-        this.imgUrl = imgUrls;
+        this.imgUrl = requestDto.getImgUrl();
         this.regionCategory = requestDto.getRegionCategory();
         this.priceCategory = requestDto.getPriceCategory();
     }
 
-    public void update(PostRequestDto postRequestDto ,List<String> imgUrls, List<String> imgFileName) {
-//        this.user = user;
+    public void update(User user, PostRequestDto postRequestDto) {
+        this.user = user;
         this.title = postRequestDto.getTitle();;
         this.content = postRequestDto.getContent();
-        this.imgUrl = imgUrls;
-        this.imgFileName = imgFileName;
+        this.imgUrl = postRequestDto.getImgUrl();
         this.regionCategory = postRequestDto.getRegionCategory();
         this.priceCategory = postRequestDto.getPriceCategory();
     }

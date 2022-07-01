@@ -32,12 +32,12 @@ public class Comment {
     @Column
     private String userImgUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "POST_ID")
     @JsonBackReference
     private Post post;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "USER_ID")
     @JsonBackReference // 순환참조 방지
     private User user;

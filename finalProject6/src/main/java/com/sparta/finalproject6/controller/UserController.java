@@ -6,13 +6,15 @@ import com.sparta.finalproject6.dto.requestDto.logInRequestDto;
 import com.sparta.finalproject6.dto.requestDto.nickCheckDto;
 import com.sparta.finalproject6.dto.responseDto.HttpResponse;
 import com.sparta.finalproject6.security.JwtProvider;
-import com.sparta.finalproject6.security.UserDetailsImpl;
+import com.sparta.finalproject6.security.MemberDetail;
 import com.sparta.finalproject6.service.UserService;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -64,8 +66,8 @@ public class UserController {
     }
 
     @GetMapping("/user/test")
-    public void test(@AuthenticationPrincipal UserDetailsImpl userDetails){
-        System.out.println(userDetails.getUsername());
+    public void test(@AuthenticationPrincipal MemberDetail memberDetail){
+        System.out.println(memberDetail.getUsername());
     }
 
 }

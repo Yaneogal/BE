@@ -16,7 +16,7 @@ public class PostResponseDto {
 
     private Long postId;
     private String title;
-    private List<String> imgUrl;
+    private String imgUrl;
     private String content;
     private int viewCount;
     private int loveCount;
