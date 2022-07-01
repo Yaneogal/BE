@@ -2,20 +2,19 @@ package com.sparta.finalproject6.controller;
 
 import com.sparta.finalproject6.dto.requestDto.PostRequestDto;
 import com.sparta.finalproject6.dto.responseDto.PostResponseDto;
-import com.sparta.finalproject6.model.Post;
-import com.sparta.finalproject6.model.PriceCategory;
-import com.sparta.finalproject6.model.RegionCategory;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import com.sparta.finalproject6.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.print.Pageable;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

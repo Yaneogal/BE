@@ -4,27 +4,19 @@ import com.sparta.finalproject6.dto.requestDto.PostRequestDto;
 import com.sparta.finalproject6.dto.responseDto.LoveResponseDto;
 import com.sparta.finalproject6.dto.responseDto.PostCommentResponseDto;
 import com.sparta.finalproject6.dto.responseDto.PostResponseDto;
-import com.sparta.finalproject6.model.Comment;
-import com.sparta.finalproject6.model.Love;
-import com.sparta.finalproject6.model.Post;
-import com.sparta.finalproject6.model.User;
-import com.sparta.finalproject6.repository.CommentRepository;
-import com.sparta.finalproject6.repository.LoveRepository;
-import com.sparta.finalproject6.repository.PostRepository;
-import com.sparta.finalproject6.repository.UserRepository;
+import com.sparta.finalproject6.model.*;
+import com.sparta.finalproject6.repository.*;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.transaction.Transactional;
 import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -34,9 +26,10 @@ public class PostService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final LoveRepository loveRepository;
+    private final ThemeCategoryRepository themeRepository;
 
     // 전체 포스트 조회
-    @Transactional
+    @Transactional(readOnly = true)
     public ResponseEntity<PostResponseDto> getPosts(Pageable pageable, UserDetailsImpl userDetails) {
         List<Post> posts = postRepository.findAllPosts(pageable);
 
@@ -70,6 +63,7 @@ public class PostService {
     }
 
     // 포스트 상세 페이지
+    @Transactional(readOnly = true)
     public ResponseEntity<PostResponseDto> getPostDetail(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
@@ -114,6 +108,7 @@ public class PostService {
     }
 
     //  포스트 등록
+    @Transactional
     public void addPost(UserDetailsImpl userDetails, PostRequestDto requestDto, MultipartFile multipartFile) {
         User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
@@ -130,6 +125,13 @@ public class PostService {
                 .build();
 
         postRepository.save(post);
+
+        // post 등록시 테마카테고리 복수 저장은 위한 로직.
+        requestDto.getThemeCategories()
+                .forEach(t ->
+                        themeRepository.save(new ThemeCategory(t.getThemeCategory(), post))
+                );
+
     }
 
     // 포스트 수정

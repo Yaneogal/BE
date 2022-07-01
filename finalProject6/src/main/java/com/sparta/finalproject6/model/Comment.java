@@ -2,7 +2,6 @@ package com.sparta.finalproject6.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sparta.finalproject6.dto.requestDto.CommentRequestDto;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -41,7 +40,6 @@ public class Comment {
     @JoinColumn(name = "USER_ID")
     @JsonBackReference // 순환참조 방지
     private User user;
-
 
     public Comment(CommentRequestDto commentRequestDto, Post post, String nickname) {
         this.comment = commentRequestDto.getComment();

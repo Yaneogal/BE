@@ -47,6 +47,9 @@ public class Post extends Timestamped{
     @Column(nullable = false)
     private PriceCategory priceCategory;
 
+//    @OneToMany(mappedBy = "post")
+//    private List<ThemeCategory> themeCategories;
+
     @OneToMany(mappedBy = "post", orphanRemoval = true) // 부모 객체 삭제시 하위 객첵도 삭제
     @JsonManagedReference //직렬화 허용
     private List<Comment> comments;
