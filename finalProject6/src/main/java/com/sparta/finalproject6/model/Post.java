@@ -34,7 +34,6 @@ public class Post extends Timestamped{
 
     //TODO : 20220701
     //S3에서 기존 파일을 삭제하기 위해 추가한 파일네임.
-
     @Column
     @ElementCollection
     @CollectionTable(name = "postImagesFileName",joinColumns = {@JoinColumn(name = "post_id",referencedColumnName = "POST_ID")})
@@ -53,10 +52,13 @@ public class Post extends Timestamped{
     private int viewCount;
 
     @Column(nullable = false)
-    private RegionCategory regionCategory;
+    private String regionCategory;
 
     @Column(nullable = false)
-    private PriceCategory priceCategory;
+    private String priceCategory;
+
+    @OneToMany(mappedBy = "post")
+    private List<ThemeCategory> themeCategories;
 
     @OneToMany(mappedBy = "post", orphanRemoval = true) // 부모 객체 삭제시 하위 객첵도 삭제
     @JsonManagedReference //직렬화 허용
