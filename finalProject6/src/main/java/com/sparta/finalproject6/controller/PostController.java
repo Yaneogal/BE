@@ -46,7 +46,7 @@ public class PostController {
                                          PostRequestDto requestDto, MultipartFile multipartFile){
         try{
             postService.addPost(userDetails, requestDto, multipartFile);
-            return new ResponseEntity<>("게시글 등록을 성공하였습니다.", HttpStatus.CREATED);
+            return new ResponseEntity<>("게시글을 작성했습니다.", HttpStatus.CREATED);
         }catch(IllegalArgumentException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
