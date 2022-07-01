@@ -22,6 +22,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostService {
 
+    // TODO: 2022-07-01 : 오늘의 목표 -> 같이 게시글 기능 테스트해보기(백엔드만) 
+    
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
@@ -32,11 +34,12 @@ public class PostService {
     @Transactional(readOnly = true)
     public ResponseEntity<PostResponseDto> getPosts(Pageable pageable, UserDetailsImpl userDetails) {
         List<Post> posts = postRepository.findAllPosts(pageable);
-
+        
         Long userId = userDetails.getUser().getId();
         List<PostResponseDto> postList = new ArrayList<>();
 
         for (Post post : posts) {
+            
             List<Love> postLoves = loveRepository.findAllByPostId(post.getId());
             List<LoveResponseDto> loveUserList = new ArrayList<>();
             for (Love love : postLoves) {
@@ -143,3 +146,4 @@ public class PostService {
         }
     }
 }
+

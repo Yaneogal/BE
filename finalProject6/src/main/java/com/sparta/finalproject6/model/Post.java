@@ -42,24 +42,24 @@ public class Post extends Timestamped{
     private int viewCount;
 
     @Column(nullable = false)
-    private RegionCategory regionCategory;
+    private String regionCategory;
 
     @Column(nullable = false)
-    private PriceCategory priceCategory;
+    private String priceCategory;
 
 //    @OneToMany(mappedBy = "post")
 //    private List<ThemeCategory> themeCategories;
 
-    @OneToMany(mappedBy = "post", orphanRemoval = true) // 부모 객체 삭제시 하위 객첵도 삭제
-    @JsonManagedReference //직렬화 허용
-    private List<Comment> comments;
-
+//    @OneToMany(mappedBy = "post", orphanRemoval = true) // 부모 객체 삭제시 하위 객첵도 삭제
+//    @JsonManagedReference //직렬화 허용
+//    private List<Comment> comments;
+//
     @OneToMany(mappedBy = "post", orphanRemoval = true)
     private List<Love> loves;
-
-    @OneToMany(mappedBy = "post", orphanRemoval = true)
-    @JsonManagedReference
-    private List<Bookmark> bookmarks;
+//
+//    @OneToMany(mappedBy = "post", orphanRemoval = true)
+//    @JsonManagedReference
+//    private List<Bookmark> bookmarks;
 
     @ManyToOne
     @JoinColumn(name = "USER_ID")
