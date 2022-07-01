@@ -18,7 +18,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class S3Uploader {
     private final AmazonS3Client amazonS3Client;
-    @Value("")
+    @Value("testairbnbbucket")
     private String bucket;
 
     public String uploadFiles(MultipartFile multipartFile, String dirName) throws IOException {
