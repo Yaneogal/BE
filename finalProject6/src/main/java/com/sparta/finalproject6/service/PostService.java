@@ -4,16 +4,11 @@ import com.sparta.finalproject6.dto.requestDto.PostRequestDto;
 import com.sparta.finalproject6.dto.responseDto.LoveResponseDto;
 import com.sparta.finalproject6.dto.responseDto.PostCommentResponseDto;
 import com.sparta.finalproject6.dto.responseDto.PostResponseDto;
-import com.sparta.finalproject6.model.Comment;
-import com.sparta.finalproject6.model.Love;
-import com.sparta.finalproject6.model.Post;
-import com.sparta.finalproject6.model.User;
-import com.sparta.finalproject6.repository.CommentRepository;
-import com.sparta.finalproject6.repository.LoveRepository;
-import com.sparta.finalproject6.repository.PostRepository;
-import com.sparta.finalproject6.repository.UserRepository;
+import com.sparta.finalproject6.model.*;
+import com.sparta.finalproject6.repository.*;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.quartz.QuartzTransactionManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -34,8 +29,10 @@ public class PostService {
 
     private final S3Service s3Service;
 
+    private final ThemeCategoryRepository themeRepository;
+
     // 전체 포스트 조회
-    @Transactional
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public ResponseEntity<PostResponseDto> getPosts(Pageable pageable, UserDetailsImpl userDetails) {
         List<Post> posts = postRepository.findAllPosts(pageable);
 
@@ -43,11 +40,12 @@ public class PostService {
         List<PostResponseDto> postList = new ArrayList<>();
 
         for (Post post : posts) {
-            List<Love> postLoves = loveRepository.findAllByPostId(post.getId());
-            List<LoveResponseDto> loveUserList = new ArrayList<>();
+
+            List<Love> postLoves = loveRepository.findAllByPostId(post.getId()); //해당 게시글의 종아요 목록을 받아온다.
+            List<LoveResponseDto> loveUserList = new ArrayList<>(); //게시글의 좋아요를 누른 유저의 목록을 주기 위한 Dto??
             for (Love love : postLoves) {
-                LoveResponseDto loveResponseDto = new LoveResponseDto(userId);
-                loveUserList.add(loveResponseDto);
+                LoveResponseDto loveResponseDto = new LoveResponseDto(userId); //그런데 로그인한 사용자의 정보를 주는 이유는 뭘까요??
+                loveUserList.add(loveResponseDto); //로그인한 사용자의 정보니 같은 사용자 id만 들어가는 건가요??
             }
             PostResponseDto postResponseDto = PostResponseDto.builder()
                     .postId(post.getId())
@@ -137,6 +135,8 @@ public class PostService {
                 .imgFileName(imgFileNames)
                 .build();
 
+//        requestDto.getThemeCategories()
+//                        .forEach(t -> themeRepository.save(new ThemeCategory(t.getThemeCategory(),post)));
         postRepository.save(post);
     }
 
