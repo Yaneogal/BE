@@ -40,11 +40,11 @@ public class PostService {
 
         for (Post post : posts) {
             
-            List<Love> postLoves = loveRepository.findAllByPostId(post.getId());
-            List<LoveResponseDto> loveUserList = new ArrayList<>();
+            List<Love> postLoves = loveRepository.findAllByPostId(post.getId()); //해당 게시글의 종아요 목록을 받아온다.
+            List<LoveResponseDto> loveUserList = new ArrayList<>(); //게시글의 좋아요를 누른 유저의 목록을 주기 위한 Dto??
             for (Love love : postLoves) {
-                LoveResponseDto loveResponseDto = new LoveResponseDto(userId);
-                loveUserList.add(loveResponseDto);
+                LoveResponseDto loveResponseDto = new LoveResponseDto(userId); //그런데 로그인한 사용자의 정보를 주는 이유는 뭘까요??
+                loveUserList.add(loveResponseDto); //로그인한 사용자의 정보니 같은 사용자 id만 들어가는 건가요??
             }
             PostResponseDto postResponseDto = PostResponseDto.builder()
                     .postId(post.getId())
