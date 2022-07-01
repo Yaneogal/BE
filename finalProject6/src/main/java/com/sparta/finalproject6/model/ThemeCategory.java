@@ -1,6 +1,5 @@
 package com.sparta.finalproject6.model;
 
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +8,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-public class ThemeCategory extends Timestamped{
+public class ThemeCategory extends Timestamped {
 
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "THEME_CATEGORY_ID")

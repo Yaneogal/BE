@@ -6,7 +6,7 @@ import com.sparta.finalproject6.dto.requestDto.logInRequestDto;
 import com.sparta.finalproject6.dto.requestDto.nickCheckDto;
 import com.sparta.finalproject6.dto.responseDto.HttpResponse;
 import com.sparta.finalproject6.security.JwtProvider;
-import com.sparta.finalproject6.security.MemberDetail;
+import com.sparta.finalproject6.security.UserDetailsImpl;
 import com.sparta.finalproject6.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,8 +64,8 @@ public class UserController {
     }
 
     @GetMapping("/user/test")
-    public void test(@AuthenticationPrincipal MemberDetail memberDetail){
-        System.out.println(memberDetail.getUsername());
+    public void test(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        System.out.println(userDetails.getUsername());
     }
 
 }

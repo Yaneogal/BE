@@ -15,8 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.print.Pageable;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +30,10 @@ public class PostService {
     private final LoveRepository loveRepository;
     private final ThemeCategoryRepository themeRepository;
 
+    private final S3Service s3Service;
+
     // 전체 포스트 조회
+
     @Transactional(readOnly = true)
     public ResponseEntity<PostResponseDto> getPosts(Pageable pageable, UserDetailsImpl userDetails) {
         List<Post> posts = postRepository.findAllPosts(pageable);
@@ -39,7 +42,6 @@ public class PostService {
         List<PostResponseDto> postList = new ArrayList<>();
 
         for (Post post : posts) {
-            
             List<Love> postLoves = loveRepository.findAllByPostId(post.getId()); //해당 게시글의 종아요 목록을 받아온다.
             List<LoveResponseDto> loveUserList = new ArrayList<>(); //게시글의 좋아요를 누른 유저의 목록을 주기 위한 Dto??
             for (Love love : postLoves) {
@@ -111,22 +113,33 @@ public class PostService {
     }
 
     //  포스트 등록
-    @Transactional
-    public void addPost(UserDetailsImpl userDetails, PostRequestDto requestDto, MultipartFile multipartFile) {
+    public void addPost(UserDetailsImpl userDetails, PostRequestDto requestDto, List<MultipartFile> multipartFile) {
+
         User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
         );
 
-//        Map<String, String> imgResult = awsS3Service.uploadFile(multipartFile);
+        List<Map<String, String>> imgResult = getImageList(multipartFile);
+        List<String> imgUrls = new ArrayList<>(imgResult.size());
+        List<String> imgFileNames = new ArrayList<>(imgResult.size());
+
+        for(Map<String , String> getImage : imgResult){
+            imgUrls.add(getImage.get("url"));
+            imgFileNames.add(getImage.get("fileName"));
+        }
 
         Post post = Post.builder()
                 .title(requestDto.getTitle())
                 .content(requestDto.getContent())
                 .regionCategory(requestDto.getRegionCategory())
                 .priceCategory(requestDto.getPriceCategory())
-                .user(user)
+                .user(userDetails.getUser())
+                .imgUrl(imgUrls)
+                .imgFileName(imgFileNames)
                 .build();
 
+//        requestDto.getThemeCategories()
+//                        .forEach(t -> themeRepository.save(new ThemeCategory(t.getThemeCategory(),post)));
         postRepository.save(post);
 
         // post 등록시 테마카테고리 복수 저장은 위한 로직.
@@ -138,12 +151,80 @@ public class PostService {
     }
 
     // 포스트 수정
+    @Transactional
+    public void modifyPost(UserDetailsImpl userDetails,PostRequestDto requestDto , List<MultipartFile> multipartFile, Long postId){
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 게시글입니다.")
+        );
+        validateUser(userDetails,post);
+
+        List<Map<String, String>> imgResult = new ArrayList<>();
+        List<String> imgUrls = new ArrayList<>();
+        List<String> imgFileNames = new ArrayList<>();
+
+        if(!multipartFile.isEmpty()){
+            imgResult = updateImage(post,multipartFile);
+            for(Map<String , String> getImage : imgResult){
+                imgUrls.add(getImage.get("url"));
+                imgFileNames.add(getImage.get("fileName"));
+            }
+        }
+
+        post.update(requestDto,imgUrls,imgFileNames);
+
+    }
+
+
     // 포스트 삭제
+    @Transactional
+    public void deletePost(UserDetailsImpl userDetails, Long postId){
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 게시글입니다.")
+        );
+        try{
+            validateUser(userDetails,post);
+            for (int i = 0; i < post.getImgUrl().size(); i++) {
+                s3Service.deleteFile(post.getImgFileName().get(i));
+            }
+            postRepository.delete(post);
+        }
+        catch(IllegalArgumentException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
 
     private void validateUser(UserDetailsImpl userDetails, Post post) {
         if (!post.getUser().getUsername().equals(userDetails.getUsername())) {
-            throw new IllegalArgumentException("게시글 작성자만 수정할 수 있습니다.");
+            throw new IllegalArgumentException("게시글 작성자만 조작할 수 있습니다.");
         }
+    }
+
+    //이미지를 여러장 받기위한 메서드
+    public List<Map<String , String>> getImageList(List<MultipartFile> images){
+        List<Map<String,String>> imagesResult = new ArrayList<>();
+        Map<String,String> mapImageResult = new HashMap<>();
+
+        for (int i = 0; i <images.size(); i++) {
+            mapImageResult = s3Service.uploadFile(images.get(i));
+            imagesResult.add(mapImageResult);
+        }
+        return imagesResult;
+    }
+
+    //포스트 수정 API에서 이미지 수정을 위한 메서드
+    public List<Map<String, String>> updateImage(Post post, List<MultipartFile> images) {
+        List<Map<String, String>> imagesResult = new ArrayList<>();
+        Map<String, String> mapImageResult = new HashMap<>();
+
+        for (int i = 0; i < post.getImgUrl().size(); i++) {
+            s3Service.deleteFile(post.getImgFileName().get(i));
+        }
+        for (int i = 0; i < images.size(); i++) {
+            mapImageResult = s3Service.uploadFile(images.get(i));
+            imagesResult.add(mapImageResult);
+        }
+        return imagesResult;
     }
 }
 
