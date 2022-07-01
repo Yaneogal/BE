@@ -4,8 +4,10 @@ import com.sparta.finalproject6.dto.requestDto.CommentRequestDto;
 import com.sparta.finalproject6.dto.responseDto.CommentResponseDto;
 import com.sparta.finalproject6.model.Comment;
 import com.sparta.finalproject6.model.Post;
+import com.sparta.finalproject6.model.User;
 import com.sparta.finalproject6.repository.CommentRepository;
 import com.sparta.finalproject6.repository.PostRepository;
+import com.sparta.finalproject6.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,9 +30,9 @@ public class CommentService {
         commentRepository.save(comment);
         return commentResponseDto;
 
-        // github test
-        // commit
-        // 테스트
+        // 댓글 삭제
+
+
 
         
     }
