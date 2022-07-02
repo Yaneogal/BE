@@ -1,7 +1,5 @@
 package com.sparta.finalproject6.dto.responseDto;
 
-import com.sparta.finalproject6.model.PriceCategory;
-import com.sparta.finalproject6.model.RegionCategory;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
