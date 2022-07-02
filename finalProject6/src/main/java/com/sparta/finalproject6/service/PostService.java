@@ -93,6 +93,13 @@ public class PostService {
             loveUserList.add(loveResponseDto);
         }
 
+        //상세페이지 조회시 테마 카테고리 동반 조회
+        List<ThemeCategory> themes = themeRepository.findByPost_Id(postId);
+        List<String> themesToString = new ArrayList<>();
+        themes.forEach(t -> {
+            themesToString.add(t.getThemeCategory());
+        });
+
         PostResponseDto detailResponseDto = PostResponseDto.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
@@ -100,6 +107,7 @@ public class PostService {
                 .content(post.getContent())
                 .regionCategory(post.getRegionCategory())
                 .priceCategory(post.getPriceCategory())
+                .themeCategory(themesToString)
                 .viewCount(post.getViewCount())
                 .loveCount(post.getLoveCount())
                 .bookmarkCount(post.getBookmarkCount())
@@ -138,16 +146,13 @@ public class PostService {
                 .imgFileName(imgFileNames)
                 .build();
 
-//        requestDto.getThemeCategories()
-//                        .forEach(t -> themeRepository.save(new ThemeCategory(t.getThemeCategory(),post)));
-        postRepository.save(post);
-
-        // post 등록시 테마카테고리 복수 저장은 위한 로직.
+        // post 등록시 테마 카테고리 복수 저장 로직.
         requestDto.getThemeCategories()
-                .forEach(t ->
-                        themeRepository.save(new ThemeCategory(t.getThemeCategory(), post))
-                );
+                .forEach(t -> {
+                    themeRepository.save(new ThemeCategory(t, post));
+                });
 
+        postRepository.save(post);
     }
 
     // 포스트 수정
@@ -170,6 +175,13 @@ public class PostService {
             }
         }
 
+        //테마 카테고리 수정 로직
+        List<ThemeCategory> themeCategories = themeRepository.findByPost_Id(postId);
+        ThemeCategory theme = new ThemeCategory();
+
+        requestDto.getThemeCategories()
+                .forEach(theme::update);
+
         post.update(requestDto,imgUrls,imgFileNames);
 
     }
@@ -191,6 +203,8 @@ public class PostService {
         catch(IllegalArgumentException e){
             System.out.println(e.getMessage());
         }
+        //테마카테고리 삭제 로직
+        themeRepository.deleteByPost_Id(postId);
     }
 
 

@@ -1,6 +1,5 @@
 package com.sparta.finalproject6.dto.requestDto;
 
-import com.sparta.finalproject6.model.ThemeCategory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,9 +18,8 @@ public class PostRequestDto {
     private String imgUrl;
     private String regionCategory;
     private String priceCategory;
-    private List<ThemeCategory> themeCategories;
-    //themeCategory 추가 예정
-    //private List<ThemeCategory> themeCategories;
+    private List<String> themeCategories;
+
 
     //TODO : 20220701 restroom추가
 //    private String restroom;
