@@ -28,7 +28,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final LoveRepository loveRepository;
-    private final ThemeCategoryRepository themeRepository;
+
 
     private final S3Service s3Service;
 
@@ -94,11 +94,11 @@ public class PostService {
         }
 
         //상세페이지 조회시 테마 카테고리 동반 조회
-        List<ThemeCategory> themes = themeRepository.findByPost_Id(postId);
-        List<String> themesToString = new ArrayList<>();
-        themes.forEach(t -> {
-            themesToString.add(t.getThemeCategory());
-        });
+//        List<ThemeCategory> themes = themeRepository.findByPost_Id(postId);
+//        List<String> themesToString = new ArrayList<>();
+//        themes.forEach(t -> {
+//            themesToString.add(t.getThemeCategory());
+//        });
 
         PostResponseDto detailResponseDto = PostResponseDto.builder()
                 .postId(post.getId())
@@ -107,7 +107,7 @@ public class PostService {
                 .content(post.getContent())
                 .regionCategory(post.getRegionCategory())
                 .priceCategory(post.getPriceCategory())
-                .themeCategory(themesToString)
+//                .themeCategory(themesToString)
                 .viewCount(post.getViewCount())
                 .loveCount(post.getLoveCount())
                 .bookmarkCount(post.getBookmarkCount())
@@ -147,10 +147,10 @@ public class PostService {
                 .build();
 
         // post 등록시 테마 카테고리 복수 저장 로직.
-        requestDto.getThemeCategories()
-                .forEach(t -> {
-                    themeRepository.save(new ThemeCategory(t, post));
-                });
+//        requestDto.getThemeCategories()
+//                .forEach(t -> {
+//                    themeRepository.save(new ThemeCategory(t, post));
+//                });
 
         postRepository.save(post);
     }
@@ -176,11 +176,11 @@ public class PostService {
         }
 
         //테마 카테고리 수정 로직
-        List<ThemeCategory> themeCategories = themeRepository.findByPost_Id(postId);
-        ThemeCategory theme = new ThemeCategory();
-
-        requestDto.getThemeCategories()
-                .forEach(theme::update);
+//        List<ThemeCategory> themeCategories = themeRepository.findByPost_Id(postId);
+//        ThemeCategory theme = new ThemeCategory();
+//
+//        requestDto.getThemeCategories()
+//                .forEach(theme::update);
 
         post.update(requestDto,imgUrls,imgFileNames);
 
@@ -204,7 +204,7 @@ public class PostService {
             System.out.println(e.getMessage());
         }
         //테마카테고리 삭제 로직
-        themeRepository.deleteByPost_Id(postId);
+//        themeRepository.deleteByPost_Id(postId);
     }
 
 

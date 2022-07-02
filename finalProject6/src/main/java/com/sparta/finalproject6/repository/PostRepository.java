@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    @Query("select p from Post p left join ThemeCategory t on p.id = t.id")
+    @Query("select p from Post p")
     List<Post> findAllPosts(Pageable pageable);
 
 
