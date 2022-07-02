@@ -1,11 +1,9 @@
 package com.sparta.finalproject6.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sparta.finalproject6.dto.requestDto.PostRequestDto;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.xml.bind.annotation.XmlAnyElement;
 import java.util.List;
 
 @Entity
@@ -57,19 +55,19 @@ public class Post extends Timestamped{
     @Column(nullable = false)
     private String priceCategory;
 
-    @OneToMany(mappedBy = "post")
-    private List<ThemeCategory> themeCategories;
+//
 
-    @OneToMany(mappedBy = "post", orphanRemoval = true) // 부모 객체 삭제시 하위 객첵도 삭제
-    @JsonManagedReference //직렬화 허용
-    private List<Comment> comments;
 
+//    @OneToMany(mappedBy = "post", orphanRemoval = true) // 부모 객체 삭제시 하위 객첵도 삭제
+//    @JsonManagedReference //직렬화 허용
+//    private List<Comment> comments;
+//
     @OneToMany(mappedBy = "post", orphanRemoval = true)
     private List<Love> loves;
-
-    @OneToMany(mappedBy = "post", orphanRemoval = true)
-    @JsonManagedReference
-    private List<Bookmark> bookmarks;
+//
+//    @OneToMany(mappedBy = "post", orphanRemoval = true)
+//    @JsonManagedReference
+//    private List<Bookmark> bookmarks;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
