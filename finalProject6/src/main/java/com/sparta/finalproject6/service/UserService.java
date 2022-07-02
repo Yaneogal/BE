@@ -81,6 +81,9 @@ public class UserService {
         if(user.isPresent()) {
             throw new IllegalArgumentException("이미 사용중인 nickname입니다.");
         }
+        else{
+
+        }
 
         return result;
     }
@@ -99,6 +102,7 @@ public class UserService {
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
             message = "이미 존재하는 이메일입니다.";
         }
+
 
         user = userRepo.findByNickname(dto.getNickname());
         if(user.isPresent()){
