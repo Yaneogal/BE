@@ -2,10 +2,8 @@ package com.sparta.finalproject6.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
-import java.sql.Time;
 
 @Getter
 @NoArgsConstructor
@@ -23,9 +21,12 @@ public class ThemeCategory extends Timestamped {
     @JoinColumn(name = "POST_ID")
     private Post post;
 
-
     public ThemeCategory(String themeCategory, Post post) {
         this.themeCategory = themeCategory;
         this.post = post;
+    }
+
+    public void update(String themeCategory) {
+        this.themeCategory = themeCategory;
     }
 }
