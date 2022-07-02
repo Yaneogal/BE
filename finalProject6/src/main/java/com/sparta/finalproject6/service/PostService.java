@@ -147,10 +147,10 @@ public class PostService {
                 .build();
 
         // post 등록시 테마 카테고리 복수 저장 로직.
-        requestDto.getThemeCategories()
-                .forEach(t -> {
-                    themeRepository.save(new ThemeCategory(t, post));
-                });
+//        requestDto.getThemeCategories()
+//                .forEach(t -> {
+//                    themeRepository.save(new ThemeCategory(t, post));
+//                });
 
         postRepository.save(post);
     }
@@ -179,8 +179,8 @@ public class PostService {
         List<ThemeCategory> themeCategories = themeRepository.findByPost_Id(postId);
         ThemeCategory theme = new ThemeCategory();
 
-        requestDto.getThemeCategories()
-                .forEach(theme::update);
+//        requestDto.getThemeCategories()
+//                .forEach(theme::update);
 
         post.update(requestDto,imgUrls,imgFileNames);
 
