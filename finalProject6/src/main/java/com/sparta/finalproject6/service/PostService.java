@@ -8,39 +8,40 @@ import com.sparta.finalproject6.model.*;
 import com.sparta.finalproject6.repository.*;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.quartz.QuartzTransactionManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.transaction.Transactional;
 import java.awt.print.Pageable;
+
 import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
 
+    // TODO: 2022-07-01 : 오늘의 목표 -> 같이 게시글 기능 테스트해보기(백엔드만) 
+    
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final LoveRepository loveRepository;
 
+
     private final S3Service s3Service;
 
-    private final ThemeCategoryRepository themeRepository;
-
     // 전체 포스트 조회
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+
+    @Transactional(readOnly = true)
     public ResponseEntity<PostResponseDto> getPosts(Pageable pageable, UserDetailsImpl userDetails) {
         List<Post> posts = postRepository.findAllPosts(pageable);
-
+        
         Long userId = userDetails.getUser().getId();
         List<PostResponseDto> postList = new ArrayList<>();
 
         for (Post post : posts) {
-
             List<Love> postLoves = loveRepository.findAllByPostId(post.getId()); //해당 게시글의 종아요 목록을 받아온다.
             List<LoveResponseDto> loveUserList = new ArrayList<>(); //게시글의 좋아요를 누른 유저의 목록을 주기 위한 Dto??
             for (Love love : postLoves) {
@@ -67,6 +68,7 @@ public class PostService {
     }
 
     // 포스트 상세 페이지
+    @Transactional(readOnly = true)
     public ResponseEntity<PostResponseDto> getPostDetail(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
@@ -91,6 +93,13 @@ public class PostService {
             loveUserList.add(loveResponseDto);
         }
 
+        //상세페이지 조회시 테마 카테고리 동반 조회
+//        List<ThemeCategory> themes = themeRepository.findByPost_Id(postId);
+//        List<String> themesToString = new ArrayList<>();
+//        themes.forEach(t -> {
+//            themesToString.add(t.getThemeCategory());
+//        });
+
         PostResponseDto detailResponseDto = PostResponseDto.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
@@ -98,6 +107,7 @@ public class PostService {
                 .content(post.getContent())
                 .regionCategory(post.getRegionCategory())
                 .priceCategory(post.getPriceCategory())
+//                .themeCategory(themesToString)
                 .viewCount(post.getViewCount())
                 .loveCount(post.getLoveCount())
                 .bookmarkCount(post.getBookmarkCount())
@@ -112,6 +122,7 @@ public class PostService {
 
     //  포스트 등록
     public void addPost(UserDetailsImpl userDetails, PostRequestDto requestDto, List<MultipartFile> multipartFile) {
+
         User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
         );
@@ -135,8 +146,12 @@ public class PostService {
                 .imgFileName(imgFileNames)
                 .build();
 
+        // post 등록시 테마 카테고리 복수 저장 로직.
 //        requestDto.getThemeCategories()
-//                        .forEach(t -> themeRepository.save(new ThemeCategory(t.getThemeCategory(),post)));
+//                .forEach(t -> {
+//                    themeRepository.save(new ThemeCategory(t, post));
+//                });
+
         postRepository.save(post);
     }
 
@@ -160,6 +175,13 @@ public class PostService {
             }
         }
 
+        //테마 카테고리 수정 로직
+//        List<ThemeCategory> themeCategories = themeRepository.findByPost_Id(postId);
+//        ThemeCategory theme = new ThemeCategory();
+//
+//        requestDto.getThemeCategories()
+//                .forEach(theme::update);
+
         post.update(requestDto,imgUrls,imgFileNames);
 
     }
@@ -181,6 +203,8 @@ public class PostService {
         catch(IllegalArgumentException e){
             System.out.println(e.getMessage());
         }
+        //테마카테고리 삭제 로직
+//        themeRepository.deleteByPost_Id(postId);
     }
 
 
@@ -217,3 +241,4 @@ public class PostService {
         return imagesResult;
     }
 }
+

@@ -29,11 +29,18 @@ public class CommentService {
         CommentResponseDto commentResponseDto = new CommentResponseDto(comment);
         commentRepository.save(comment);
         return commentResponseDto;
+    }
 
         // 댓글 삭제
+        public void deleteComment(Long commentId, String nickname) {
+            Comment comment = commentRepository.findById(commentId).orElseThrow(
+                    () -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
+            String commentWriter = comment.getNickname();
+            if (commentWriter.equals(nickname)) {
+                commentRepository.delete(comment);
+            } else {
+                throw new IllegalArgumentException("댓글을 작성한 유저가 아닙니다.");
+            }
+        }
 
-
-
-        
-    }
 }
