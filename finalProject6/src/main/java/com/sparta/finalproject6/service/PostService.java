@@ -121,6 +121,7 @@ public class PostService {
     }
 
     //  포스트 등록
+    @Transactional
     public void addPost(UserDetailsImpl userDetails, PostRequestDto requestDto, List<MultipartFile> multipartFile) {
 
         User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(

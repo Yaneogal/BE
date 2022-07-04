@@ -19,7 +19,7 @@ import javax.persistence.*;
 ////
 ////    @ManyToOne(fetch = FetchType.LAZY)
 ////    @JoinColumn(name = "POST_ID")
-////    private Post post;
+////    private Post post;ㅕ
 ////
 ////    public ThemeCategory(String themeCategory, Post post) {
 ////        this.themeCategory = themeCategory;
