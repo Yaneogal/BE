@@ -23,13 +23,13 @@ public class PostResponseDto {
     private String regionCategory;
     private String priceCategory;
     private List<String> themeCategory;
-    private Boolean LoveStatus;
-    private Boolean BookmarkStatus;
+    private Boolean loveStatus;
+    private Boolean bookmarkStatus;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
     private List<PostCommentResponseDto> comments;
-    private List<LoveResponseDto> loves;
+//    private List<LoveResponseDto> loves;
 
 
 }
