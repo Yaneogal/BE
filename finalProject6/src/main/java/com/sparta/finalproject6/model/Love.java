@@ -14,32 +14,31 @@ import javax.persistence.*;
 @SequenceGenerator(name = "LOVE_A",
         sequenceName = "LOVE_B",
         initialValue = 1, allocationSize = 50)
-public class Love {
+public class Love extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Love_A")
     @Column(name = "LOVE_ID")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "POST_ID")
-    private Post post;
+//    @ManyToOne
+//    @JoinColumn(name = "POST_ID")
+//    private Post post;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "USER_ID")
+//    private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "USER_ID")
-    private User user;
 
-    @Column
-    private Boolean postLoveStatus;
+    //TODO : postId와 userId로 좋아요 체크하기 위해 추가
+    @Column(nullable = false)
+    private Long postId;
 
-    public Love(PostLoveDto loveDto) {
-        this.user = loveDto.getUser();
-        this.post = loveDto.getPost();
-    }
+    @Column(nullable = false)
+    private Long userId;
 
-    public Love(User user, Post post, Boolean postLoveStatus) {
-        this.user = user;
-        this.post = post;
-        this.postLoveStatus = postLoveStatus;
+    public Love(Long postId, Long userId) {
+        this.postId = postId;
+        this.userId = userId;
     }
 }

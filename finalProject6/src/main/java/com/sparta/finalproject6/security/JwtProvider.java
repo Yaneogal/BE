@@ -24,7 +24,7 @@ public class JwtProvider {
 
     @Value("${jwtToken}")
     private final String secretKey = Base64.getEncoder().encodeToString("LeeJunho".getBytes());
-    private static final long TOKEN_VALID_TIME = 1000L * 60 * 60;
+    private static final long TOKEN_VALID_TIME = 1000L * 60 * 30;
 
     private final UserDetailsService userDetailsService;
 
@@ -63,6 +63,7 @@ public class JwtProvider {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
             return !claims.getBody().getExpiration().before(new Date());
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return false;
         }
     }
