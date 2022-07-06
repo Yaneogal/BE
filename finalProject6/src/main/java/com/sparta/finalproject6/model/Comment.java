@@ -1,6 +1,7 @@
 package com.sparta.finalproject6.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sparta.finalproject6.dto.requestDto.CommentRequestDto;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,14 +14,10 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@SequenceGenerator(
-        name = "COMMENT_A",
-        sequenceName = "COMMENT_B",
-        initialValue = 1, allocationSize = 50)
 public class Comment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COMMENT_A")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "COMMENT_ID")
     private Long id;
 
@@ -40,6 +37,7 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     @JsonBackReference // 순환참조 방지
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User user;
 
     @Builder
