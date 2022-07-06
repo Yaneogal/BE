@@ -32,6 +32,8 @@ public class Bookmark {
     @Column
     private Boolean bookmarkStatus;
 
+    
+
     public Bookmark(User user, Post post, Boolean bookmarkStatus) {
         this.user = user;
         this.post = post;
