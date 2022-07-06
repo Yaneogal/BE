@@ -10,14 +10,14 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@SequenceGenerator(
-        name = "BOOKMARK_A",
-        sequenceName = "BOOKMARK_B",
-        initialValue = 1, allocationSize = 50)
+//@SequenceGenerator(
+//        name = "BOOKMARK_A",
+//        sequenceName = "BOOKMARK_B",
+//        initialValue = 1, allocationSize = 50)
 public class Bookmark {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator = "BOOKMARK_A")
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "BOOKMARK_ID")
     private Long id;
 

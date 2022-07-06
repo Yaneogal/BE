@@ -8,13 +8,15 @@ import com.sparta.finalproject6.model.*;
 import com.sparta.finalproject6.repository.*;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.awt.print.Pageable;
 
 import java.util.*;
 
@@ -33,11 +35,10 @@ public class PostService {
     private final S3Service s3Service;
 
     // 전체 포스트 조회
-
     @Transactional(readOnly = true)
     public ResponseEntity<PostResponseDto> getPosts(Pageable pageable, UserDetailsImpl userDetails) {
-        List<Post> posts = postRepository.findAllPosts(pageable);
-        
+        List<Post> posts = postRepository.findAllByOrderByCreatedAtDesc(pageable);
+
         Long userId = userDetails.getUser().getId();
         List<PostResponseDto> postList = new ArrayList<>();
 
@@ -48,6 +49,7 @@ public class PostService {
                 LoveResponseDto loveResponseDto = new LoveResponseDto(userId); //그런데 로그인한 사용자의 정보를 주는 이유는 뭘까요??
                 loveUserList.add(loveResponseDto); //로그인한 사용자의 정보니 같은 사용자 id만 들어가는 건가요??
             }
+            post.getImgUrl().get(0);
             PostResponseDto postResponseDto = PostResponseDto.builder()
                     .postId(post.getId())
                     .title(post.getTitle())
@@ -67,12 +69,23 @@ public class PostService {
         return new ResponseEntity(postList, HttpStatus.OK);
     }
 
+//    public Page<Post> getAllPosts(int page, int size, String sortBy, boolean isAsc) {
+//        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+//        Sort sort = Sort.by(direction, sortBy);
+//        org.springframework.data.domain.Pageable pageable = PageRequest.of(page, size, sort);
+//
+//        return postRepository.findAll(pageable);
+//    }
+
+
     // 포스트 상세 페이지
     @Transactional(readOnly = true)
     public ResponseEntity<PostResponseDto> getPostDetail(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
         );
+
+        post.getImgUrl().get(0);
 
         List<Comment> comments = commentRepository.findAllByPostId(postId);
         List<PostCommentResponseDto> commentList = new ArrayList<>();
@@ -120,6 +133,12 @@ public class PostService {
         return new ResponseEntity<>(detailResponseDto, HttpStatus.OK);
     }
 
+    // 조회수 Views counting
+    @Transactional
+    public int updateView(Long postId) {
+        Optional<Post> post = postRepository.findById(postId);
+        return postRepository.updateView(postId);
+    }
     //  포스트 등록
     @Transactional
     public void addPost(UserDetailsImpl userDetails, PostRequestDto requestDto, List<MultipartFile> multipartFile) {

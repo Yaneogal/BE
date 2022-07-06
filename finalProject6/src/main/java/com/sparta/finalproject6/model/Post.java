@@ -13,17 +13,17 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@SequenceGenerator(name = "POST_A",
-        sequenceName = "POST_B",
-        initialValue = 1, allocationSize = 50)
+//@SequenceGenerator(name = "POST_A",
+//        sequenceName = "POST_B",
+//        initialValue = 1, allocationSize = 50)
 public class Post extends Timestamped{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "POST_A")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "POST_ID")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(length = 50, nullable = false)
     private String title;
 
     @Column
@@ -55,6 +55,9 @@ public class Post extends Timestamped{
 
     @Column(nullable = false)
     private String priceCategory;
+
+    @Column(columnDefinition = "integer default 0", nullable = false)
+    private int view;
 
 
 

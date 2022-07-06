@@ -11,13 +11,13 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@SequenceGenerator(name = "LOVE_A",
-        sequenceName = "LOVE_B",
-        initialValue = 1, allocationSize = 50)
+//@SequenceGenerator(name = "LOVE_A",
+//        sequenceName = "LOVE_B",
+//        initialValue = 1, allocationSize = 50)
 public class Love {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Love_A")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "LOVE_ID")
     private Long id;
 

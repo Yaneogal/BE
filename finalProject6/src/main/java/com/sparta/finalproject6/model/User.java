@@ -14,15 +14,15 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@SequenceGenerator(
-        name = "USER_A",
-        sequenceName = "USER_B",
-        initialValue = 1, allocationSize = 50)
+//@SequenceGenerator(
+//        name = "USER_A",
+//        sequenceName = "USER_B",
+//        initialValue = 1, allocationSize = 50)
 @Table(name = "Users")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USER_A")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "USER_ID")
     private Long id;
 
