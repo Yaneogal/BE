@@ -13,14 +13,14 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@SequenceGenerator(
-        name = "COMMENT_A",
-        sequenceName = "COMMENT_B",
-        initialValue = 1, allocationSize = 50)
+//@SequenceGenerator(
+//        name = "COMMENT_A",
+//        sequenceName = "COMMENT_B",
+//        initialValue = 1, allocationSize = 50)
 public class Comment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COMMENT_A")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "COMMENT_ID")
     private Long id;
 

@@ -1,5 +1,6 @@
 package com.sparta.finalproject6.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sparta.finalproject6.dto.requestDto.PostRequestDto;
 import lombok.*;
 
@@ -12,20 +13,19 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@SequenceGenerator(name = "POST_A",
-        sequenceName = "POST_B",
-        initialValue = 1, allocationSize = 50)
+//@SequenceGenerator(name = "POST_A",
+//        sequenceName = "POST_B",
+//        initialValue = 1, allocationSize = 50)
 public class Post extends Timestamped{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "POST_A")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "POST_ID")
     private Long id;
 
     @Column(nullable = false)
     private String title;
 
-    @Column
     @ElementCollection
     @CollectionTable(name = "postImagesUrl",joinColumns = {@JoinColumn(name = "post_id",referencedColumnName = "POST_ID")})
     private List<String> imgUrl;
@@ -55,19 +55,19 @@ public class Post extends Timestamped{
     @Column(nullable = false)
     private String priceCategory;
 
-//
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<ThemeCategory> themeCategories;
 
+    @OneToMany(mappedBy = "post", orphanRemoval = true) // 부모 객체 삭제시 하위 객첵도 삭제
+    @JsonManagedReference //직렬화 허용
+    private List<Comment> comments;
 
-//    @OneToMany(mappedBy = "post", orphanRemoval = true) // 부모 객체 삭제시 하위 객첵도 삭제
-//    @JsonManagedReference //직렬화 허용
-//    private List<Comment> comments;
-//
-    @OneToMany(mappedBy = "post", orphanRemoval = true)
+    @OneToMany(mappedBy = "post")
     private List<Love> loves;
-//
-//    @OneToMany(mappedBy = "post", orphanRemoval = true)
-//    @JsonManagedReference
-//    private List<Bookmark> bookmarks;
+
+    @OneToMany(mappedBy = "post", orphanRemoval = true)
+    @JsonManagedReference
+    private List<Bookmark> bookmarks;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
