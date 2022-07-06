@@ -1,5 +1,6 @@
 package com.sparta.finalproject6.dto.responseDto;
 
+import com.sparta.finalproject6.dto.requestDto.ThemeCategoryDto;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -24,12 +25,10 @@ public class PostResponseDto {
     private String priceCategory;
     private Boolean loveStatus;
     private Boolean bookmarkStatus;
-    private List<String> themeCategory;
+    private List<ThemeCategoryDto> themeCategory;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-
     private List<PostCommentResponseDto> comments;
 //    private List<LoveResponseDto> loves;
-
 
 }

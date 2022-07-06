@@ -24,7 +24,7 @@ public class JwtProvider {
 
     @Value("${jwtToken}")
     private final String secretKey = Base64.getEncoder().encodeToString("LeeJunho".getBytes());
-    private static final long TOKEN_VALID_TIME = 1000L * 60 * 30;
+    private static final long TOKEN_VALID_TIME = 1000L * 60 * 60;
 
     private final UserDetailsService userDetailsService;
 

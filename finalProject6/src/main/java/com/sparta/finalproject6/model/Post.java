@@ -23,7 +23,6 @@ public class Post extends Timestamped{
     @Column(length = 50, nullable = false)
     private String title;
 
-    @Column
     @ElementCollection
     @CollectionTable(name = "postImagesUrl",joinColumns = {@JoinColumn(name = "post_id",referencedColumnName = "POST_ID")})
     private List<String> imgUrl;
@@ -55,19 +54,21 @@ public class Post extends Timestamped{
     @Column(columnDefinition = "integer default 0", nullable = false)
     private int view;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<ThemeCategory> themeCategories;
+
+    @OneToMany(mappedBy = "post", orphanRemoval = true) // 부모 객체 삭제시 하위 객첵도 삭제
+    @JsonManagedReference //직렬화 허용
+    private List<Comment> comments;
 
     //isLove는 게시글 조회에서 좋아요 상태를 요청할때 유저별로 좋아요 상태를 반환해주기 위한
     //그저 하나의 변수로서 사용하기 때문에 DB에 저장하지 않는다.
     @Transient
     private Boolean isLove = false;
 
-
-    @OneToMany(mappedBy = "post", orphanRemoval = true) // 부모 객체 삭제시 하위 객첵도 삭제
-    @JsonManagedReference //직렬화 허용
-    private List<Comment> comments;
-
 //    @OneToMany(mappedBy = "post", orphanRemoval = true)
 //    private List<Love> loves;
+
 
     @OneToMany(mappedBy = "post", orphanRemoval = true)
     @JsonManagedReference

@@ -1,6 +1,8 @@
 package com.sparta.finalproject6.service;
 
 import com.sparta.finalproject6.dto.requestDto.PostRequestDto;
+import com.sparta.finalproject6.dto.requestDto.ThemeCategoryDto;
+import com.sparta.finalproject6.dto.responseDto.LoveResponseDto;
 import com.sparta.finalproject6.dto.responseDto.PostCommentResponseDto;
 import com.sparta.finalproject6.dto.responseDto.PostResponseDto;
 import com.sparta.finalproject6.model.*;
@@ -8,6 +10,7 @@ import com.sparta.finalproject6.repository.*;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,21 +18,21 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {
-
-    // TODO: 2022-07-01 : 오늘의 목표 -> 같이 게시글 기능 테스트해보기(백엔드만) 
     
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final LoveRepository loveRepository;
-
-
-
     private final S3Service s3Service;
+    private final ThemeCategoryRepository themeRepository;
+    private final ThemeCategoryService themeService;
+
 
     // 전체 포스트 조회
     @Transactional(readOnly = true)
@@ -93,7 +96,6 @@ public class PostService {
 
         User user = userDetails.getUser();
 
-
         List<Comment> comments = commentRepository.findAllByPostId(postId);
         List<PostCommentResponseDto> commentList = new ArrayList<>();
         for (Comment comment : comments) {
@@ -113,7 +115,6 @@ public class PostService {
             post.setIsLove(true);
         }
 
-
 //        List<Love> loves = post.getLoves();
 //        List<LoveResponseDto> loveUserList = new ArrayList<>();
 //        for (Love love : loves) {
@@ -129,6 +130,13 @@ public class PostService {
 //            themesToString.add(t.getThemeCategory());
 //        });
 
+        List<ThemeCategory> themes = themeRepository.findByPost_Id(postId);
+        List<ThemeCategoryDto> themesToDto = themes.stream()
+                .map(t ->
+                    new ThemeCategoryDto(t.getThemeCategory())
+                )
+                .collect(Collectors.toList());
+
         PostResponseDto detailResponseDto = PostResponseDto.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
@@ -136,7 +144,7 @@ public class PostService {
                 .content(post.getContent())
                 .regionCategory(post.getRegionCategory())
                 .priceCategory(post.getPriceCategory())
-//                .themeCategory(themesToString)
+                .themeCategory(themesToDto)
                 .viewCount(post.getViewCount())
                 .loveStatus(post.getIsLove())
                 .loveCount(post.getLoveCount())
@@ -183,6 +191,8 @@ public class PostService {
                 .imgFileName(imgFileNames)
                 .build();
 
+        postRepository.save(post);
+
         // post 등록시 테마 카테고리 복수 저장 로직.
 //        requestDto.getThemeCategories()
 //                .forEach(t -> {
@@ -190,6 +200,11 @@ public class PostService {
 //                });
 
         postRepository.save(post);
+        requestDto.getThemeCategories()
+                .forEach(t -> {
+                    themeService.saveTheme(t.getThemeCategory(), post);
+                });
+
     }
 
     // 포스트 수정
@@ -221,6 +236,12 @@ public class PostService {
 
         post.update(requestDto,imgUrls,imgFileNames);
 
+        //테마 카테고리 수정 로직
+        themeRepository.deleteByPost_Id(postId);
+        requestDto.getThemeCategories()
+                .forEach(t -> {
+                    themeService.saveTheme(t.getThemeCategory(), post);
+                });
     }
 
 
@@ -230,6 +251,9 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 게시글입니다.")
         );
+        //테마카테고리 삭제 로직
+        themeRepository.deleteByPost_Id(postId);
+
         try{
             validateUser(userDetails,post);
             for (int i = 0; i < post.getImgUrl().size(); i++) {
@@ -242,12 +266,15 @@ public class PostService {
         catch(IllegalArgumentException e){
             System.out.println(e.getMessage());
         }
+
         //테마카테고리 삭제 로직
 //        themeRepository.deleteByPost_Id(postId);
+
     }
 
 
     private void validateUser(UserDetailsImpl userDetails, Post post) {
+        log.info("userDetails = {}", userDetails);
         if (!post.getUser().getUsername().equals(userDetails.getUsername())) {
             throw new IllegalArgumentException("게시글 작성자만 조작할 수 있습니다.");
         }
