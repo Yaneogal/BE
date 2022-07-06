@@ -27,8 +27,5 @@ public class ThemeCategory extends Timestamped {
         this.post = post;
     }
 
-//    public void update(String themeCategory, Post post) {
-//        this.themeCategory = themeCategory;
-//        this.post = post;
-//    }
 }
+

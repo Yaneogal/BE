@@ -20,7 +20,6 @@ public class PostRequestDto {
     private String priceCategory;
     private List<ThemeCategoryDto> themeCategories;
 
-
     //TODO : 20220701 restroom추가
 //    private String restroom;
 

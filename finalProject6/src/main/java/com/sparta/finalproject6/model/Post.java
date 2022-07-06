@@ -13,9 +13,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-//@SequenceGenerator(name = "POST_A",
-//        sequenceName = "POST_B",
-//        initialValue = 1, allocationSize = 50)
 public class Post extends Timestamped{
 
     @Id
@@ -23,7 +20,7 @@ public class Post extends Timestamped{
     @Column(name = "POST_ID")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(length = 50, nullable = false)
     private String title;
 
     @ElementCollection
@@ -51,9 +48,11 @@ public class Post extends Timestamped{
 
     @Column(nullable = false)
     private String regionCategory;
-
     @Column(nullable = false)
     private String priceCategory;
+
+    @Column(columnDefinition = "integer default 0", nullable = false)
+    private int view;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<ThemeCategory> themeCategories;
@@ -62,8 +61,14 @@ public class Post extends Timestamped{
     @JsonManagedReference //직렬화 허용
     private List<Comment> comments;
 
-    @OneToMany(mappedBy = "post")
-    private List<Love> loves;
+    //isLove는 게시글 조회에서 좋아요 상태를 요청할때 유저별로 좋아요 상태를 반환해주기 위한
+    //그저 하나의 변수로서 사용하기 때문에 DB에 저장하지 않는다.
+    @Transient
+    private Boolean isLove = false;
+
+//    @OneToMany(mappedBy = "post", orphanRemoval = true)
+//    private List<Love> loves;
+
 
     @OneToMany(mappedBy = "post", orphanRemoval = true)
     @JsonManagedReference
@@ -86,9 +91,24 @@ public class Post extends Timestamped{
 //        this.user = user;
         this.title = postRequestDto.getTitle();;
         this.content = postRequestDto.getContent();
-        this.imgUrl = imgUrls;
+        if(!imgUrls.isEmpty()){
+            this.imgUrl = imgUrls;
+        }
+
         this.imgFileName = imgFileName;
         this.regionCategory = postRequestDto.getRegionCategory();
         this.priceCategory = postRequestDto.getPriceCategory();
+    }
+
+    //좋아요 수 업데이트
+    public void updateLikeCount(boolean countUp){
+        if (countUp) {
+            ++this.loveCount;
+        } else {
+            --this.loveCount;
+        }
+    }
+    public void viewCountUp(){
+        this.viewCount++;
     }
 }
