@@ -71,6 +71,8 @@ public class PostController {
 
 
     // 포스트 등록
+    // form data 받아오는 형식으로 변경
+    // requestpart, requestparam
     @PostMapping("/api/post")
     public ResponseEntity<String> createPost(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                             @RequestPart("requestData") PostRequestDto requestDto, @RequestPart("imgUrl") List<MultipartFile> multipartFile){
