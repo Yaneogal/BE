@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Entity
 public class ThemeCategory extends Timestamped {
 
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "THEME_CATEGORY_ID")
     @Id
     private Long id;
@@ -21,12 +21,14 @@ public class ThemeCategory extends Timestamped {
     @JoinColumn(name = "POST_ID")
     private Post post;
 
+
     public ThemeCategory(String themeCategory, Post post) {
         this.themeCategory = themeCategory;
         this.post = post;
     }
 
-    public void update(String themeCategory) {
-        this.themeCategory = themeCategory;
-    }
+//    public void update(String themeCategory, Post post) {
+//        this.themeCategory = themeCategory;
+//        this.post = post;
+//    }
 }
