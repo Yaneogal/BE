@@ -1,17 +1,13 @@
 package com.sparta.finalproject6.service;
 
 import com.sparta.finalproject6.dto.requestDto.PostRequestDto;
-import com.sparta.finalproject6.dto.responseDto.LoveResponseDto;
 import com.sparta.finalproject6.dto.responseDto.PostCommentResponseDto;
 import com.sparta.finalproject6.dto.responseDto.PostResponseDto;
 import com.sparta.finalproject6.model.*;
 import com.sparta.finalproject6.repository.*;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -32,6 +28,7 @@ public class PostService {
     private final LoveRepository loveRepository;
 
 
+
     private final S3Service s3Service;
 
     // 전체 포스트 조회
@@ -43,11 +40,15 @@ public class PostService {
         List<PostResponseDto> postList = new ArrayList<>();
 
         for (Post post : posts) {
-            List<Love> postLoves = loveRepository.findAllByPostId(post.getId()); //해당 게시글의 종아요 목록을 받아온다.
-            List<LoveResponseDto> loveUserList = new ArrayList<>(); //게시글의 좋아요를 누른 유저의 목록을 주기 위한 Dto??
-            for (Love love : postLoves) {
-                LoveResponseDto loveResponseDto = new LoveResponseDto(userId); //그런데 로그인한 사용자의 정보를 주는 이유는 뭘까요??
-                loveUserList.add(loveResponseDto); //로그인한 사용자의 정보니 같은 사용자 id만 들어가는 건가요??
+//            List<Love> postLoves = loveRepository.findAllByPostId(post.getId()); //해당 게시글의 종아요 목록을 받아온다.
+//            List<LoveResponseDto> loveUserList = new ArrayList<>(); //게시글의 좋아요를 누른 유저의 목록을 주기 위한 Dto??
+//            for (Love love : postLoves) {
+//                LoveResponseDto loveResponseDto = new LoveResponseDto(userId); //그런데 로그인한 사용자의 정보를 주는 이유는 뭘까요??
+//                loveUserList.add(loveResponseDto); //로그인한 사용자의 정보니 같은 사용자 id만 들어가는 건가요??
+//            }
+            Optional<Love> love = loveRepository.findByPostIdAndUserId(post.getId(),userId);
+            if(love.isPresent()){
+                post.setIsLove(true);
             }
             post.getImgUrl().get(0);
             PostResponseDto postResponseDto = PostResponseDto.builder()
@@ -55,6 +56,7 @@ public class PostService {
                     .title(post.getTitle())
                     .imgUrl(post.getImgUrl())
                     .content(post.getContent())
+                    .loveStatus(post.getIsLove())
                     .regionCategory(post.getRegionCategory())
                     .priceCategory(post.getPriceCategory())
                     .viewCount(post.getViewCount())
@@ -79,13 +81,18 @@ public class PostService {
 
 
     // 포스트 상세 페이지
-    @Transactional(readOnly = true)
-    public ResponseEntity<PostResponseDto> getPostDetail(Long postId) {
+    @Transactional
+    public ResponseEntity<PostResponseDto> getPostDetail(Long postId , UserDetailsImpl userDetails) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
         );
 
         post.getImgUrl().get(0);
+
+        post.viewCountUp();
+
+        User user = userDetails.getUser();
+
 
         List<Comment> comments = commentRepository.findAllByPostId(postId);
         List<PostCommentResponseDto> commentList = new ArrayList<>();
@@ -98,13 +105,22 @@ public class PostService {
                     .build();
             commentList.add(postCommentResponseDto);
         }
-        List<Love> loves = post.getLoves();
-        List<LoveResponseDto> loveUserList = new ArrayList<>();
-        for (Love love : loves) {
-//            Long userId = love.getUserId();
-            LoveResponseDto loveResponseDto = new LoveResponseDto(love.getId());
-            loveUserList.add(loveResponseDto);
+
+        //TODO : 게시글의 전체 좋아요 수랑 유저의 좋아요 유무 판단하기
+        //postId와 userId를 넘겨서 좋아요가 존재하면 상태를 true로
+        Optional<Love> love = loveRepository.findByPostIdAndUserId(postId, user.getId());
+        if(love.isPresent()){
+            post.setIsLove(true);
         }
+
+
+//        List<Love> loves = post.getLoves();
+//        List<LoveResponseDto> loveUserList = new ArrayList<>();
+//        for (Love love : loves) {
+////            Long userId = love.getUserId();
+//            LoveResponseDto loveResponseDto = new LoveResponseDto(love.getId());
+//            loveUserList.add(loveResponseDto);
+//        }
 
         //상세페이지 조회시 테마 카테고리 동반 조회
 //        List<ThemeCategory> themes = themeRepository.findByPost_Id(postId);
@@ -122,12 +138,13 @@ public class PostService {
                 .priceCategory(post.getPriceCategory())
 //                .themeCategory(themesToString)
                 .viewCount(post.getViewCount())
+                .loveStatus(post.getIsLove())
                 .loveCount(post.getLoveCount())
                 .bookmarkCount(post.getBookmarkCount())
                 .createdAt(post.getCreatedAt())
                 .modifiedAt(post.getModifiedAt())
                 .comments(commentList)
-                .loves(loveUserList)
+//                .loves(loveUserList)
                 .build();
 
         return new ResponseEntity<>(detailResponseDto, HttpStatus.OK);
@@ -219,6 +236,8 @@ public class PostService {
                 s3Service.deleteFile(post.getImgFileName().get(i));
             }
             postRepository.delete(post);
+            //게시물 삭제시 좋아요 햇던 유저한테서도 삭제
+            loveRepository.deleteAllByPostId(postId);
         }
         catch(IllegalArgumentException e){
             System.out.println(e.getMessage());

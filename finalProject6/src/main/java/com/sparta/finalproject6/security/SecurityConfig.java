@@ -30,9 +30,9 @@ public class SecurityConfig {
                 .headers().frameOptions().disable()
                 .and().authorizeRequests()
                 .anyRequest().permitAll()
-                //Spring Security에서 session을 생성하거나 사용하지 않도록 설정
                 .and()
                 .sessionManagement()
+                //Spring Security에서 session을 생성하거나 사용하지 않도록 설정
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilterBefore(jwtAuthFilter,UsernamePasswordAuthenticationFilter.class);

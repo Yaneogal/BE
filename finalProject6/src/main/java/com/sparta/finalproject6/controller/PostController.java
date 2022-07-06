@@ -1,16 +1,15 @@
 package com.sparta.finalproject6.controller;
 
-import com.amazonaws.Response;
+
 import com.sparta.finalproject6.dto.requestDto.PostRequestDto;
 import com.sparta.finalproject6.dto.responseDto.PostResponseDto;
-import com.sparta.finalproject6.model.Post;
-import com.sparta.finalproject6.model.User;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import com.sparta.finalproject6.service.PostService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+
+import com.sparta.finalproject6.repository.PostRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,6 +24,7 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final PostRepository postRepository;
 
     // 포스트 메인페이지 조회
     @GetMapping("/api/posts")
@@ -46,11 +46,12 @@ public class PostController {
 //        return postService.getAllPosts(page, size, sortBy, isAsc);
 //    }
 
+
     // 포스트 상세페이지
     @GetMapping("/api/post/{postId}")
-    public ResponseEntity<PostResponseDto> getPostDetail(@PathVariable Long postId) {
+    public ResponseEntity<PostResponseDto> getPostDetail(@PathVariable Long postId , @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try{
-            return new ResponseEntity(postService.getPostDetail(postId), HttpStatus.OK);
+            return new ResponseEntity(postService.getPostDetail(postId , userDetails), HttpStatus.OK);
         }catch(IllegalArgumentException e){
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -69,7 +70,7 @@ public class PostController {
 
     // 포스트 등록
     @PostMapping("/api/post")
-    public ResponseEntity<String>createPost(@AuthenticationPrincipal UserDetailsImpl userDetails,
+    public ResponseEntity<String> createPost(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                             @RequestPart("requestData") PostRequestDto requestDto, @RequestPart("imgUrl") List<MultipartFile> multipartFile){
         try{
             postService.addPost(userDetails, requestDto, multipartFile);
@@ -102,7 +103,7 @@ public class PostController {
             postService.deletePost(userDetails,postId);
             return new ResponseEntity<>("게시글을 삭제했습니다.",HttpStatus.OK);
         }
-        catch(IllegalArgumentException e){
+        catch(Exception e){
             return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
         }
     }
