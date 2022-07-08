@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.print.Book;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,6 +33,9 @@ public class PostService {
     private final S3Service s3Service;
     private final ThemeCategoryRepository themeRepository;
     private final ThemeCategoryService themeService;
+
+    private final BookmarkRepository bookmarkRepository;
+
 
 
     // 전체 포스트 조회
@@ -53,6 +57,11 @@ public class PostService {
             if(love.isPresent()){
                 post.setIsLove(true);
             }
+
+            Optional<Bookmark> bookmark = bookmarkRepository.findByPostIdAndUserId(post.getId(),userId);
+            if(bookmark.isPresent()){
+                post.setIsBookmark(true);
+            }
             post.getImgUrl().get(0);
             PostResponseDto postResponseDto = PostResponseDto.builder()
                     .postId(post.getId())
@@ -60,10 +69,11 @@ public class PostService {
                     .imgUrl(post.getImgUrl())
                     .content(post.getContent())
                     .loveStatus(post.getIsLove())
+                    .loveCount(post.getLoveCount())
                     .regionCategory(post.getRegionCategory())
                     .priceCategory(post.getPriceCategory())
                     .viewCount(post.getViewCount())
-                    .loveCount(post.getLoveCount())
+                    .bookmarkStatus(post.getIsBookmark())
                     .bookmarkCount(post.getBookmarkCount())
                     .createdAt(post.getCreatedAt())
                     .modifiedAt(post.getModifiedAt())
@@ -115,6 +125,11 @@ public class PostService {
             post.setIsLove(true);
         }
 
+        Optional<Bookmark> bookmark = bookmarkRepository.findByPostIdAndUserId(post.getId(),user.getId());
+        if(bookmark.isPresent()){
+            post.setIsBookmark(true);
+        }
+
 //        List<Love> loves = post.getLoves();
 //        List<LoveResponseDto> loveUserList = new ArrayList<>();
 //        for (Love love : loves) {
@@ -149,6 +164,7 @@ public class PostService {
                 .loveStatus(post.getIsLove())
                 .loveCount(post.getLoveCount())
                 .bookmarkCount(post.getBookmarkCount())
+                .bookmarkStatus(post.getIsBookmark())
                 .createdAt(post.getCreatedAt())
                 .modifiedAt(post.getModifiedAt())
                 .comments(commentList)
@@ -262,6 +278,7 @@ public class PostService {
             postRepository.delete(post);
             //게시물 삭제시 좋아요 햇던 유저한테서도 삭제
             loveRepository.deleteAllByPostId(postId);
+            bookmarkRepository.deleteAllByPostId(postId);
         }
         catch(IllegalArgumentException e){
             System.out.println(e.getMessage());

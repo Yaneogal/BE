@@ -14,10 +14,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-//@SequenceGenerator(
-//        name = "USER_A",
-//        sequenceName = "USER_B",
-//        initialValue = 1, allocationSize = 50)
 @Table(name = "Users")
 public class User {
 
