@@ -1,6 +1,7 @@
 package com.sparta.finalproject6.repository;
 
 import com.sparta.finalproject6.model.Post;
+import com.sparta.finalproject6.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -17,6 +18,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findAllPosts(Pageable pageable);
 
     List<Post> findAllByOrderByCreatedAtDesc(Pageable pageable);
+    Page<Post> findByUserOrderByCreatedAtDesc(User user, Pageable pageable);
 
     Optional<Post> findById(Long postId);
 
