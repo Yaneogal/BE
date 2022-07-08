@@ -1,7 +1,10 @@
 package com.sparta.finalproject6.controller;
 
 
+import com.sparta.finalproject6.dto.requestDto.PlaceRequestDto;
 import com.sparta.finalproject6.dto.requestDto.PostRequestDto;
+import com.sparta.finalproject6.dto.requestDto.ThemeCategoryDto;
+import com.sparta.finalproject6.dto.responseDto.PostDetailResponseDto;
 import com.sparta.finalproject6.dto.responseDto.PostResponseDto;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import com.sparta.finalproject6.service.PostService;
@@ -50,7 +53,7 @@ public class PostController {
 
     // 포스트 상세페이지
     @GetMapping("/api/post/{postId}")
-    public ResponseEntity<PostResponseDto> getPostDetail(@PathVariable Long postId , @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<PostDetailResponseDto> getPostDetail(@PathVariable Long postId , @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try{
             return new ResponseEntity(postService.getPostDetail(postId , userDetails), HttpStatus.OK);
         }catch(IllegalArgumentException e){
@@ -75,10 +78,17 @@ public class PostController {
     // requestpart, requestparam
     @PostMapping("/api/post")
     public ResponseEntity<String> createPost(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                            @RequestPart("requestData") PostRequestDto requestDto, @RequestPart("imgUrl") List<MultipartFile> multipartFile){
+                                             @RequestParam("title") String title,
+                                             @RequestParam("content") String content,
+                                             @RequestParam("regionCategory") String regionCategory,
+                                             @RequestParam("themeCategory") List<ThemeCategoryDto> themeCategory,
+                                             @RequestParam("priceCategory") String priceCategory,
+                                             @RequestPart("places") List<PlaceRequestDto> placeRequestDto,
+                                             @RequestPart("imgUrl") List<MultipartFile> multipartFile){
         log.info("postUserDetails = {}", userDetails);
+        PostRequestDto requestDto = new PostRequestDto(title,content,regionCategory,priceCategory,themeCategory);
         try{
-            postService.addPost(userDetails, requestDto, multipartFile);
+            postService.addPost(userDetails, requestDto, placeRequestDto ,multipartFile);
             return new ResponseEntity<>("게시글을 작성했습니다.", HttpStatus.CREATED);
         }catch(IllegalArgumentException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -90,10 +100,16 @@ public class PostController {
     @PutMapping("/api/post/{postId}")
     public ResponseEntity<String> modifyPost(@PathVariable Long postId,
                                              @AuthenticationPrincipal UserDetailsImpl userDetails,
-                                             @RequestPart("requestData") PostRequestDto requestDto ,
+                                             @RequestParam("title") String title,
+                                             @RequestParam("content") String content,
+                                             @RequestParam("regionCategory") String regionCategory,
+                                             @RequestParam("themeCategory") List<ThemeCategoryDto> themeCategory,
+                                             @RequestParam("priceCategory") String priceCategory,
+                                             @RequestPart("places") List<PlaceRequestDto> placeRequestDto,
                                              @RequestPart("imgUrl") List<MultipartFile> multipartFile){
+        PostRequestDto requestDto = new PostRequestDto(title,content,regionCategory,priceCategory,themeCategory);
         try{
-            postService.modifyPost(userDetails, requestDto, multipartFile,postId);
+            postService.modifyPost(userDetails, requestDto, placeRequestDto,multipartFile,postId);
             return new ResponseEntity<>("게시글을 수정했습니다.",HttpStatus.OK);
         }catch(IllegalArgumentException e){
             return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
