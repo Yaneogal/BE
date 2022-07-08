@@ -278,6 +278,7 @@ public class PostService {
             postRepository.delete(post);
             //게시물 삭제시 좋아요 햇던 유저한테서도 삭제
             loveRepository.deleteAllByPostId(postId);
+            bookmarkRepository.deleteAllByPostId(postId);
         }
         catch(IllegalArgumentException e){
             System.out.println(e.getMessage());
