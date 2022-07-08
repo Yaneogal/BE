@@ -64,15 +64,15 @@ public class Post extends Timestamped{
     //isLove는 게시글 조회에서 좋아요 상태를 요청할때 유저별로 좋아요 상태를 반환해주기 위한
     //그저 하나의 변수로서 사용하기 때문에 DB에 저장하지 않는다.
     @Transient
+    @Builder.Default
     private Boolean isLove = false;
+
+    @Transient
+    @Builder.Default
+    private Boolean isBookmark = false;
 
 //    @OneToMany(mappedBy = "post", orphanRemoval = true)
 //    private List<Love> loves;
-
-
-    @OneToMany(mappedBy = "post", orphanRemoval = true)
-    @JsonManagedReference
-    private List<Bookmark> bookmarks;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
@@ -108,7 +108,19 @@ public class Post extends Timestamped{
             --this.loveCount;
         }
     }
+
+    public void updateBookmarkCount(boolean countUp){
+        if(countUp){
+            ++this.bookmarkCount;
+        }
+        else{
+            --this.bookmarkCount;
+        }
+    }
+
     public void viewCountUp(){
         this.viewCount++;
     }
+
+
 }

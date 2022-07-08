@@ -23,8 +23,7 @@ public class LoveController {
     @PostMapping("/api/love/{postId}")
     public ResponseEntity<String> like(@PathVariable Long postId , @AuthenticationPrincipal UserDetailsImpl userDetails){
             loveService.love(userDetails,postId);
-            return new ResponseEntity(HttpStatus.OK);
-
+            return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
