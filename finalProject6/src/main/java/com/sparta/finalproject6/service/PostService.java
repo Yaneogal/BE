@@ -76,14 +76,6 @@ public class PostService {
         return new ResponseEntity(postList, HttpStatus.OK);
     }
 
-//    public Page<Post> getAllPosts(int page, int size, String sortBy, boolean isAsc) {
-//        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
-//        Sort sort = Sort.by(direction, sortBy);
-//        org.springframework.data.domain.Pageable pageable = PageRequest.of(page, size, sort);
-//
-//        return postRepository.findAll(pageable);
-//    }
-
 
     // 포스트 상세 페이지
     @Transactional
@@ -115,21 +107,6 @@ public class PostService {
             post.setIsLove(true);
         }
 
-//        List<Love> loves = post.getLoves();
-//        List<LoveResponseDto> loveUserList = new ArrayList<>();
-//        for (Love love : loves) {
-//            Long userId = love.getUserId();
-//            LoveResponseDto loveResponseDto = new LoveResponseDto(love.getId());
-//            loveUserList.add(loveResponseDto);
-//        }
-
-        //상세페이지 조회시 테마 카테고리 동반 조회
-//        List<ThemeCategory> themes = themeRepository.findByPost_Id(postId);
-//        List<String> themesToString = new ArrayList<>();
-//        themes.forEach(t -> {
-//            themesToString.add(t.getThemeCategory());
-//        });
-
         List<ThemeCategory> themes = themeRepository.findByPost_Id(postId);
         List<ThemeCategoryDto> themesToDto = themes.stream()
                 .map(t ->
@@ -141,6 +118,7 @@ public class PostService {
         List<PlaceResponseDto> placeResponseDtos = new ArrayList<>();
         List<Place> place = placeRepository.findAllByPostId(post.getId());
         for (int i = 0; i < place.size(); i++) {
+
             placeResponseDtos.add(PlaceResponseDto.builder()
                     .address_name(place.get(i).getAddressName())
                     .category_group_code(place.get(i).getCategoryGroupCode())
