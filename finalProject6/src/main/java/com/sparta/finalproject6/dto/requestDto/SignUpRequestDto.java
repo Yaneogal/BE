@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @NoArgsConstructor
@@ -13,6 +14,7 @@ public class SignUpRequestDto {
 
     //이메일이어야 한다.
     @Email
+    @NotBlank
     private String username;
 
     private String nickname;

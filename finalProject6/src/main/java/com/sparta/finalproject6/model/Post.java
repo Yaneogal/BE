@@ -23,16 +23,19 @@ public class Post extends Timestamped{
     @Column(length = 50, nullable = false)
     private String title;
 
-    @ElementCollection
-    @CollectionTable(name = "postImagesUrl",joinColumns = {@JoinColumn(name = "post_id",referencedColumnName = "POST_ID")})
-    private List<String> imgUrl;
+//    @ElementCollection
+//    @CollectionTable(name = "postImagesUrl",joinColumns = {@JoinColumn(name = "post_id",referencedColumnName = "POST_ID")})
+//    private List<String> imgUrl;
+//
+//    //TODO : 20220701
+//    //S3에서 기존 파일을 삭제하기 위해 추가한 파일네임.
+//    @Column
+//    @ElementCollection
+//    @CollectionTable(name = "postImagesFileName",joinColumns = {@JoinColumn(name = "post_id",referencedColumnName = "POST_ID")})
+//    private List<String> imgFileName;
 
-    //TODO : 20220701
-    //S3에서 기존 파일을 삭제하기 위해 추가한 파일네임.
-    @Column
-    @ElementCollection
-    @CollectionTable(name = "postImagesFileName",joinColumns = {@JoinColumn(name = "post_id",referencedColumnName = "POST_ID")})
-    private List<String> imgFileName;
+    @OneToMany(mappedBy = "post" , cascade = CascadeType.ALL)
+    private List<Place> place;
 
     @Column(nullable = false)
     private String content;
@@ -78,24 +81,19 @@ public class Post extends Timestamped{
     @JoinColumn(name = "USER_ID")
     private User user;
 
-    public Post(User user, PostRequestDto requestDto,List<String> imgUrls) {
+    public Post(User user, PostRequestDto requestDto) {
         this.user = user;
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
-        this.imgUrl = imgUrls;
         this.regionCategory = requestDto.getRegionCategory();
         this.priceCategory = requestDto.getPriceCategory();
     }
 
-    public void update(PostRequestDto postRequestDto ,List<String> imgUrls, List<String> imgFileName) {
+    public void update(PostRequestDto postRequestDto) {
 //        this.user = user;
         this.title = postRequestDto.getTitle();;
         this.content = postRequestDto.getContent();
-        if(!imgUrls.isEmpty()){
-            this.imgUrl = imgUrls;
-        }
 
-        this.imgFileName = imgFileName;
         this.regionCategory = postRequestDto.getRegionCategory();
         this.priceCategory = postRequestDto.getPriceCategory();
     }
