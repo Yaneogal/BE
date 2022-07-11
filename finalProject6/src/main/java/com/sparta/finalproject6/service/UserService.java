@@ -47,8 +47,8 @@ public class UserService {
         }
         else{
             if(!encoder.matches(dto.getPassword(),user.get().getPassword())){
-                status = HttpStatus.INTERNAL_SERVER_ERROR;
-                statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+                status = HttpStatus.BAD_REQUEST;
+                statusCode = HttpStatus.BAD_REQUEST.value();
                 message = "비밀번호가 일치하지 않습니다.";
             }
         }
@@ -68,24 +68,33 @@ public class UserService {
             throw new IllegalArgumentException("이미 사용중인 ID입니다.");
         }
         else{
-
         }
 
         return result;
     }
 
-    public String checkDupNick(String nickname){
-        String result = "사용 가능한 nickname입니다.";
+    public HttpResponse checkDupNick(String nickname){
+        HttpStatus status = HttpStatus.OK;
+        Integer statusCode = HttpStatus.OK.value();
+        String message = "사용 가능한 nickname입니다.";
 
         Optional<User> user = userRepo.findByNickname(nickname);
         if(user.isPresent()) {
             throw new IllegalArgumentException("이미 사용중인 nickname입니다.");
         }
         else{
-
+            if(!nickname.matches("^[a-zA-Z가-힣_\\d]{2,8}$")){
+                status = HttpStatus.BAD_REQUEST;
+                statusCode = HttpStatus.BAD_REQUEST.value();
+                message = "닉네임을 확인해주세요";
+            }
         }
 
-        return result;
+        return HttpResponse.builder()
+                .status(status)
+                .statusCode(statusCode)
+                .message(message)
+                .build();
     }
 
     public HttpResponse checkSignupdto(SignUpRequestDto dto){

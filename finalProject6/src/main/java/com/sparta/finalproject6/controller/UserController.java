@@ -53,14 +53,15 @@ public class UserController {
         return new ResponseEntity<>(httpResponse,httpResponse.getStatus());
     }
 
-    @PostMapping("/api/user/idCheck")
+        @PostMapping("/api/user/idCheck")
     public String checkId(@RequestBody @Valid idCheckDto dto){
         return service.checkDupName(dto.getUsername());
     }
 
     @PostMapping("/api/user/nickCheck")
-    public String checkNick(@RequestBody @Valid nickCheckDto dto){
-        return service.checkDupNick(dto.getNickname());
+    public ResponseEntity<String> checkNick(@RequestBody @Valid nickCheckDto dto){
+        HttpResponse result = service.checkDupNick(dto.getNickname());
+        return ResponseEntity.status(result.getStatus()).body(result.getMessage());
     }
 
     @GetMapping("/user/test")
