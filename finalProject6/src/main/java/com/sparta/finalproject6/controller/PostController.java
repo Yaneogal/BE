@@ -2,13 +2,14 @@ package com.sparta.finalproject6.controller;
 
 
 import com.sparta.finalproject6.dto.requestDto.PostRequestDto;
+import com.sparta.finalproject6.dto.requestDto.ThemeCategoryDto;
 import com.sparta.finalproject6.dto.responseDto.PostResponseDto;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import com.sparta.finalproject6.service.PostService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,26 +28,22 @@ public class PostController {
     private final PostService postService;
 
 
-    // 포스트 메인페이지 조회
+    //포스트 메인페이지 조회
     @GetMapping("/api/posts")
-    public ResponseEntity<PostResponseDto> getAllPosts(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                                    @PageableDefault(size = 5) Pageable pageable) {
-
-        return postService.getPosts(pageable, userDetails);
+    public ResponseEntity<Slice<PostResponseDto>> getAllPosts(@RequestParam(value = "keyword") String keyword, @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                    /*@PageableDefault(size = 5)*/ Pageable pageable) {
+        return postService.getPosts(keyword, pageable, userDetails);
     }
 
-
-//    @GetMapping("/api/admin/posts")
-//    public Page<Post> getAllProducts(
-//            @RequestParam("page") int page,
-//            @RequestParam("size") int size,
-//            @RequestParam("sortBy") String sortBy,
-//            @RequestParam("isAsc") boolean isAsc
-//    ) {
-//        page = page -1;
-//        return postService.getAllPosts(page, size, sortBy, isAsc);
-//    }
-
+    //필터 적용된 게시물 조회
+    @GetMapping("/api/posts/filter")
+    public ResponseEntity<Slice<PostResponseDto>> getFilterPosts(@RequestParam(value = "region") String region,
+                                                                 @RequestParam(value = "price") String price,
+                                                                 @RequestParam(value = "theme") List<String> theme,
+                                                                 Pageable pageable,
+                                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return postService.getFilterPosts(region, price, theme, pageable, userDetails);
+    }
 
     // 포스트 상세페이지
     @GetMapping("/api/post/{postId}")
@@ -74,11 +71,17 @@ public class PostController {
     // form data 받아오는 형식으로 변경
     // requestpart, requestparam
     @PostMapping("/api/post")
-    public ResponseEntity<String> createPost(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                            @RequestPart("requestData") PostRequestDto requestDto, @RequestPart("imgUrl") List<MultipartFile> multipartFile){
-        log.info("postUserDetails = {}", userDetails);
+    public ResponseEntity<String> createPost(@RequestPart("imgUrl") List<MultipartFile> multipartFile,
+                                             @RequestParam("title") String title,
+                                             @RequestParam("content") String content,
+                                             @RequestParam("regionCategory") String regionCategory,
+                                             @RequestParam("priceCategory") String priceCategory,
+                                             @RequestParam("themeCategory") List<ThemeCategoryDto> themeCategories,
+                                             @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        PostRequestDto postRequestDto = new PostRequestDto(title, content, regionCategory, priceCategory, themeCategories);
         try{
-            postService.addPost(userDetails, requestDto, multipartFile);
+            postService.addPost(userDetails, postRequestDto, multipartFile);
             return new ResponseEntity<>("게시글을 작성했습니다.", HttpStatus.CREATED);
         }catch(IllegalArgumentException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -89,11 +92,17 @@ public class PostController {
     // 포스트 수정
     @PutMapping("/api/post/{postId}")
     public ResponseEntity<String> modifyPost(@PathVariable Long postId,
-                                             @AuthenticationPrincipal UserDetailsImpl userDetails,
-                                             @RequestPart("requestData") PostRequestDto requestDto ,
-                                             @RequestPart("imgUrl") List<MultipartFile> multipartFile){
+                                             @RequestPart("imgUrl") List<MultipartFile> multipartFile,
+                                             @RequestParam("title") String title,
+                                             @RequestParam("content") String content,
+                                             @RequestParam("regionCategory") String regionCategory,
+                                             @RequestParam("priceCategory") String priceCategory,
+                                             @RequestParam("themeCategory") List<ThemeCategoryDto> themeCategories,
+                                             @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        PostRequestDto postRequestDto = new PostRequestDto(title, content, regionCategory, priceCategory, themeCategories);
         try{
-            postService.modifyPost(userDetails, requestDto, multipartFile,postId);
+            postService.modifyPost(userDetails, postRequestDto, multipartFile, postId);
             return new ResponseEntity<>("게시글을 수정했습니다.",HttpStatus.OK);
         }catch(IllegalArgumentException e){
             return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
@@ -114,5 +123,4 @@ public class PostController {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
         }
     }
-
 }
