@@ -288,7 +288,7 @@ public class PostService {
         //TODO : 장소가 늘어났을때랑 줄어들었을때 이미지랑 장소를 어떻게 해야할지 생각
 
         List<Place> places = placeRepository.findAllByPostId(postId);
-                int count = 0;
+        int count = 0;
         for (int i = 0; i < placeRequestDto.size(); i++) {
                 /*------------------------------프론트에서 Json 과 이미지파일을 같이 못받아올 때 사용--------------------------
                 List<MultipartFile> files = new ArrayList<>();
