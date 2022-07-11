@@ -13,9 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@RestController
+
 @Validated
 @RequiredArgsConstructor
+@RestController
 public class CommentController {
 
     private final CommentService commentService;
