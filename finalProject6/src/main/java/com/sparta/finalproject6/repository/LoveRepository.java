@@ -16,6 +16,7 @@ public interface LoveRepository extends JpaRepository<Love, Long> {
     //
     //
     Optional<Love> findByPostIdAndUserId(Long postId,Long userId);
+    List<Love> findByPostIdAndUserIdOrderByCreatedAtDesc(Long postId,Long userId);
 
     void deleteAllByPostId(Long postId);
 
