@@ -1,20 +1,19 @@
 package com.sparta.finalproject6.dto.responseDto;
 
-import lombok.*;
-
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Builder
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MypageResponseDto {
+public class ProfileUpdateResponseDto {
 
     private Long userId;
     private String userImgUrl;
     private String nickname;
     private String userInfo;
-    private List<MYPostListDto> myPostList;
-    private List<MyBookmarkListDto> myBookmarkList;
+    // private List<MYPostListDto> myPostList;
 }
