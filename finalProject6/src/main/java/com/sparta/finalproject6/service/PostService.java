@@ -2,15 +2,15 @@ package com.sparta.finalproject6.service;
 
 import com.sparta.finalproject6.dto.requestDto.PostRequestDto;
 import com.sparta.finalproject6.dto.requestDto.ThemeCategoryDto;
-import com.sparta.finalproject6.dto.responseDto.LoveResponseDto;
 import com.sparta.finalproject6.dto.responseDto.PostCommentResponseDto;
 import com.sparta.finalproject6.dto.responseDto.PostResponseDto;
 import com.sparta.finalproject6.model.*;
 import com.sparta.finalproject6.repository.*;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -34,48 +34,85 @@ public class PostService {
     private final ThemeCategoryService themeService;
 
 
-    // 전체 포스트 조회
+     //전체 포스트 조회(검색기능추가)
     @Transactional(readOnly = true)
-    public ResponseEntity<PostResponseDto> getPosts(Pageable pageable, UserDetailsImpl userDetails) {
-        List<Post> posts = postRepository.findAllByOrderByCreatedAtDesc(pageable);
+    public ResponseEntity<Slice<PostResponseDto>> getPosts(String keyword, Pageable pageable, UserDetailsImpl userDetails) {
 
-        Long userId = userDetails.getUser().getId();
-        List<PostResponseDto> postList = new ArrayList<>();
+        Slice<PostResponseDto> content = postRepository.keywordSearch(keyword, pageable);
 
-        for (Post post : posts) {
-            Optional<Love> love = loveRepository.findByPostIdAndUserId(post.getId(),userId);
-            if(love.isPresent()){
-                post.setIsLove(true);
-            }
-
-            List<ThemeCategory> themes = post.getThemeCategories();
-            List<ThemeCategoryDto> themesToDto = themes.stream()
-                    .map(t ->
-                            new ThemeCategoryDto(t.getThemeCategory())
-                    )
-                    .collect(Collectors.toList());
-
+        content.forEach(c ->{
+            Post post = postRepository.findById(c.getPostId())
+                    .orElseThrow(() -> new IllegalArgumentException("post does not exist"));
             post.getImgUrl().get(0);
-            PostResponseDto postResponseDto = PostResponseDto.builder()
-                    .postId(post.getId())
-                    .title(post.getTitle())
-                    .imgUrl(post.getImgUrl())
-                    .content(post.getContent())
-                    .loveStatus(post.getIsLove())
-                    .regionCategory(post.getRegionCategory())
-                    .priceCategory(post.getPriceCategory())
-                    .themeCategory(themesToDto)
-                    .viewCount(post.getViewCount())
-                    .loveCount(post.getLoveCount())
-                    .bookmarkCount(post.getBookmarkCount())
-                    .createdAt(post.getCreatedAt())
-                    .modifiedAt(post.getModifiedAt())
-                    .build();
+            c.setImgUrl(post.getImgUrl());
 
-            postList.add(postResponseDto);
-        }
-        return new ResponseEntity(postList, HttpStatus.OK);
+            loveRepository.findByPostIdAndUserIdOrderByCreatedAtDesc(c.getPostId(), userDetails.getUser().getId())
+                    .forEach(love ->{
+                        if (love != null) {
+                            c.setLoveStatus(true);
+                        }
+                    });
+
+            List<ThemeCategoryDto> themeCateroies = themeRepository.findByPost_Id(c.getPostId())
+                    .stream()
+                    .map(theme ->
+                            new ThemeCategoryDto(theme.getThemeCategory()))
+                    .collect(Collectors.toList());
+            c.setThemeCategory(themeCateroies);
+        });
+
+        return new ResponseEntity(content, HttpStatus.OK);
     }
+
+//        List<Post> posts;
+//        if (keyword != null) {
+//            posts = postRepository.findSearchKeyword(keyword, pageable);
+//        } else {
+//            posts = postRepository.findAllByOrderByCreatedAtDesc(pageable);
+//        }
+
+//        Slice<Post> posts = postRepository.keywordSearch(keyword, pageable);
+
+//        Long userId = userDetails.getUser().getId();
+//        List<PostResponseDto> postList = new ArrayList<>();
+//
+//        Slice<PostResponseDto> postSlice = null;
+//        for (Post post : posts) {
+//            Optional<Love> love = loveRepository.findByPostIdAndUserId(post.getId(), userId);
+//            if (love.isPresent()) {
+//                post.setIsLove(true);
+//            }
+//
+//            List<ThemeCategory> themes = post.getThemeCategories();
+//            List<ThemeCategoryDto> themesToDto = themes.stream()
+//                    .map(t ->
+//                            new ThemeCategoryDto(t.getThemeCategory())
+//                    )
+//                    .collect(Collectors.toList());
+//
+//            post.getImgUrl().get(0);
+//            PostResponseDto postResponseDto = PostResponseDto.builder()
+//                    .postId(post.getId())
+//                    .nickName(post.getUser().getNickname())
+//                    .userImgUrl(post.getUser().getUserImgUrl())
+//                    .title(post.getTitle())
+//                    .imgUrl(post.getImgUrl())
+//                    .content(post.getContent())
+//                    .loveStatus(post.getIsLove())
+//                    .regionCategory(post.getRegionCategory())
+//                    .priceCategory(post.getPriceCategory())
+//                    .themeCategory(themesToDto)
+//                    .viewCount(post.getViewCount())
+//                    .loveCount(post.getLoveCount())
+//                    .bookmarkCount(post.getBookmarkCount())
+//                    .createdAt(post.getCreatedAt())
+//                    .modifiedAt(post.getModifiedAt())
+//                    .build();
+//
+//            postList.add(postResponseDto);
+//            postSlice = new SliceImpl<>(postList);
+//        }
+
 
 //    public Page<Post> getAllPosts(int page, int size, String sortBy, boolean isAsc) {
 //        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
@@ -85,10 +122,37 @@ public class PostService {
 //        return postRepository.findAll(pageable);
 //    }
 
+    //필터 적용 게시글 조회
+    @Transactional(readOnly = true)
+    public ResponseEntity<Slice<PostResponseDto>> getFilterPosts(String region, String price, List<String> theme, Pageable pageable, UserDetailsImpl userDetails) {
+        Slice<PostResponseDto> content = postRepository.filterSearch(region, price, theme, pageable, userDetails);
+
+        content.forEach(c -> {
+            Post post = postRepository.findById(c.getPostId())
+                    .orElseThrow(() -> new IllegalArgumentException("post does not exist"));
+            post.getImgUrl().get(0);
+            c.setImgUrl(post.getImgUrl());
+            loveRepository.findByPostIdAndUserIdOrderByCreatedAtDesc(c.getPostId(), userDetails.getUser().getId())
+                    .forEach(love -> {
+                        if (love != null) {
+                            c.setLoveStatus(true);
+                        }
+                    });
+
+            List<ThemeCategoryDto> themeCateroies = themeRepository.findByPost_Id(c.getPostId())
+                    .stream()
+                    .map(t ->
+                            new ThemeCategoryDto(t.getThemeCategory()))
+                    .collect(Collectors.toList());
+            c.setThemeCategory(themeCateroies);
+        });
+        return new ResponseEntity(content, HttpStatus.OK);
+    }
+
 
     // 포스트 상세 페이지
-    @Transactional
-    public ResponseEntity<PostResponseDto> getPostDetail(Long postId , UserDetailsImpl userDetails) {
+    @Transactional(readOnly = true)
+    public ResponseEntity<PostResponseDto> getPostDetail(Long postId, UserDetailsImpl userDetails) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
         );
@@ -136,6 +200,8 @@ public class PostService {
 
         PostResponseDto detailResponseDto = PostResponseDto.builder()
                 .postId(post.getId())
+                .nickName(post.getUser().getNickname())
+                .userImgUrl(post.getUser().getUserImgUrl())
                 .title(post.getTitle())
                 .imgUrl(post.getImgUrl())
                 .content(post.getContent())
