@@ -18,18 +18,6 @@ public class Love extends Timestamped {
     @Column(name = "LOVE_ID")
     private Long id;
 
-//    @ManyToOne
-//    @JoinColumn(name = "POST_ID")
-//    private Post post;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "USER_ID")
-//    private User user;
-
-//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-//    @JoinColumn(name = "POST_ID")
-//    private Post post;
-
     //TODO : postId와 userId로 좋아요 체크하기 위해 추가
     @Column(nullable = false)
     private Long postId;
