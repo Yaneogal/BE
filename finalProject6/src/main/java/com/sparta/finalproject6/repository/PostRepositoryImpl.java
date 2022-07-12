@@ -21,23 +21,6 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
 
     private final JPAQueryFactory queryFactory;
 
-//    @Override
-//    public Slice<Post> keywordSearch(String keyword, Pageable pageable) {
-//        List<Post> content = queryFactory
-//                .selectFrom(post)
-//                .leftJoin(themeCategory1)
-//                .on(post.id.eq(themeCategory1.post.id))
-//                .where(titleSearch(keyword)
-//                        .or(regionSearch(keyword))
-//                        .or(priceSearch(keyword))
-//                        .or(themeSearch(keyword)))
-//                .offset(pageable.getOffset())
-//                .limit(pageable.getPageSize())
-//                .fetch();
-//
-//        return new SliceImpl<>(content);
-//    }
-
     @Override
     public Slice<PostResponseDto> keywordSearch(String keyword, Pageable pageable) {
 
