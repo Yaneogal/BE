@@ -65,7 +65,7 @@ public class PostController {
         PostResponseDto dto = PostResponseDto.builder().build();
         postService.updateView(postId);
         model.addAttribute("post", dto);
-        
+
         return "post-read";
     }
 
