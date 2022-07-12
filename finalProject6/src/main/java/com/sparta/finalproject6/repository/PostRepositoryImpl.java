@@ -40,6 +40,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
 
     @Override
     public Slice<PostResponseDto> keywordSearch(String keyword, Pageable pageable) {
+
         List<PostResponseDto> content = queryFactory
                 .select(new QPostResponseDto(
                         post.id,
@@ -58,36 +59,30 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                 .leftJoin(post.user)
                 .leftJoin(themeCategory1)
                 .on(post.id.eq(themeCategory1.post.id))
-                .where(titleSearch(keyword)
-                        .or(regionSearch(keyword))
-                        .or(priceSearch(keyword))
-                        .or(themeSearch(keyword)))
+                .where(keywordFinder(keyword))
                 .groupBy(post.id)
                 .orderBy(post.createdAt.desc())
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .limit(pageable.getPageSize() + 1)
                 .fetch();
 
-        return new SliceImpl<>(content);
+        boolean hasNext = false;
+        if (content.size() > pageable.getPageSize()) {
+            content.remove(pageable.getPageSize());
+            hasNext = true;
+        }
+
+        return new SliceImpl<>(content, pageable, hasNext);
     }
 
-    private BooleanExpression titleSearch(String keyword) {
-        return StringUtils.isNullOrEmpty(keyword) ? null : post.title.contains(keyword);
+    private BooleanExpression keywordFinder(String keyword) {
+        if (StringUtils.isNullOrEmpty(keyword))
+            return null;
+        return post.title.contains(keyword)
+                .or(post.regionCategory.contains(keyword))
+                .or(post.priceCategory.contains(keyword))
+                .or(themeCategory1.themeCategory.contains(keyword));
     }
-
-    private BooleanExpression regionSearch(String keyword) {
-        return StringUtils.isNullOrEmpty(keyword) ? null : post.regionCategory.contains(keyword);
-    }
-
-    private BooleanExpression priceSearch(String keyword) {
-        return StringUtils.isNullOrEmpty(keyword) ? null : post.priceCategory.contains(keyword);
-    }
-
-    private BooleanExpression themeSearch(String keyword) {
-        return StringUtils.isNullOrEmpty(keyword) ? null : themeCategory1.themeCategory.contains(keyword);
-    }
-
-
 
 
     @Override
@@ -110,9 +105,9 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                 .leftJoin(post.user)
                 .leftJoin(themeCategory1)
                 .on(post.id.eq(themeCategory1.post.id))
-                .where(regionFilter(region)
-                        .and(priceFilter(price))
-                        .and(themeFilter(theme)))
+                .where(regionFilter(region),
+                        (priceFilter(price)),
+                        (themeFilter(theme)))
                 .groupBy(post.id)
                 .orderBy(post.createdAt.desc())
                 .offset(pageable.getOffset())
