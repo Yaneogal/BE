@@ -8,15 +8,16 @@ import com.sparta.finalproject6.model.User;
 import com.sparta.finalproject6.repository.CommentRepository;
 import com.sparta.finalproject6.repository.PostRepository;
 import com.sparta.finalproject6.security.UserDetailsImpl;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Service
+
 @RequiredArgsConstructor
+@Service
 public class CommentService {
 
     private final PostRepository postRepository;
-
     private final CommentRepository commentRepository;
 
     // 댓글 작성

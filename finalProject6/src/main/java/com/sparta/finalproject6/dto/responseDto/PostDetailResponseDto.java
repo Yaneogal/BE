@@ -12,6 +12,8 @@ import java.util.List;
 @Builder
 public class PostDetailResponseDto {
     private Long postId;
+    private String nickname;
+    private String userImgUrl;
     private String title;
     private String content;
     private int viewCount;
