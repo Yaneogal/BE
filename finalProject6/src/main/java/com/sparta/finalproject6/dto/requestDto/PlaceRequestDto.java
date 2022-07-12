@@ -19,7 +19,7 @@ public class PlaceRequestDto {
     private String category_name;
     private String distance;
     private List<MultipartFile> files;
-    private Long id;
+    private String id;
     private String phone;
     private String place_name;
     private String place_url;
