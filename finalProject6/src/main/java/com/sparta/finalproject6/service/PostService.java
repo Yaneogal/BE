@@ -294,14 +294,14 @@ public class PostService {
             }
                         List<Map<String, String>> imgResult = getImageList(files);
             ------------------------------프론트에서 Json 과 이미지파일을 같이 못받아올 때 사용--------------------------*/
-            List<Map<String, String>> imgResult = getImageList(placeRequestDto.get(i).getFiles());
+//            List<Map<String, String>> imgResult = getImageList(placeRequestDto.get(i).getFiles());
 
-//            List<MultipartFile> files = new ArrayList<>();
-//            for (int j = 0; j < placeRequestDto.get(i).getImgCount(); j++) {
-//                files.add(multipartFile.get(count));
-//                count++;
-//            }
-//            List<Map<String, String>> imgResult = getImageList(files);
+            List<MultipartFile> files = new ArrayList<>();
+            for (int j = 0; j < placeRequestDto.get(i).getImgCount(); j++) {
+                files.add(multipartFile.get(count));
+                count++;
+            }
+            List<Map<String, String>> imgResult = getImageList(files);
 
             List<String> imgUrls = new ArrayList<>(imgResult.size());
             List<String> imgFileNames = new ArrayList<>(imgResult.size());
