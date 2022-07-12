@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Data
 @Getter
@@ -13,7 +14,12 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class CommentRequestDto {
 
+    private Long postId;
+    private Long id;
     @NotNull(message = "댓글을 입력해 주세요.")
     private String comment;
+    private String nickname;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
 
 }
