@@ -23,16 +23,18 @@ import java.util.List;
 
 
 @Slf4j
-@RestController
 @RequiredArgsConstructor
+@RestController
 public class PostController {
 
     private final PostService postService;
 
     //포스트 메인페이지 조회
     @GetMapping("/api/posts")
-    public ResponseEntity<Slice<PostResponseDto>> getAllPosts(@RequestParam(value = "keyword") String keyword, @AuthenticationPrincipal UserDetailsImpl userDetails,
-                                                    /*@PageableDefault(size = 5)*/ Pageable pageable) {
+    public ResponseEntity<Slice<PostResponseDto>> getAllPosts(@RequestParam(value = "keyword") String keyword,
+                                                              @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                              Pageable pageable) {
+
         return postService.getPosts(keyword, pageable, userDetails);
     }
 
@@ -63,8 +65,8 @@ public class PostController {
         PostResponseDto dto = PostResponseDto.builder().build();
         postService.updateView(postId);
         model.addAttribute("post", dto);
+        
         return "post-read";
-
     }
 
 
@@ -79,11 +81,11 @@ public class PostController {
                                              @RequestParam("themeCategory") List<ThemeCategoryDto> themeCategory,
                                              @RequestParam("priceCategory") String priceCategory,
                                              @RequestPart("places") List<PlaceRequestDto> placeRequestDto,
-                                             @RequestPart("imgUrl") List<MultipartFile> multipartFile){
+                                             @RequestPart("imgUrl") List<MultipartFile> multipartFile) {
         log.info("postUserDetails = {}", userDetails);
         PostRequestDto requestDto = new PostRequestDto(title,content,regionCategory,priceCategory,themeCategory);
         try{
-            postService.addPost(userDetails, requestDto, placeRequestDto ,multipartFile);
+            postService.addPost(userDetails, requestDto ,placeRequestDto, multipartFile);
             return new ResponseEntity<>("게시글을 작성했습니다.", HttpStatus.CREATED);
         }catch(IllegalArgumentException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
