@@ -22,6 +22,6 @@ public class PlaceResponseDto {
     private String place_name;
     private String place_url;
     private String road_address_name;
-    private double x;
-    private double y;
+    private String x;
+    private String y;
 }

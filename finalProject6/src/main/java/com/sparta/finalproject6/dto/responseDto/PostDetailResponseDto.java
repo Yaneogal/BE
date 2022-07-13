@@ -29,5 +29,8 @@ public class PostDetailResponseDto {
     private LocalDateTime modifiedAt;
     private List<PostCommentResponseDto> comments;
 
+    private String restroom;
+    private List<String> restroomOption;
+
     private List<PlaceResponseDto> place;
 }

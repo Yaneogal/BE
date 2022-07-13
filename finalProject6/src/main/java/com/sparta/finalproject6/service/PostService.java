@@ -256,6 +256,8 @@ public class PostService {
                 .modifiedAt(post.getModifiedAt())
                 .comments(commentList)
                 .place(placeResponseDtos)
+                .restroom(post.getRestroom())
+                .restroomOption(post.getRestroomOption())
                 .build();
 
         return new ResponseEntity<>(detailResponseDto, HttpStatus.OK);
@@ -268,7 +270,6 @@ public class PostService {
         return postRepository.updateView(postId);
     }
 
-    //  포스트 등록
     @Transactional
     public void addPost(UserDetailsImpl userDetails, PostRequestDto requestDto, List<PlaceRequestDto> placeRequestDto, List<MultipartFile> multipartFile) {
 
@@ -281,6 +282,8 @@ public class PostService {
                 .regionCategory(requestDto.getRegionCategory())
                 .priceCategory(requestDto.getPriceCategory())
                 .user(userDetails.getUser())
+                .restroom(requestDto.getRestroom())
+                .restroomOption(requestDto.getRestroomOption())
                 .build();
 
         postRepository.save(post);
@@ -291,18 +294,22 @@ public class PostService {
             /*------------------------------프론트에서 Json 과 이미지파일을 같이 못받아올 때 사용--------------------------
             List<MultipartFile> files = new ArrayList<>();
             for (int j = 0; j < placeRequestDto.get(i).getImgCount(); j++) {
-                files.add(multipartFile.get(count++));
+                files.add(multipartFile.get(count));
                 count++;
             }
                         List<Map<String, String>> imgResult = getImageList(files);
             ------------------------------프론트에서 Json 과 이미지파일을 같이 못받아올 때 사용--------------------------*/
-//            List<Map<String, String>> imgResult = getImageList(placeRequestDto.get(i).getFiles());
 
             List<MultipartFile> files = new ArrayList<>();
+//            List<Integer> imgOrder =placeRequestDto.get(i).getImgOrder();
+//            for (int j = 0; j < imgOrder.size(); j++) {
+//                files.add(multipartFile.get(imgOrder.get(j)-1));
+//            }
             for (int j = 0; j < placeRequestDto.get(i).getImgCount(); j++) {
                 files.add(multipartFile.get(count));
                 count++;
             }
+
             List<Map<String, String>> imgResult = getImageList(files);
 
             List<String> imgUrls = new ArrayList<>(imgResult.size());
@@ -370,23 +377,33 @@ public class PostService {
 
         List<Place> places = placeRepository.findAllByPostId(postId);
         int count = 0;
+
         for (int i = 0; i < placeRequestDto.size(); i++) {
                 /*------------------------------프론트에서 Json 과 이미지파일을 같이 못받아올 때 사용--------------------------
                 List<MultipartFile> files = new ArrayList<>();
                 for (int k = 0; k < placeRequestDto.get(i).getImgCount(); k++) {
-                    files.add(multipartFile.get(count++));
+                    files.add(multipartFile.get(count));
                     count++;
                 }
 
                 List<Map<String, String>> imgResult = updateImage(places.get(i),files);
                 ------------------------------프론트에서 Json 과 이미지파일을 같이 못받아올 때 사용--------------------------*/
-
             List<Map<String, String>> imgResult = new ArrayList<>();
+            List<MultipartFile> files = new ArrayList<>();
+
+//            List<Integer> imgOrder =placeRequestDto.get(i).getImgOrder();
+//            for (int k = 0; k < imgOrder.size(); k++) {
+//                files.add(multipartFile.get(imgOrder.get(k)-1));
+//            }
+
+            for (int k = 0; k < placeRequestDto.get(i).getImgCount(); k++) {
+                files.add(multipartFile.get(count));
+                count++;
+            }
 
             //장소 수 가 아직 기존장소 수 보다 작을때
             if(i < (places.size())) {
-//                imgResult = updateImage(places.get(i),files);
-                imgResult = updateImage(places.get(i), placeRequestDto.get(i).getFiles());
+                imgResult = updateImage(places.get(i),files);
                 List<String> imgUrls = new ArrayList<>(imgResult.size());
                 List<String> imgFileNames = new ArrayList<>(imgResult.size());
 
@@ -408,8 +425,7 @@ public class PostService {
 
             //수정해서 장소가 더 늘어났을때는 등록해주기
             else {
-//                imgResult = getImageList(files);
-                imgResult = getImageList(placeRequestDto.get(i).getFiles());
+                imgResult = getImageList(files);
                 List<String> imgUrls = new ArrayList<>(imgResult.size());
                 List<String> imgFileNames = new ArrayList<>(imgResult.size());
                 for (Map<String, String> getImage : imgResult) {

@@ -88,11 +88,12 @@ public class PostController {
                                              @RequestParam("regionCategory") String regionCategory,
                                              @RequestParam("themeCategory") List<ThemeCategoryDto> themeCategory,
                                              @RequestParam("priceCategory") String priceCategory,
+                                             @RequestParam("restroom") String restroom,
+                                             @RequestParam("restroomOption") List<String> restroomOption,
                                              @RequestPart("places") List<PlaceRequestDto> placeRequestDto,
                                              @RequestPart("imgUrl") List<MultipartFile> multipartFile) {
         log.info("postUserDetails = {}", userDetails);
-        PostRequestDto requestDto = new PostRequestDto(title,content,regionCategory,priceCategory,themeCategory);
-
+        PostRequestDto requestDto = new PostRequestDto(title,content,regionCategory,priceCategory,restroom,restroomOption,themeCategory);
         try{
             postService.addPost(userDetails, requestDto, placeRequestDto ,multipartFile);
             return new ResponseEntity<>("게시글을 작성했습니다.", HttpStatus.CREATED);
@@ -111,9 +112,11 @@ public class PostController {
                                              @RequestParam("regionCategory") String regionCategory,
                                              @RequestParam("themeCategory") List<ThemeCategoryDto> themeCategory,
                                              @RequestParam("priceCategory") String priceCategory,
+                                             @RequestParam("restroom") String restroom,
+                                             @RequestParam("restroomOption") List<String> restroomOption,
                                              @RequestPart("places") List<PlaceRequestDto> placeRequestDto,
                                              @RequestPart("imgUrl") List<MultipartFile> multipartFile){
-        PostRequestDto requestDto = new PostRequestDto(title,content,regionCategory,priceCategory,themeCategory);
+        PostRequestDto requestDto = new PostRequestDto(title,content,regionCategory,priceCategory,restroom,restroomOption,themeCategory);
         try{
             postService.modifyPost(userDetails, requestDto, placeRequestDto,multipartFile,postId);
 
