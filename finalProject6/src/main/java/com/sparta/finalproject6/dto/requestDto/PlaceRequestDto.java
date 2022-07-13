@@ -19,13 +19,13 @@ public class PlaceRequestDto {
     private String category_name;
     private String distance;
     private List<MultipartFile> files;
-    private Long id;
+    private String id;
     private String phone;
     private String place_name;
     private String place_url;
     private String road_address_name;
-    private double x;
-    private double y;
+    private String x;
+    private String y;
 
     //이거는 혹시모를 Json안에 이미지파일이 안담겨져서 올시 넣어줄것
     //이게 추가될 시 List<MultipartFile> files 이놈은 삭제

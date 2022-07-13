@@ -82,6 +82,15 @@ public class Post extends Timestamped{
     @JoinColumn(name = "USER_ID")
     private User user;
 
+    @Column
+    private String restroom;
+
+    @Column
+    @ElementCollection
+    @CollectionTable(name = "restroomOption",joinColumns ={@JoinColumn(name = "post_id",referencedColumnName = "POST_ID")})
+    private List<String> restroomOption;
+
+
     public Post(User user, PostRequestDto requestDto) {
         this.user = user;
         this.title = requestDto.getTitle();
@@ -94,9 +103,10 @@ public class Post extends Timestamped{
 //        this.user = user;
         this.title = postRequestDto.getTitle();;
         this.content = postRequestDto.getContent();
-
         this.regionCategory = postRequestDto.getRegionCategory();
         this.priceCategory = postRequestDto.getPriceCategory();
+        this.restroom = postRequestDto.getRestroom();
+        this.restroomOption = postRequestDto.getRestroomOption();
     }
 
     //좋아요 수 업데이트
