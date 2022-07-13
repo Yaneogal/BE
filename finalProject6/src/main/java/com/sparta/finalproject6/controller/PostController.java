@@ -34,7 +34,6 @@ public class PostController {
     public ResponseEntity<Slice<PostResponseDto>> getAllPosts(@RequestParam(value = "keyword") String keyword,
                                                               @AuthenticationPrincipal UserDetailsImpl userDetails,
                                                               Pageable pageable) {
-
         return postService.getPosts(keyword, pageable, userDetails);
     }
 
