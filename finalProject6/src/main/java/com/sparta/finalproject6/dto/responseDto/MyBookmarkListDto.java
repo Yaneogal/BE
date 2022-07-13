@@ -6,6 +6,13 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class MyBookmarkListDto {
+
+    private Long postId;
+    private Long userId;
+    private String imgUrl;
+    private String title;
+
 
 }

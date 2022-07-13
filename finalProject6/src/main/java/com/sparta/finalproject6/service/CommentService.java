@@ -69,19 +69,19 @@ public class CommentService {
     }
 
     // 댓글 수정
-    public void updateComment(Long commentId, CommentRequestDto requestDto, UserDetailsImpl userDetails) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new NullPointerException("댓글이 없습니다.")
-        );
-        String username = comment.getUser().getUsername();
-        if (username.equals(userDetails.getUsername())) {
-            comment.setComment(requestDto.getComment());
-            commentRepository.save(comment);
-        }
-        else {
-            throw new IllegalArgumentException("본인이 작성한 댓글만 수정할 수 있습니다.");
-        }
-    }
+//    public void updateComment(Long commentId, CommentRequestDto requestDto, UserDetailsImpl userDetails) {
+//        Comment comment = commentRepository.findById(commentId).orElseThrow(
+//                () -> new NullPointerException("댓글이 없습니다.")
+//        );
+//        String username = comment.getUser().getUsername();
+//        if (username.equals(userDetails.getUsername())) {
+//            comment.setComment(requestDto.getComment());
+//            commentRepository.save(comment);
+//        }
+//        else {
+//            throw new IllegalArgumentException("본인이 작성한 댓글만 수정할 수 있습니다.");
+//        }
+//    }
 
     // 댓글 삭제
     public void deleteComment(Long commentId, String nickname) {
