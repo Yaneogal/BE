@@ -17,7 +17,7 @@ public class PlaceResponseDto {
     private String category_name;
     private String distance;
     private List<String> imgUrl;
-    private Long id;
+    private String id;
     private String phone;
     private String place_name;
     private String place_url;

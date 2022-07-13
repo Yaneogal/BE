@@ -3,13 +3,18 @@ package com.sparta.finalproject6.service;
 import com.sparta.finalproject6.dto.requestDto.PlaceRequestDto;
 import com.sparta.finalproject6.dto.requestDto.PostRequestDto;
 import com.sparta.finalproject6.dto.requestDto.ThemeCategoryDto;
+import com.sparta.finalproject6.dto.responseDto.PostCommentResponseDto;
+import com.sparta.finalproject6.dto.responseDto.PostResponseDto;
 import com.sparta.finalproject6.dto.responseDto.*;
 import com.sparta.finalproject6.model.*;
 import com.sparta.finalproject6.repository.*;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -32,64 +37,147 @@ public class PostService {
     private final ThemeCategoryRepository themeRepository;
     private final ThemeCategoryService themeService;
     private final PlaceRepository placeRepository;
-
     private final BookmarkRepository bookmarkRepository;
 
 
 
-    // 전체 포스트 조회
+     //전체 포스트 조회(검색기능추가)
     @Transactional(readOnly = true)
-    public ResponseEntity<PostResponseDto> getPosts(Pageable pageable, UserDetailsImpl userDetails) {
-        List<Post> posts = postRepository.findAllByOrderByCreatedAtDesc(pageable);
+    public ResponseEntity<Slice<PostResponseDto>> getPosts(String keyword, Pageable pageable, UserDetailsImpl userDetails) {
+
+        Slice<PostResponseDto> content = postRepository.keywordSearch(keyword, pageable);
 
         Long userId = userDetails.getUser().getId();
-        List<PostResponseDto> postList = new ArrayList<>();
 
-        for (Post post : posts) {
-            Optional<Love> love = loveRepository.findByPostIdAndUserId(post.getId(),userId);
-            if(love.isPresent()){
-                post.setIsLove(true);
-            }
-
-
-            Optional<Bookmark> bookmark = bookmarkRepository.findByPostIdAndUserId(post.getId(),userId);
-            if(bookmark.isPresent()){
-                post.setIsBookmark(true);
-            }
+        content.forEach(c ->{
+            Post post = postRepository.findById(c.getPostId())
+                    .orElseThrow(() -> new IllegalArgumentException("post does not exist"));
 
             List<Place> place = placeRepository.findAllByPostId(post.getId());
             List<String> imgUrl = new ArrayList<>();
             for (int i = 0; i < place.size(); i++) {
                 imgUrl.addAll(place.get(i).getImgUrl());
             }
+            c.setImgUrl(imgUrl);
+
             System.out.println("imgUrl = " + imgUrl);
 
-            PostResponseDto postResponseDto = PostResponseDto.builder()
-                    .postId(post.getId())
-                    .title(post.getTitle())
-                    .content(post.getContent())
-                    .loveStatus(post.getIsLove())
-                    .loveCount(post.getLoveCount())
-                    .regionCategory(post.getRegionCategory())
-                    .priceCategory(post.getPriceCategory())
-                    .viewCount(post.getViewCount())
-                    .bookmarkStatus(post.getIsBookmark())
-                    .bookmarkCount(post.getBookmarkCount())
-                    .createdAt(post.getCreatedAt())
-                    .modifiedAt(post.getModifiedAt())
-                    .imgUrl(imgUrl)
-                    //TODO : 20220708 새롭게 place추가
-                    .build();
+            Optional<Bookmark> bookmark = bookmarkRepository.findByPostIdAndUserId(post.getId(),userId);
+            if(bookmark.isPresent()){
+                post.setIsBookmark(true);
+            }
 
-            postList.add(postResponseDto);
-        }
-        return new ResponseEntity(postList, HttpStatus.OK);
+            loveRepository.findByPostIdAndUserIdOrderByCreatedAtDesc(c.getPostId(), userId)
+                    .forEach(love ->{
+                        if (love != null) {
+                            c.setLoveStatus(true);
+                        }
+                    });
+
+            List<ThemeCategoryDto> themeCategory = themeRepository.findByPost_Id(c.getPostId())
+                    .stream()
+                    .map(theme ->
+                            new ThemeCategoryDto(theme.getThemeCategory()))
+                    .collect(Collectors.toList());
+            c.setThemeCategory(themeCategory);
+        });
+
+        return new ResponseEntity(content, HttpStatus.OK);
+    }
+
+//        List<Post> posts;
+//        if (keyword != null) {
+//            posts = postRepository.findSearchKeyword(keyword, pageable);
+//        } else {
+//            posts = postRepository.findAllByOrderByCreatedAtDesc(pageable);
+//        }
+
+//        Slice<Post> posts = postRepository.keywordSearch(keyword, pageable);
+
+//        Long userId = userDetails.getUser().getId();
+//        List<PostResponseDto> postList = new ArrayList<>();
+//
+//        Slice<PostResponseDto> postSlice = null;
+//        for (Post post : posts) {
+//            Optional<Love> love = loveRepository.findByPostIdAndUserId(post.getId(), userId);
+//            if (love.isPresent()) {
+//                post.setIsLove(true);
+//            }
+//
+//            List<ThemeCategory> themes = post.getThemeCategories();
+//            List<ThemeCategoryDto> themesToDto = themes.stream()
+//                    .map(t ->
+//                            new ThemeCategoryDto(t.getThemeCategory())
+//                    )
+//                    .collect(Collectors.toList());
+//
+//            post.getImgUrl().get(0);
+//            PostResponseDto postResponseDto = PostResponseDto.builder()
+//                    .postId(post.getId())
+//                    .nickName(post.getUser().getNickname())
+//                    .userImgUrl(post.getUser().getUserImgUrl())
+//                    .title(post.getTitle())
+//                    .imgUrl(post.getImgUrl())
+//                    .content(post.getContent())
+//                    .loveStatus(post.getIsLove())
+//                    .regionCategory(post.getRegionCategory())
+//                    .priceCategory(post.getPriceCategory())
+//                    .themeCategory(themesToDto)
+//                    .viewCount(post.getViewCount())
+//                    .loveCount(post.getLoveCount())
+//                    .bookmarkCount(post.getBookmarkCount())
+//                    .createdAt(post.getCreatedAt())
+//                    .modifiedAt(post.getModifiedAt())
+//                    .build();
+//
+//            postList.add(postResponseDto);
+//            postSlice = new SliceImpl<>(postList);
+//        }
+
+
+//    public Page<Post> getAllPosts(int page, int size, String sortBy, boolean isAsc) {
+//        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+//        Sort sort = Sort.by(direction, sortBy);
+//        org.springframework.data.domain.Pageable pageable = PageRequest.of(page, size, sort);
+//
+//        return postRepository.findAll(pageable);
+//    }
+
+    //필터 적용 게시글 조회
+    @Transactional(readOnly = true)
+    public ResponseEntity<Slice<PostResponseDto>> getFilterPosts(String region, String price, List<String> theme, Pageable pageable, UserDetailsImpl userDetails) {
+        Slice<PostResponseDto> content = postRepository.filterSearch(region, price, theme, pageable, userDetails);
+
+        content.forEach(c -> {
+            Post post = postRepository.findById(c.getPostId())
+                    .orElseThrow(() -> new IllegalArgumentException("post does not exist"));
+            List<Place> place = placeRepository.findAllByPostId(post.getId());
+            List<String> imgUrl = new ArrayList<>();
+            for (int i = 0; i < place.size(); i++) {
+                imgUrl.addAll(place.get(i).getImgUrl());
+            }
+            c.setImgUrl(imgUrl);
+            loveRepository.findByPostIdAndUserIdOrderByCreatedAtDesc(c.getPostId(), userDetails.getUser().getId())
+                    .forEach(love -> {
+                        if (love != null) {
+                            c.setLoveStatus(true);
+                        }
+                    });
+
+            List<ThemeCategoryDto> themeCateroies = themeRepository.findByPost_Id(c.getPostId())
+                    .stream()
+                    .map(t ->
+                            new ThemeCategoryDto(t.getThemeCategory()))
+                    .collect(Collectors.toList());
+            c.setThemeCategory(themeCateroies);
+        });
+        return new ResponseEntity(content, HttpStatus.OK);
     }
 
 
     // 포스트 상세 페이지
-    @Transactional
-    public ResponseEntity<PostDetailResponseDto> getPostDetail(Long postId , UserDetailsImpl userDetails) {
+    @Transactional(readOnly = true)
+    public ResponseEntity<PostDetailResponseDto> getPostDetail(Long postId, UserDetailsImpl userDetails) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
         );
@@ -117,27 +205,10 @@ public class PostService {
             post.setIsLove(true);
         }
 
-
         Optional<Bookmark> bookmark = bookmarkRepository.findByPostIdAndUserId(post.getId(),user.getId());
         if(bookmark.isPresent()){
             post.setIsBookmark(true);
         }
-
-//        List<Love> loves = post.getLoves();
-//        List<LoveResponseDto> loveUserList = new ArrayList<>();
-//        for (Love love : loves) {
-////            Long userId = love.getUserId();
-//            LoveResponseDto loveResponseDto = new LoveResponseDto(love.getId());
-//            loveUserList.add(loveResponseDto);
-//        }
-
-        //상세페이지 조회시 테마 카테고리 동반 조회
-//        List<ThemeCategory> themes = themeRepository.findByPost_Id(postId);
-//        List<String> themesToString = new ArrayList<>();
-//        themes.forEach(t -> {
-//            themesToString.add(t.getThemeCategory());
-//        });
-
 
         List<ThemeCategory> themes = themeRepository.findByPost_Id(postId);
         List<ThemeCategoryDto> themesToDto = themes.stream()
@@ -145,7 +216,6 @@ public class PostService {
                     new ThemeCategoryDto(t.getThemeCategory())
                 )
                 .collect(Collectors.toList());
-
 
         List<PlaceResponseDto> placeResponseDtos = new ArrayList<>();
         List<Place> place = placeRepository.findAllByPostId(post.getId());
@@ -170,6 +240,8 @@ public class PostService {
 
         PostDetailResponseDto detailResponseDto = PostDetailResponseDto.builder()
                 .postId(post.getId())
+                .nickname(post.getUser().getNickname())
+                .userImgUrl(post.getUser().getUserImgUrl())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .regionCategory(post.getRegionCategory())
@@ -195,6 +267,7 @@ public class PostService {
         Optional<Post> post = postRepository.findById(postId);
         return postRepository.updateView(postId);
     }
+
     //  포스트 등록
     @Transactional
     public void addPost(UserDetailsImpl userDetails, PostRequestDto requestDto, List<PlaceRequestDto> placeRequestDto, List<MultipartFile> multipartFile) {
@@ -223,7 +296,15 @@ public class PostService {
             }
                         List<Map<String, String>> imgResult = getImageList(files);
             ------------------------------프론트에서 Json 과 이미지파일을 같이 못받아올 때 사용--------------------------*/
-            List<Map<String, String>> imgResult = getImageList(placeRequestDto.get(i).getFiles());
+//            List<Map<String, String>> imgResult = getImageList(placeRequestDto.get(i).getFiles());
+
+            List<MultipartFile> files = new ArrayList<>();
+            for (int j = 0; j < placeRequestDto.get(i).getImgCount(); j++) {
+                files.add(multipartFile.get(count));
+                count++;
+            }
+            List<Map<String, String>> imgResult = getImageList(files);
+
             List<String> imgUrls = new ArrayList<>(imgResult.size());
             List<String> imgFileNames = new ArrayList<>(imgResult.size());
 

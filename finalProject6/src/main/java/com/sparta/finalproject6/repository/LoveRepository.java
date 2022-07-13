@@ -12,6 +12,7 @@ public interface LoveRepository extends JpaRepository<Love, Long> {
 
     //TODO : postId와 userId로 해당유저가 postId의 게시글에 좋아요를 햇는지 안햇는지체크
     Optional<Love> findByPostIdAndUserId(Long postId,Long userId);
+    List<Love> findByPostIdAndUserIdOrderByCreatedAtDesc(Long postId,Long userId);
 
     void deleteAllByPostId(Long postId);
     List<Love> findAllByPostId(Long postId);

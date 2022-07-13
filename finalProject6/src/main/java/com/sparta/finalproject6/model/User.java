@@ -37,6 +37,9 @@ public class User {
     @Column
     private Long kakaoId;
 
+    @Column
+    private String userInfo;
+
     @OneToMany
     private List<Post> posts = new ArrayList<>();
 

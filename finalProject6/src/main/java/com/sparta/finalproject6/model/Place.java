@@ -37,7 +37,7 @@ public class Place{
     private String distance;
 
     @Column
-    private Long id;
+    private String id;
 
     @Column
     @ElementCollection
