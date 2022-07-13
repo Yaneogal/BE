@@ -37,9 +37,6 @@ public class User {
     @Column
     private Long kakaoId;
 
-    @OneToMany
-    private List<Post> posts = new ArrayList<>();
-
     public User(String username, String nickname, String password) {
         this.username = username;
         this.nickname = nickname;
