@@ -31,4 +31,8 @@ public class PlaceRequestDto {
     //이게 추가될 시 List<MultipartFile> files 이놈은 삭제
     private int imgCount;
 
+    //TODO : 20220712
+    //장소에 이미지 추가할때 이미지 넣는 순서가 뒤죽박죽이여도 들어갈 수 있게끔
+    private List<Integer> imgOrder;
+
 }
