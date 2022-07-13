@@ -21,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -37,6 +36,17 @@ public class PostController {
         return postService.getPosts(keyword, pageable, userDetails);
     }
 
+//    @GetMapping("/api/admin/posts")
+//    public Page<Post> getAllProducts(
+//            @RequestParam("page") int page,
+//            @RequestParam("size") int size,
+//            @RequestParam("sortBy") String sortBy,
+//            @RequestParam("isAsc") boolean isAsc
+//    ) {
+//        page = page -1;
+//        return postService.getAllPosts(page, size, sortBy, isAsc);
+//    }
+
     //필터 적용된 게시물 조회
     @GetMapping("/api/posts/filter")
     public ResponseEntity<Slice<PostResponseDto>> getFilterPosts(@RequestParam(value = "region") String region,
@@ -46,6 +56,7 @@ public class PostController {
                                                                  @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postService.getFilterPosts(region, price, theme, pageable, userDetails);
     }
+
 
     // 포스트 상세페이지
     @GetMapping("/api/post/{postId}")
@@ -68,29 +79,28 @@ public class PostController {
         return "post-read";
     }
 
-
     // 포스트 등록
-    // form data 받아오는 형식으로 변경
-    // requestpart, requestparam
-    @PostMapping("/api/post")
+    // form-data 받아오는 형식으로 변경
     public ResponseEntity<String> createPost(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                              @RequestParam("title") String title,
                                              @RequestParam("content") String content,
                                              @RequestParam("regionCategory") String regionCategory,
                                              @RequestParam("themeCategory") List<ThemeCategoryDto> themeCategory,
                                              @RequestParam("priceCategory") String priceCategory,
+                                             @RequestParam("restroom") String restroom,
+                                             @RequestParam("restroomOption") List<String> restroomOption,
                                              @RequestPart("places") List<PlaceRequestDto> placeRequestDto,
                                              @RequestPart("imgUrl") List<MultipartFile> multipartFile) {
         log.info("postUserDetails = {}", userDetails);
-        PostRequestDto requestDto = new PostRequestDto(title,content,regionCategory,priceCategory,themeCategory);
+        PostRequestDto requestDto = new PostRequestDto(title,content,regionCategory,priceCategory,restroom,restroomOption,themeCategory);
         try{
-            postService.addPost(userDetails, requestDto ,placeRequestDto, multipartFile);
+            postService.addPost(userDetails, requestDto, placeRequestDto ,multipartFile);
             return new ResponseEntity<>("게시글을 작성했습니다.", HttpStatus.CREATED);
+
         }catch(IllegalArgumentException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-
 
     // 포스트 수정
     @PutMapping("/api/post/{postId}")
@@ -101,18 +111,20 @@ public class PostController {
                                              @RequestParam("regionCategory") String regionCategory,
                                              @RequestParam("themeCategory") List<ThemeCategoryDto> themeCategory,
                                              @RequestParam("priceCategory") String priceCategory,
+                                             @RequestParam("restroom") String restroom,
+                                             @RequestParam("restroomOption") List<String> restroomOption,
                                              @RequestPart("places") List<PlaceRequestDto> placeRequestDto,
                                              @RequestPart("imgUrl") List<MultipartFile> multipartFile){
-        PostRequestDto requestDto = new PostRequestDto(title,content,regionCategory,priceCategory,themeCategory);
+        PostRequestDto requestDto = new PostRequestDto(title,content,regionCategory,priceCategory,restroom,restroomOption,themeCategory);
         try{
             postService.modifyPost(userDetails, requestDto, placeRequestDto,multipartFile,postId);
+
             return new ResponseEntity<>("게시글을 수정했습니다.",HttpStatus.OK);
         }catch(IllegalArgumentException e){
             return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
         }
 
     }
-
 
     // 포스트 삭제
     @DeleteMapping("/api/post/{postId}")

@@ -59,9 +59,9 @@ public class Place{
     @Column
     private String road_address_name;
     @Column
-    private double x;
+    private String x;
     @Column
-    private double y;
+    private String y;
 
     public void updatePlace(PlaceRequestDto dto){
         this.addressName = dto.getAddress_name();

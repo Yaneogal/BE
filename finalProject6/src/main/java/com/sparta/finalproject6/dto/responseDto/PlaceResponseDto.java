@@ -22,9 +22,6 @@ public class PlaceResponseDto {
     private String place_name;
     private String place_url;
     private String road_address_name;
-    private double x;
-    private double y;
-
-
-    // 테스트 push 깃이그노어 체크
+    private String x;
+    private String y;
 }

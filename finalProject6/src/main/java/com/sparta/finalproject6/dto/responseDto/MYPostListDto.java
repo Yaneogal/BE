@@ -1,20 +1,23 @@
 package com.sparta.finalproject6.dto.responseDto;
 
 import com.sparta.finalproject6.dto.requestDto.ThemeCategoryDto;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.sparta.finalproject6.model.ThemeCategory;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
 @Builder
-public class PostDetailResponseDto {
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class MYPostListDto {
+
     private Long postId;
-    private String nickname;
-    private String userImgUrl;
+    private Long userId;
     private String title;
+    private String imgUrl;
     private String content;
     private int viewCount;
     private int loveCount;
@@ -24,13 +27,8 @@ public class PostDetailResponseDto {
     private String priceCategory;
     private Boolean loveStatus;
     private Boolean bookmarkStatus;
-    private List<ThemeCategoryDto> themeCategory;
+    private List<ThemeCategory> themeCategory;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private List<PostCommentResponseDto> comments;
-
-    private String restroom;
-    private List<String> restroomOption;
-
-    private List<PlaceResponseDto> place;
 }

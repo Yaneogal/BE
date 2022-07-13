@@ -31,6 +31,7 @@ public class Bookmark {
     @Column
     private Long userId;
 
+
     public Bookmark(Long postId, Long userId) {
         this.postId = postId;
         this.userId = userId;
