@@ -195,10 +195,15 @@ public class PostService {
                         List<Map<String, String>> imgResult = getImageList(files);
             ------------------------------프론트에서 Json 과 이미지파일을 같이 못받아올 때 사용--------------------------*/
             List<MultipartFile> files = new ArrayList<>();
-            List<Integer> imgOrder =placeRequestDto.get(i).getImgOrder();
-            for (int j = 0; j < imgOrder.size(); j++) {
-                files.add(multipartFile.get(imgOrder.get(j)-1));
+//            List<Integer> imgOrder =placeRequestDto.get(i).getImgOrder();
+//            for (int j = 0; j < imgOrder.size(); j++) {
+//                files.add(multipartFile.get(imgOrder.get(j)-1));
+//            }
+            for (int j = 0; j < placeRequestDto.get(i).getImgCount(); j++) {
+                files.add(multipartFile.get(count));
+                count++;
             }
+
 
             List<Map<String, String>> imgResult = getImageList(files);
 
@@ -283,9 +288,14 @@ public class PostService {
             List<Map<String, String>> imgResult = new ArrayList<>();
             List<MultipartFile> files = new ArrayList<>();
 
-            List<Integer> imgOrder =placeRequestDto.get(i).getImgOrder();
-            for (int k = 0; k < imgOrder.size(); k++) {
-                files.add(multipartFile.get(imgOrder.get(k)-1));
+//            List<Integer> imgOrder =placeRequestDto.get(i).getImgOrder();
+//            for (int k = 0; k < imgOrder.size(); k++) {
+//                files.add(multipartFile.get(imgOrder.get(k)-1));
+//            }
+
+            for (int k = 0; k < placeRequestDto.get(i).getImgCount(); k++) {
+                files.add(multipartFile.get(count));
+                count++;
             }
 
             //장소 수 가 아직 기존장소 수 보다 작을때
