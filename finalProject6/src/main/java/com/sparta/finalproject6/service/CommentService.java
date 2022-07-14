@@ -49,18 +49,20 @@ public class CommentService {
     }
 
     // 댓글 작성
-    public void addComment(Long postId, CommentRequestDto commentRequestDto, String nickname) {
+    public void addComment(Long postId, CommentRequestDto commentRequestDto, UserDetailsImpl userDetails) {
 
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
         );
 
-        User user = new User();
-        Long userId = user.getId();
-        User commentWriter = userRepository.findById(userId).orElseThrow(
-                () -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다.")
-        );
-        Comment comment = new Comment(commentRequestDto, post, nickname);
+        User user = userRepository.findById(userDetails.getUser().getId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다"));
+//        Long userId = user.getId();
+//        User commentWriter = userRepository.findById(userId).orElseThrow(
+//                () -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다.")
+//        );
+        Comment comment = new Comment(commentRequestDto, post, user);
+
         commentRepository.save(comment);
         int commentCount = post.getCommentCount();
         commentCount++;
@@ -70,8 +72,6 @@ public class CommentService {
 
         List<Comment> comments = post.getComments();
         comments.add(comment);
-
-
     }
 
     // 댓글 수정
