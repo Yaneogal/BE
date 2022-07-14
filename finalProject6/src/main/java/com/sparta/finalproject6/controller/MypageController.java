@@ -26,30 +26,28 @@ public class MypageController {
     private final UserService userService;
 
     // My Page 회원정보 조회 API
-    @GetMapping("/api/user/{userId}")
+    @GetMapping("/api/user")
     public ProfileUpdateResponseDto getMyProfile (
-            @PathVariable Long userId,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         return mypageService.getMyProfile(userDetails);
     }
 
     // 마이페이지 회원정보 수정
-    @PostMapping("/api/user/{userId}")
+    @PutMapping("/api/user")
     public ProfileUpdateResponseDto updateProfile (
-            @PathVariable Long userId,
             @RequestPart MultipartFile multipartFile,
             @RequestPart ProfileUpdateRequestDto updateRequestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails)
+
         throws IOException {
 
         return mypageService.updateProfile(multipartFile, updateRequestDto, userDetails);
     }
 
     // 마이페이지 내가 쓴 게시글
-    @GetMapping("/api/user/{userId}/mypost")
+    @GetMapping("/api/user/mypost")
     public MypageResponseDto getMyPostList (
-            @PathVariable Long userId,
             @RequestParam int pageNo,
             @RequestParam int sizeNo,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -58,9 +56,8 @@ public class MypageController {
     }
 
     // 마이페이지 내가 북마크 한 게시글
-    @GetMapping("/api/user/{userId}/mybookmark")
+    @GetMapping("/api/user/mybookmark")
     public List<MyBookmarkListDto> getMyBookmarkList (
-            @PathVariable Long userId,
             @RequestParam int pageNo,
             @RequestParam int sizeNo,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {

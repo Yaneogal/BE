@@ -52,13 +52,11 @@ public class MypageService {
         );
         String nickname = found.getUsername();
 
-        ProfileUpdateResponseDto responseDto = ProfileUpdateResponseDto.builder()
+        return ProfileUpdateResponseDto.builder()
                 .nickname(found.getNickname())
                 .userImgUrl(found.getUserImgUrl())
                 .userInfo(found.getUserInfo())
                 .build();
-
-        return responseDto;
     }
 
     // 회원정보 수정
