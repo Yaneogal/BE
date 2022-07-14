@@ -22,7 +22,7 @@ public class BookmarkService {
     private final PostRepository postRepository;
 
     @Transactional
-    public void bookmark(Long postId, UserDetailsImpl userDetails){
+    public Boolean bookmark(Long postId, UserDetailsImpl userDetails){
         User user = userDetails.getUser();
         Long userId = user.getId();
 
@@ -44,5 +44,6 @@ public class BookmarkService {
 
         post.updateBookmarkCount(countUp);
 
+        return countUp;
     }
 }

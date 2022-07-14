@@ -1,6 +1,7 @@
 package com.sparta.finalproject6.controller;
 
 
+import com.sparta.finalproject6.dto.responseDto.TrueFalseDto;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import com.sparta.finalproject6.service.LoveService;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +22,9 @@ public class LoveController {
 
 
     @PostMapping("/api/love/{postId}")
-    public ResponseEntity<String> like(@PathVariable Long postId , @AuthenticationPrincipal UserDetailsImpl userDetails){
-            loveService.love(userDetails,postId);
-            return new ResponseEntity<>(HttpStatus.OK);
+    public TrueFalseDto like(@PathVariable Long postId , @AuthenticationPrincipal UserDetailsImpl userDetails){
+        Boolean isLove = loveService.love(userDetails,postId);
+        return TrueFalseDto.builder().trueOrFalse(isLove).build();
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
