@@ -1,10 +1,9 @@
 package com.sparta.finalproject6.model;
 
 
+import com.sparta.finalproject6.dto.requestDto.ProfileUpdateRequestDto;
 import com.sparta.finalproject6.dto.requestDto.SignUpRequestDto;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,7 +12,9 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "Users")
 public class User {
 

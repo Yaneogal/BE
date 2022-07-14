@@ -49,6 +49,9 @@ public class Post extends Timestamped{
     @Column
     private int viewCount;
 
+    @Column
+    private Integer commentCount;
+
     @Column(nullable = false)
     private String regionCategory;
     @Column(nullable = false)
@@ -130,5 +133,8 @@ public class Post extends Timestamped{
         this.viewCount++;
     }
 
+    public void updateCommentCount(int commentCount) {
 
+        this.commentCount = commentCount;
+    }
 }

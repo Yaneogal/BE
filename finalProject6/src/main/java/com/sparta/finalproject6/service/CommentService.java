@@ -41,7 +41,7 @@ public class CommentService {
             LocalDateTime createdAt = comment.getPost().getCreatedAt();
             LocalDateTime modifiedAt = comment.getPost().getModifiedAt();
 
-            CommentRequestDto commentRequestDto = new CommentRequestDto(postId, id, myComment, nickname, createdAt, modifiedAt);
+            CommentRequestDto commentRequestDto = new CommentRequestDto(postId, id, nickname, myComment, createdAt, modifiedAt);
             commentRequestDtoList.add(commentRequestDto);
         }
         return commentRequestDtoList;
@@ -62,9 +62,15 @@ public class CommentService {
         );
         Comment comment = new Comment(commentRequestDto, post, nickname);
         commentRepository.save(comment);
+        int commentCount = post.getCommentCount();
+        commentCount++;
+        post.updateCommentCount(commentCount);
+        // post.updateCommentCount(post.getCommentCount());
+
 
         List<Comment> comments = post.getComments();
         comments.add(comment);
+
 
     }
 
@@ -88,9 +94,14 @@ public class CommentService {
 
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
+
+        Post post = new Post();
+        int commentCount = post.getCommentCount();
         String commentWriter = comment.getNickname();
         if (commentWriter.equals(nickname)) {
             commentRepository.delete(comment);
+            commentCount--;
+            post.updateCommentCount(commentCount);
         } else {
             throw new IllegalArgumentException("댓글을 작성한 유저가 아닙니다.");
         }

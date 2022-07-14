@@ -61,8 +61,8 @@ public class MypageService {
 
     // 회원정보 수정
     @Transactional
-    public ProfileUpdateResponseDto updateProfile(
-            MultipartFile file,
+    public void updateProfile(
+            MultipartFile multipartFile,
             ProfileUpdateRequestDto updateDto,
             UserDetailsImpl userDetails
     ) throws IOException {
@@ -86,28 +86,24 @@ public class MypageService {
             nickname = updateDto.getNickname();
         }
 
-        String userInfo = updateDto.getUserInfo();
+        // String userInfo = updateDto.getUserInfo();
 
-        // 프로필 이미지를 직접 업로드 했을 경우
-        if (file != null) {
-            String userImgUrl = String.valueOf(s3Service.uploadFile(file));
+         // 프로필 이미지를 직접 업로드 했을 경우
+        if (multipartFile != null) {
+            Map<String, String> imgUrl = s3Service.uploadFile(multipartFile);
+            String userImgUrl = imgUrl.get("url");
             UserImg profileImg = new UserImg(userImgUrl);
-            // userRepository.save(profileImg);
             user.setUserImgUrl(profileImg.getUserImgUrl());
-
         }
 
-        user.setNickname(nickname);
-        user.setUserInfo(userInfo);
+        
+        User profile = User.builder()
+                .nickname(updateDto.getNickname())
+                .userImgUrl(updateDto.getUserImgUrl())
+                .userInfo(updateDto.getUserInfo())
+                .build();
 
-        User savedUser = userRepository.save(user);
-
-        return new ProfileUpdateResponseDto(
-                savedUser.getId(),
-                savedUser.getUserImgUrl(),
-                savedUser.getNickname(),
-                savedUser.getUserInfo()
-        );
+        userRepository.save(profile);
     }
 
 
@@ -127,13 +123,13 @@ public class MypageService {
                     .userId(post.getUser().getId())
                     .title(post.getTitle())
                     .imgUrl(post.getPlace().get(0).getImgUrl().get(0))
-                    .content(post.getContent())
                     .regionCategory(post.getRegionCategory())
                     .priceCategory(post.getPriceCategory())
                     .themeCategory(post.getThemeCategories())
                     .loveCount(post.getLoveCount())
-                    .createdAt(post.getCreatedAt())
-                    .modifiedAt(post.getModifiedAt())
+//                    .commentCount(post.getComments())
+//                    .createdAt(post.getCreatedAt())
+//                    .modifiedAt(post.getModifiedAt())
                     .build();
             postListDto.add(postDto);
         }
@@ -180,6 +176,10 @@ public class MypageService {
                         .userId(post.getUser().getId())
                         .title(post.getTitle())
                         .imgUrl(post.getPlace().get(0).getImgUrl().get(0))
+                        .regionCategory(post.getRegionCategory())
+                        .priceCategory(post.getPriceCategory())
+                        .themeCategory(post.getThemeCategories())
+                        .loveCount(post.getLoveCount())
                         .build();
                 bookmarkList.add(myBookmarkListDto);
             }

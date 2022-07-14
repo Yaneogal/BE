@@ -18,17 +18,14 @@ public class MYPostListDto {
     private Long userId;
     private String title;
     private String imgUrl;
-    private String content;
     private int viewCount;
     private int loveCount;
-    private int bookmarkCount;
+    // private int bookmarkCount;
     private int commentCount;
     private String regionCategory;
     private String priceCategory;
-    private Boolean loveStatus;
-    private Boolean bookmarkStatus;
     private List<ThemeCategory> themeCategory;
-    private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
+//    private LocalDateTime createdAt;
+//    private LocalDateTime modifiedAt;
     private List<PostCommentResponseDto> comments;
 }

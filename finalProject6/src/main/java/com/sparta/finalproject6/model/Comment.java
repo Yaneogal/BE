@@ -29,6 +29,10 @@ public class Comment extends Timestamped {
     @Column
     private String userImgUrl;
 
+    @Column
+    private int commentCount;
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "POST_ID")
     @JsonBackReference
