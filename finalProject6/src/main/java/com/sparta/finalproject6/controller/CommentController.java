@@ -26,10 +26,9 @@ public class CommentController {
     @PostMapping("/api/post/{postId}/comment")
     public ResponseEntity<String> commentWrite(@PathVariable Long postId,
                                                            @RequestBody @Valid CommentRequestDto commentRequestDto,
-                                                           String nickname,
                                                            @AuthenticationPrincipal UserDetailsImpl userDetails){
         try {
-            commentService.addComment(postId, commentRequestDto, nickname);
+            commentService.addComment(postId, commentRequestDto, userDetails);
             return new ResponseEntity<>("댓글을 작성 했습니다.", HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
