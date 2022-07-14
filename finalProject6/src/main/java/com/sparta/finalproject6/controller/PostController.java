@@ -81,6 +81,7 @@ public class PostController {
 
     // 포스트 등록
     // form-data 받아오는 형식으로 변경
+    @PostMapping("api/post")
     public ResponseEntity<String> createPost(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                              @RequestParam("title") String title,
                                              @RequestParam("content") String content,

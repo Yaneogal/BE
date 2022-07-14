@@ -26,9 +26,10 @@ public class CommentController {
     @PostMapping("/api/post/{postId}/comment")
     public ResponseEntity<String> commentWrite(@PathVariable Long postId,
                                                            @RequestBody @Valid CommentRequestDto commentRequestDto,
+                                                           String nickname,
                                                            @AuthenticationPrincipal UserDetailsImpl userDetails){
         try {
-            commentService.addComment(postId, commentRequestDto, userDetails.getUser().getNickname());
+            commentService.addComment(postId, commentRequestDto, nickname);
             return new ResponseEntity<>("댓글을 작성 했습니다.", HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -39,9 +40,10 @@ public class CommentController {
 
     @DeleteMapping("/api/comment/{commentId}")
     public ResponseEntity<String> commentDelete(@PathVariable Long commentId,
+                                                String nickname,
                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
-            commentService.deleteComment(commentId, userDetails.getUser().getNickname());
+            commentService.deleteComment(commentId, nickname);
             return new ResponseEntity<>("댓글을 삭제 했습니다.", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
