@@ -50,7 +50,7 @@ public class Post extends Timestamped{
     private int viewCount;
 
     @Column
-    private int commentCount;
+    private Integer commentCount;
 
     @Column(nullable = false)
     private String regionCategory;
