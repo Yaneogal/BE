@@ -1,14 +1,12 @@
 package com.sparta.finalproject6.dto.requestDto;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-@Data
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor

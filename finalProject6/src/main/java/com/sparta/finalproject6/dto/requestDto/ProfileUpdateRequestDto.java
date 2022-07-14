@@ -7,7 +7,8 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProfileUpdateRequestDto {
+public class
+ProfileUpdateRequestDto {
 
     private String userImgUrl;
     private String nickname;
