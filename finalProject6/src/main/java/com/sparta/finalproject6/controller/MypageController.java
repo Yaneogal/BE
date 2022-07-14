@@ -35,7 +35,7 @@ public class MypageController {
     }
 
     // 마이페이지 회원정보 수정
-    @PostMapping("/api/user/{userId}")
+    @PutMapping ("/api/user/{userId}")
     public ProfileUpdateResponseDto updateProfile (
             @PathVariable Long userId,
             @RequestPart MultipartFile multipartFile,

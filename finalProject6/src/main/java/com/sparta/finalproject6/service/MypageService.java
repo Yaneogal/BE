@@ -129,13 +129,13 @@ public class MypageService {
                     .userId(post.getUser().getId())
                     .title(post.getTitle())
                     .imgUrl(post.getPlace().get(0).getImgUrl().get(0))
-                    .content(post.getContent())
                     .regionCategory(post.getRegionCategory())
                     .priceCategory(post.getPriceCategory())
                     .themeCategory(post.getThemeCategories())
                     .loveCount(post.getLoveCount())
-                    .createdAt(post.getCreatedAt())
-                    .modifiedAt(post.getModifiedAt())
+//                    .commentCount(post.getComments())
+//                    .createdAt(post.getCreatedAt())
+//                    .modifiedAt(post.getModifiedAt())
                     .build();
             postListDto.add(postDto);
         }
@@ -182,6 +182,10 @@ public class MypageService {
                         .userId(post.getUser().getId())
                         .title(post.getTitle())
                         .imgUrl(post.getPlace().get(0).getImgUrl().get(0))
+                        .regionCategory(post.getRegionCategory())
+                        .priceCategory(post.getPriceCategory())
+                        .themeCategory(post.getThemeCategories())
+                        .loveCount(post.getLoveCount())
                         .build();
                 bookmarkList.add(myBookmarkListDto);
             }
