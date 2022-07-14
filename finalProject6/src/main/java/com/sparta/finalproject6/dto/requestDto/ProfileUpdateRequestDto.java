@@ -13,4 +13,9 @@ public class ProfileUpdateRequestDto {
     private String nickname;
     private String userInfo;
 
+    public ProfileUpdateRequestDto(String nickname, String userInfo) {
+        this.nickname = nickname;
+        this.userInfo = userInfo;
+    }
+
 }
