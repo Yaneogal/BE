@@ -41,9 +41,6 @@ public class User {
     @Column
     private String userInfo;
 
-    @OneToMany
-    private List<Post> posts = new ArrayList<>();
-
     public User(String username, String nickname, String password) {
         this.username = username;
         this.nickname = nickname;
@@ -61,5 +58,11 @@ public class User {
         this.password = password;
         this.userImgUrl = thumbnailImage;
         this.kakaoId = kakaoId;
+    }
+
+    public void updateUser(String nickname, String userInfo, String userImgUrl) {
+        this.nickname = nickname;
+        this.userInfo = userInfo;
+        this.userImgUrl = userImgUrl;
     }
 }
