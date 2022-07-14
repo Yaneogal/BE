@@ -2,7 +2,7 @@ package com.sparta.finalproject6.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.sparta.finalproject6.dto.requestDto.CommentRequestDto;
+import com.sparta.finalproject6.dto.responseDto.CommentResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,8 +51,8 @@ public class Comment extends Timestamped {
         this.comment = getComment;
     }
 
-    public Comment(CommentRequestDto commentRequestDto, Post post, User user) {
-        this.comment = commentRequestDto.getComment();
+    public Comment(CommentResponseDto commentResponseDto, Post post, User user) {
+        this.comment = commentResponseDto.getComment();
         this.user = user;
         this.post = post;
     }

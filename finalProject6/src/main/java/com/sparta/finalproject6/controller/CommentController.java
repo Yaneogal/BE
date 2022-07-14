@@ -1,8 +1,6 @@
 package com.sparta.finalproject6.controller;
 
-import com.sparta.finalproject6.dto.requestDto.CommentRequestDto;
-import com.sparta.finalproject6.exception.ApiResponseMessage;
-import com.sparta.finalproject6.model.Post;
+import com.sparta.finalproject6.dto.responseDto.CommentResponseDto;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import com.sparta.finalproject6.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +11,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 
 @Validated
@@ -25,10 +22,10 @@ public class CommentController {
 
     @PostMapping("/api/post/{postId}/comment")
     public ResponseEntity<String> commentWrite(@PathVariable Long postId,
-                                                           @RequestBody @Valid CommentRequestDto commentRequestDto,
+                                                           @RequestBody @Valid CommentResponseDto commentResponseDto,
                                                            @AuthenticationPrincipal UserDetailsImpl userDetails){
         try {
-            commentService.addComment(postId, commentRequestDto, userDetails);
+            commentService.addComment(postId, commentResponseDto, userDetails);
             return new ResponseEntity<>("댓글을 작성 했습니다.", HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

@@ -1,23 +1,19 @@
 package com.sparta.finalproject6.dto.requestDto;
 
-import lombok.AllArgsConstructor;
+import com.sparta.finalproject6.model.Comment;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
-
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
 public class CommentRequestDto {
 
-    private Long postId;
     private Long id;
-    @NotNull(message = "댓글을 입력해 주세요.")
     private String comment;
-    private String nickname;
-    private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
 
+    @Builder
+    public CommentRequestDto(Comment comment) {
+        this.id = comment.getId();
+        this.comment = comment.getComment();
+    }
 }

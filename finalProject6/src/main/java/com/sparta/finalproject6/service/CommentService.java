@@ -1,6 +1,6 @@
 package com.sparta.finalproject6.service;
 
-import com.sparta.finalproject6.dto.requestDto.CommentRequestDto;
+import com.sparta.finalproject6.dto.responseDto.CommentResponseDto;
 import com.sparta.finalproject6.model.Comment;
 import com.sparta.finalproject6.model.Post;
 import com.sparta.finalproject6.model.User;
@@ -27,11 +27,11 @@ public class CommentService {
 
 
     // 댓글 조회
-    public List<CommentRequestDto> getComment(Long postId, String nickname, Pageable pageable) {
+    public List<CommentResponseDto> getComment(Long postId, String nickname, Pageable pageable) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 없습니다.")
         );
-        List<CommentRequestDto> commentRequestDtoList = new ArrayList<>();
+        List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 //        List<Comment> comments = post.getComments();
         Page<Comment> comments = commentRepository.findAllByPostIdOrderByCreatedAtDesc(postId, pageable);
 
@@ -41,15 +41,15 @@ public class CommentService {
             LocalDateTime createdAt = comment.getPost().getCreatedAt();
             LocalDateTime modifiedAt = comment.getPost().getModifiedAt();
 
-            CommentRequestDto commentRequestDto = new CommentRequestDto(postId, id, nickname, myComment, createdAt, modifiedAt);
-            commentRequestDtoList.add(commentRequestDto);
+            CommentResponseDto commentResponseDto = new CommentResponseDto(postId, id, nickname, myComment, createdAt, modifiedAt);
+            commentResponseDtoList.add(commentResponseDto);
         }
-        return commentRequestDtoList;
+        return commentResponseDtoList;
 
     }
 
     // 댓글 작성
-    public void addComment(Long postId, CommentRequestDto commentRequestDto, UserDetailsImpl userDetails) {
+    public void addComment(Long postId, CommentResponseDto commentResponseDto, UserDetailsImpl userDetails) {
 
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
@@ -61,7 +61,7 @@ public class CommentService {
 //        User commentWriter = userRepository.findById(userId).orElseThrow(
 //                () -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다.")
 //        );
-        Comment comment = new Comment(commentRequestDto, post, user);
+        Comment comment = new Comment(commentResponseDto, post, user);
 
         commentRepository.save(comment);
         int commentCount = post.getCommentCount();
