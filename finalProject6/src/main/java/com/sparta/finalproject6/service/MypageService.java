@@ -67,7 +67,8 @@ public class MypageService {
             UserDetailsImpl userDetails
     ) throws IOException {
 
-        User user = userDetails.getUser();
+        User user = userRepository.findById(userDetails.getUser().getId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
         // 닉네임 중복검사용
         Optional<User> foundNickname = userRepository
@@ -76,34 +77,31 @@ public class MypageService {
         String nickname = user.getNickname();
         if (updateDto.getNickname() != null) {
             // 변경하고자 하는 닉네임과 동일하면 유효성 검사하지 않음
-            if (!updateDto.getNickname().equals(user.getNickname())){
+            if (!updateDto.getNickname().equals(nickname)){
                 // 닉네임 중복 검사
                 userValidator.checkNickname(foundNickname);
 
                 // 닉네임 유효성 검사
                 userValidator.checkNicknameIsValid(updateDto.getNickname());
             }
-            nickname = updateDto.getNickname();
+//            nickname = updateDto.getNickname();
+
+            String userImgUrl = null;
+
+            // 프로필 이미지를 직접 업로드 했을 경우
+            if (multipartFile != null) {
+                Map<String, String> imgUrl = s3Service.uploadFile(multipartFile);
+                userImgUrl = imgUrl.get("url");
+                UserImg profileImg = new UserImg(userImgUrl);
+                user.setUserImgUrl(profileImg.getUserImgUrl());
+            }
+
+            user.updateUser(updateDto.getNickname(), updateDto.getUserInfo(), userImgUrl);
+
+
         }
 
         // String userInfo = updateDto.getUserInfo();
-
-         // 프로필 이미지를 직접 업로드 했을 경우
-        if (multipartFile != null) {
-            Map<String, String> imgUrl = s3Service.uploadFile(multipartFile);
-            String userImgUrl = imgUrl.get("url");
-            UserImg profileImg = new UserImg(userImgUrl);
-            user.setUserImgUrl(profileImg.getUserImgUrl());
-        }
-
-        
-        User profile = User.builder()
-                .nickname(updateDto.getNickname())
-                .userImgUrl(updateDto.getUserImgUrl())
-                .userInfo(updateDto.getUserInfo())
-                .build();
-
-        userRepository.save(profile);
     }
 
 
