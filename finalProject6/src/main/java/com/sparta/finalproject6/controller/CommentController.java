@@ -40,25 +40,19 @@ public class CommentController {
         try {
             commentService.addComment(postId, commentRequestDto, userDetails);
             return new ResponseEntity<>("댓글을 작성 했습니다.", HttpStatus.CREATED);
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        // ApiResponseMessage message = new ApiResponseMessage("Success", "댓글을 작성했습니다.", "405", "로그인이 필요한 기능입니다.");
-        // return new  ResponseEntity<ApiResponseMessage>(message, HttpStatus.OK);
     }
 
     @DeleteMapping("/api/comment/{commentId}")
     public ResponseEntity<String> commentDelete(@PathVariable Long commentId,
-                                                String nickname,
                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
-            commentService.deleteComment(commentId, nickname);
+            commentService.deleteComment(commentId, userDetails);
             return new ResponseEntity<>("댓글을 삭제 했습니다.", HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-//        ApiResponseMessage message = new ApiResponseMessage("Success", "댓글이 삭제 되었습니다.", "400", "작성자만 삭제할 수 있습니다.");
-//        return new ResponseEntity<ApiResponseMessage>(message, HttpStatus.OK);
     }
-
 }
