@@ -38,11 +38,11 @@ public class MypageService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final BookmarkRepository bookmarkRepository;
-    private final ThemeCategoryRepository themeRepository;
     private final S3Service s3Service;
     private final UserValidator userValidator;
 
     // My Page Profile 조회
+    @Transactional(readOnly = true)
     public ProfileUpdateResponseDto getMyProfile(UserDetailsImpl userDetails) {
         if (userDetails == null) {
             throw new IllegalArgumentException("승인되지 않은 사용자 입니다.");
@@ -106,14 +106,19 @@ public class MypageService {
 
 
     // 내가 작성한 포스트 리스트
-    public List<MYPostListDto> getMyPostList (int pageNo, int sizeNo, UserDetailsImpl userDetails) {
-        User user = userDetails.getUser();
-        Pageable sortedByModifiedAtDesc = PageRequest.of(1, 6, Sort.by("modifiedAt").descending());
-        PageRequest pegeable = PageRequest.of(pageNo, sizeNo);
+    @Transactional(readOnly = true)
+    public List<MYPostListDto> getMyPostList (UserDetailsImpl userDetails) throws IllegalArgumentException { //int pageNo, int sizeNo,
+
+        User user = userRepository.findById(userDetails.getUser().getId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+//        User user = userDetails.getUser();
+//        Pageable sortedByModifiedAtDesc = PageRequest.of(0, 6, Sort.by("modifiedAt").descending());
+//        PageRequest pegeable = PageRequest.of(pageNo, sizeNo);
 
         List<MYPostListDto> myPostList = new ArrayList<>();
-        List<Post> myPost = postRepository.findAllByUserOrderByCreatedAtDesc(user, sortedByModifiedAtDesc);
-
+//        List<Post> myPost = postRepository.findAllByUserOrderByCreatedAtDesc(user);
+        List<Post> myPost = postRepository.findAllByUserIdOrderByCreatedAtDesc(user.getId());
 
         for (Post post : myPost) {
 
@@ -121,12 +126,12 @@ public class MypageService {
                     .postId(post.getId())
                     .userId(post.getUser().getId())
                     .title(post.getTitle())
-                    .imgUrl(post.getPlace().get(0).getImgUrl().get(0))
+//                    .imgUrl(post.getPlace().get(0).getImgUrl().get(0))
                     .regionCategory(post.getRegionCategory())
                     .priceCategory(post.getPriceCategory())
-                    .themeCategory(post.getThemeCategories())
+//                    .themeCategory(post.getThemeCategories())
                     .loveCount(post.getLoveCount())
-                    .commentCount(post.getCommentCount())
+//                    .commentCount(post.getCommentCount())
                     .build();
             myPostList.add(postDto);
         }
@@ -135,13 +140,13 @@ public class MypageService {
 
 
     // 내가 Bookmark 한 포스트 리스트
-    public List<MyBookmarkListDto> getMyBookmark(int pageNo, int sizeNo, UserDetailsImpl userDetails) {
+    @Transactional(readOnly = true)
+    public List<MyBookmarkListDto> getMyBookmark(UserDetailsImpl userDetails) {
 
         User user = userDetails.getUser();
         Long userId = user.getId();
 
         // Pageable sortedByModifiedAtDesc = PageRequest.of(pageNo, sizeNo, Sort.by("modifiedAt").descending());
-        PageRequest pegeable = PageRequest.of(pageNo, sizeNo);
 
         // 북마크 한 포스트 리스트
         List<MyBookmarkListDto> bookmarkList = new ArrayList<>();
@@ -149,7 +154,7 @@ public class MypageService {
         // 북마크 entity에서 북마크 한 포스트 가져오기
         List<Bookmark> bookmarks = bookmarkRepository.findAllByUserId(userDetails.getUser().getId());
 
-        Pageable paging = PageRequest.of(0,6,Sort.Direction.DESC);
+//        Pageable paging = PageRequest.of(0,6,Sort.Direction.DESC);
 
         for (Bookmark bookmark : bookmarks) {
             Optional<Post> postOptional = postRepository.findById(bookmark.getPostId());
@@ -161,11 +166,12 @@ public class MypageService {
                         .postId(post.getId())
                         .userId(post.getUser().getId())
                         .title(post.getTitle())
-                        .imgUrl(post.getPlace().get(0).getImgUrl().get(0))
+//                        .imgUrl(post.getPlace().get(0).getImgUrl().get(0))
                         .regionCategory(post.getRegionCategory())
                         .priceCategory(post.getPriceCategory())
-                        .themeCategory(post.getThemeCategories())
+//                        .themeCategory(post.getThemeCategories())
                         .loveCount(post.getLoveCount())
+//                        .commentCount(post.getCommentCount())
                         .build();
                 bookmarkList.add(myBookmarkListDto);
             }
@@ -174,10 +180,10 @@ public class MypageService {
     }
 
     // Paging
-    private Pageable getPageable(int pageNo) {
-        Sort.Direction direction = Sort.Direction.DESC;
-        Sort sort = Sort.by(direction, "id");
-        return PageRequest.of(pageNo, 6, sort);
-    }
+//    private Pageable getPageable(int pageNo) {
+//        Sort.Direction direction = Sort.Direction.DESC;
+//        Sort sort = Sort.by(direction, "id");
+//        return PageRequest.of(pageNo, 6, sort);
+//    }
 
 }

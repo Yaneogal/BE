@@ -31,7 +31,12 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
 
     List<Post> findAllByOrderByCreatedAtDesc(Pageable pageable);
     Page<Post> findByUserOrderByCreatedAtDesc(User user, Pageable pageable);
-    List<Post> findAllByUserOrderByCreatedAtDesc(User user, Pageable pageable);
+
+    @EntityGraph(attributePaths = "place")
+    List<Post> findAllByUserOrderByCreatedAtDesc(User user);
+
+    @EntityGraph(attributePaths = "themeCategories")
+    List<Post> findAllByUserIdOrderByCreatedAtDesc(Long userId);
 
     @EntityGraph(attributePaths = "restroomOption")
     Optional<Post> findById(Long postId);

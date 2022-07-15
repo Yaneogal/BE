@@ -52,23 +52,23 @@ public class MypageController {
     // 마이페이지 내가 쓴 게시글
     @GetMapping("/api/user/mypost")
     public ResponseEntity<List<MYPostListDto>> getMyPostList (
-            @RequestParam int pageNo,
-            @RequestParam int sizeNo,
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+            @AuthenticationPrincipal UserDetailsImpl userDetails) { //@RequestParam int pageNo,
+        //@RequestParam int sizeNo,
         // User user = userDetails.getUser();
-        List<MYPostListDto> myPostListDto = mypageService.getMyPostList(pageNo, sizeNo, userDetails);
-        return new ResponseEntity<>(myPostListDto, HttpStatus.OK);
-
+        try {
+            List<MYPostListDto> myPostListDto = mypageService.getMyPostList(userDetails); //pageNo, sizeNo,
+            return new ResponseEntity<>(myPostListDto, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     // 마이페이지 내가 북마크 한 게시글
     @GetMapping("/api/user/mybookmark")
     public ResponseEntity<List<MyBookmarkListDto>> getMyBookmarkList (
-            @RequestParam int pageNo,
-            @RequestParam int sizeNo,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-            List<MyBookmarkListDto> myBookmarkListDto = mypageService.getMyBookmark(pageNo, sizeNo, userDetails);
+            List<MyBookmarkListDto> myBookmarkListDto = mypageService.getMyBookmark(userDetails);
             return new ResponseEntity<>(myBookmarkListDto, HttpStatus.OK);
 
     }

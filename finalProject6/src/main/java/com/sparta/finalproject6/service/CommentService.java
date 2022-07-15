@@ -88,14 +88,18 @@ public class CommentService {
 //    }
 
     // 댓글 삭제
+    @Transactional
     public void deleteComment(Long commentId, String nickname) {
 
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
 
-        Post post = new Post();
+        Post post = postRepository.findById(comment.getPost().getId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
+
         int commentCount = post.getCommentCount();
         String commentWriter = comment.getNickname();
+
         if (commentWriter.equals(nickname)) {
             commentRepository.delete(comment);
             commentCount--;
