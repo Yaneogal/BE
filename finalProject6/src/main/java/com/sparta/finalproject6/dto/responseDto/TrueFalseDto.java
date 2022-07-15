@@ -8,4 +8,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TrueFalseDto {
     private Boolean trueOrFalse;
+    private Long postId;
 }

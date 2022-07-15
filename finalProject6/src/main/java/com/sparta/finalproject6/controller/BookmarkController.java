@@ -25,6 +25,8 @@ public class BookmarkController {
     @PostMapping("/api/bookmark/{postId}")
     public TrueFalseDto addBookmark(@PathVariable Long postId , @AuthenticationPrincipal UserDetailsImpl userDetails){
         Boolean isBookmark = bookmarkService.bookmark(postId,userDetails);
-        return TrueFalseDto.builder().trueOrFalse(isBookmark).build();
+        return TrueFalseDto.builder().trueOrFalse(isBookmark)
+                .postId(postId)
+                .build();
     }
 }

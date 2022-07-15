@@ -24,7 +24,9 @@ public class LoveController {
     @PostMapping("/api/love/{postId}")
     public TrueFalseDto like(@PathVariable Long postId , @AuthenticationPrincipal UserDetailsImpl userDetails){
         Boolean isLove = loveService.love(userDetails,postId);
-        return TrueFalseDto.builder().trueOrFalse(isLove).build();
+        return TrueFalseDto.builder().trueOrFalse(isLove)
+                .postId(postId)
+                .build();
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
