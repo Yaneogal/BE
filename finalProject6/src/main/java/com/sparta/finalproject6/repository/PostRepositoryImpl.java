@@ -6,9 +6,9 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.core.util.StringUtils;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.sparta.finalproject6.dto.responseDto.MyWrittenPostResponseDto;
+import com.sparta.finalproject6.dto.responseDto.MyPagePostResponseDto;
 import com.sparta.finalproject6.dto.responseDto.PostResponseDto;
-import com.sparta.finalproject6.dto.responseDto.QMyWrittenPostResponseDto;
+import com.sparta.finalproject6.dto.responseDto.QMyPagePostResponseDto;
 import com.sparta.finalproject6.dto.responseDto.QPostResponseDto;
 import com.sparta.finalproject6.model.Post;
 import com.sparta.finalproject6.security.UserDetailsImpl;
@@ -106,10 +106,10 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
     }
 
     @Override
-    public Slice<MyWrittenPostResponseDto> getMyWrittenPosts(Long userId, Pageable pageable) {
+    public Slice<MyPagePostResponseDto> getMyWrittenPosts(Long userId, Pageable pageable) {
 
-        List<MyWrittenPostResponseDto> content = queryFactory
-                .select(new QMyWrittenPostResponseDto(
+        List<MyPagePostResponseDto> content = queryFactory
+                .select(new QMyPagePostResponseDto(
                         post.id,
                         post.user.id,
                         post.title,
@@ -121,6 +121,36 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                 ))
                 .from(post)
                 .where(post.user.id.eq(userId))
+                .orderBy(getOrderSpecifier(pageable.getSort()).stream().toArray(OrderSpecifier[]::new))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize() + 1)
+                .fetch();
+
+        boolean hasNext = false;
+        if (content.size() > pageable.getPageSize()) {
+            content.remove(pageable.getPageSize());
+            hasNext = true;
+        }
+
+        return new SliceImpl<>(content, pageable, hasNext);
+    }
+
+    @Override
+    public Slice<MyPagePostResponseDto> getMyBookmarkPosts(List<Long> postsId, Pageable pageable) {
+
+        List<MyPagePostResponseDto> content = queryFactory
+                .select(new QMyPagePostResponseDto(
+                        post.id,
+                        post.user.id,
+                        post.title,
+                        post.regionCategory,
+                        post.priceCategory,
+                        post.viewCount,
+                        post.loveCount,
+                        post.commentCount
+                ))
+                .from(post)
+                .where(post.id.in(postsId))
                 .orderBy(getOrderSpecifier(pageable.getSort()).stream().toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)

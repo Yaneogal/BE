@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.print.Book;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -176,10 +175,9 @@ public class MypageService {
 
     //내가 작성한 게시글만 조회(이호진)
     @Transactional(readOnly = true)
-    public ResponseEntity<Slice<MyWrittenPostResponseDto>> getMyWrittenPosts(UserDetailsImpl userDetails,
-                                                                             Pageable pageable) {
+    public ResponseEntity<Slice<MyPagePostResponseDto>> getMyWrittenPosts(UserDetailsImpl userDetails, Pageable pageable) {
         Long userId = userDetails.getUser().getId();
-        Slice<MyWrittenPostResponseDto> content = postRepository.getMyWrittenPosts(userId, pageable);
+        Slice<MyPagePostResponseDto> content = postRepository.getMyWrittenPosts(userId, pageable);
 
         content.forEach(c -> {
             Post post = postRepository.findById(c.getPostId())
@@ -203,6 +201,43 @@ public class MypageService {
 
         return new ResponseEntity<>(content, HttpStatus.OK);
 
+    }
+
+    //내가 북마크한 게시글만 조회(이호진)
+    @Transactional(readOnly = true)
+    public ResponseEntity<Slice<MyPagePostResponseDto>> getMyBookmarkPosts(UserDetailsImpl userDetails, Pageable pageable) {
+
+        Long userId = userDetails.getUser().getId();
+
+        List<Bookmark> bookmarks = bookmarkRepository.findAllByUserId(userId);
+
+        List<Long> postsId = bookmarks.stream()
+                .map(Bookmark::getPostId)
+                .collect(Collectors.toList());
+
+        Slice<MyPagePostResponseDto> content = postRepository.getMyBookmarkPosts(postsId, pageable);
+
+        content.forEach(c -> {
+            Post post = postRepository.findById(c.getPostId())
+                    .orElseThrow(() -> new IllegalArgumentException("post does not exist"));
+
+
+            List<Place> place = placeRepository.findAllByPostId(post.getId());
+            String imgUrl = null;
+            for (int i = 0; i < place.size(); i++) {
+                imgUrl = place.get(i).getImgUrl().get(0);
+            }
+            c.setImgUrl(imgUrl);
+
+            List<ThemeCategoryDto> themeCategory = themeRepository.findByPost_Id(c.getPostId())
+                    .stream()
+                    .map(theme ->
+                            new ThemeCategoryDto(theme.getThemeCategory()))
+                    .collect(Collectors.toList());
+            c.setThemeCategory(themeCategory);
+        });
+
+        return new ResponseEntity<>(content, HttpStatus.OK);
     }
 
 

@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class MyWrittenPostResponseDto {
+public class MyPagePostResponseDto {
 
     private Long postId;
     private Long userId;
@@ -25,7 +25,7 @@ public class MyWrittenPostResponseDto {
     private int commentCount;
 
     @QueryProjection
-    public MyWrittenPostResponseDto(Long postId, Long userId, String title, String regionCategory, String priceCategory, int viewCount, int loveCount, int commentCount) {
+    public MyPagePostResponseDto(Long postId, Long userId, String title, String regionCategory, String priceCategory, int viewCount, int loveCount, int commentCount) {
         this.postId = postId;
         this.userId = userId;
         this.title = title;

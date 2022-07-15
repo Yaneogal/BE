@@ -63,19 +63,27 @@ public class MypageController {
 
     // 마이페이지 내가 쓴 게시글(이호진)
     @GetMapping("/api/user/mypost")
-    public ResponseEntity<Slice<MyWrittenPostResponseDto>> getMyWrittenPosts(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                                                             Pageable pageable) {
+    public ResponseEntity<Slice<MyPagePostResponseDto>> getMyWrittenPosts(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                                          Pageable pageable) {
 
         return mypageService.getMyWrittenPosts(userDetails, pageable);
     }
 
-    // 마이페이지 내가 북마크 한 게시글
+    //마이페이지 내가 북마크 한 게시글(이호진)
     @GetMapping("/api/user/mybookmark")
-    public ResponseEntity<List<MyBookmarkListDto>> getMyBookmarkList (
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<Slice<MyPagePostResponseDto>> getMyBookmarkPosts(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                                           Pageable pageable) {
 
-            List<MyBookmarkListDto> myBookmarkListDto = mypageService.getMyBookmark(userDetails);
-            return new ResponseEntity<>(myBookmarkListDto, HttpStatus.OK);
-
+        return mypageService.getMyBookmarkPosts(userDetails, pageable);
     }
+
+    // 마이페이지 내가 북마크 한 게시글
+//    @GetMapping("/api/user/mybookmark")
+//    public ResponseEntity<List<MyBookmarkListDto>> getMyBookmarkList (
+//            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//
+//            List<MyBookmarkListDto> myBookmarkListDto = mypageService.getMyBookmark(userDetails);
+//            return new ResponseEntity<>(myBookmarkListDto, HttpStatus.OK);
+//
+//    }
 }
