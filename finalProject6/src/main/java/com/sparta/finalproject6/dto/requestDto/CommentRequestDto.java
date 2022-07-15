@@ -6,14 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class CommentRequestDto {
 
-    private Long id;
     private String comment;
 
-    @Builder
-    public CommentRequestDto(Comment comment) {
-        this.id = comment.getId();
-        this.comment = comment.getComment();
-    }
 }

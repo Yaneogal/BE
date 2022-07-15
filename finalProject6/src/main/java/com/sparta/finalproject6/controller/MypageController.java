@@ -1,9 +1,11 @@
 package com.sparta.finalproject6.controller;
 
 import com.sparta.finalproject6.dto.requestDto.ProfileUpdateRequestDto;
+import com.sparta.finalproject6.dto.responseDto.MYPostListDto;
 import com.sparta.finalproject6.dto.responseDto.MyBookmarkListDto;
 import com.sparta.finalproject6.dto.responseDto.MypageResponseDto;
 import com.sparta.finalproject6.dto.responseDto.ProfileUpdateResponseDto;
+import com.sparta.finalproject6.model.User;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import com.sparta.finalproject6.service.MypageService;
 import lombok.RequiredArgsConstructor;
@@ -49,21 +51,25 @@ public class MypageController {
 
     // 마이페이지 내가 쓴 게시글
     @GetMapping("/api/user/mypost")
-    public MypageResponseDto getMyPostList (
+    public ResponseEntity<List<MYPostListDto>> getMyPostList (
             @RequestParam int pageNo,
             @RequestParam int sizeNo,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        // User user = userDetails.getUser();
+        List<MYPostListDto> myPostListDto = mypageService.getMyPostList(pageNo, sizeNo, userDetails);
+        return new ResponseEntity<>(myPostListDto, HttpStatus.OK);
 
-        return mypageService.getMyPostList(pageNo, sizeNo, userDetails);
     }
 
     // 마이페이지 내가 북마크 한 게시글
     @GetMapping("/api/user/mybookmark")
-    public List<MyBookmarkListDto> getMyBookmarkList (
+    public ResponseEntity<List<MyBookmarkListDto>> getMyBookmarkList (
             @RequestParam int pageNo,
             @RequestParam int sizeNo,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        return mypageService.getMyBookmark(pageNo, sizeNo, userDetails);
+            List<MyBookmarkListDto> myBookmarkListDto = mypageService.getMyBookmark(pageNo, sizeNo, userDetails);
+            return new ResponseEntity<>(myBookmarkListDto, HttpStatus.OK);
+
     }
 }

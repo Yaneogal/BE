@@ -1,5 +1,6 @@
 package com.sparta.finalproject6.controller;
 
+import com.sparta.finalproject6.dto.requestDto.CommentRequestDto;
 import com.sparta.finalproject6.dto.responseDto.CommentResponseDto;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import com.sparta.finalproject6.service.CommentService;
@@ -22,10 +23,10 @@ public class CommentController {
 
     @PostMapping("/api/post/{postId}/comment")
     public ResponseEntity<String> commentWrite(@PathVariable Long postId,
-                                                           @RequestBody @Valid CommentResponseDto commentResponseDto,
+                                                           @RequestBody CommentRequestDto commentRequestDto,
                                                            @AuthenticationPrincipal UserDetailsImpl userDetails){
         try {
-            commentService.addComment(postId, commentResponseDto, userDetails);
+            commentService.addComment(postId, commentRequestDto, userDetails);
             return new ResponseEntity<>("댓글을 작성 했습니다.", HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
