@@ -77,13 +77,6 @@ public class PostService {
 
             c.setLoveStatus(post.getIsLove());
 
-//            loveRepository.findByPostIdAndUserIdOrderByCreatedAtDesc(c.getPostId(), userId)
-//                    .forEach(love ->{
-//                        if (love != null) {
-//                            c.setLoveStatus(true);
-//                        }
-//                    });
-
             List<ThemeCategoryDto> themeCategory = themeRepository.findByPost_Id(c.getPostId())
                     .stream()
                     .map(theme ->
@@ -156,7 +149,10 @@ public class PostService {
     //필터 적용 게시글 조회
     @Transactional(readOnly = true)
     public ResponseEntity<Slice<PostResponseDto>> getFilterPosts(String region, String price, List<String> theme, Pageable pageable, UserDetailsImpl userDetails) {
+
         Slice<PostResponseDto> content = postRepository.filterSearch(region, price, theme, pageable, userDetails);
+
+        Long userId = userDetails.getUser().getId();
 
         content.forEach(c -> {
             Post post = postRepository.findById(c.getPostId())
@@ -167,12 +163,20 @@ public class PostService {
                 imgUrl.addAll(place.get(i).getImgUrl());
             }
             c.setImgUrl(imgUrl);
-            loveRepository.findByPostIdAndUserIdOrderByCreatedAtDesc(c.getPostId(), userDetails.getUser().getId())
-                    .forEach(love -> {
-                        if (love != null) {
-                            c.setLoveStatus(true);
-                        }
-                    });
+
+            Optional<Bookmark> bookmark = bookmarkRepository.findByPostIdAndUserId(post.getId(),userId);
+            if(bookmark.isPresent()){
+                post.setIsBookmark(true);
+            }
+
+            c.setBookmarkStatus(post.getIsBookmark());
+
+            Optional<Love> love = loveRepository.findByPostIdAndUserId(post.getId(),userId);
+            if(love.isPresent()){
+                post.setIsLove(true);
+            }
+
+            c.setLoveStatus(post.getIsLove());
 
             List<ThemeCategoryDto> themeCateroies = themeRepository.findByPost_Id(c.getPostId())
                     .stream()
@@ -290,6 +294,7 @@ public class PostService {
         User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
         );
+
         Post post = Post.builder()
                 .title(requestDto.getTitle())
                 .content(requestDto.getContent())
@@ -301,6 +306,11 @@ public class PostService {
                 .build();
 
         postRepository.save(post);
+
+        requestDto.getThemeCategories()
+                .forEach(t -> {
+                    themeService.saveTheme(t.getThemeCategory(), post);
+                });
 
         int count = 0;
 
@@ -363,19 +373,6 @@ public class PostService {
 //            imgUrls.add(getImage.get("url"));
 //            imgFileNames.add(getImage.get("fileName"));
 //        }
-
-
-
-        // post 등록시 테마 카테고리 복수 저장 로직.
-//        requestDto.getThemeCategories()
-//                .forEach(t -> {
-//                    themeRepository.save(new ThemeCategory(t, post));
-//                });
-
-        requestDto.getThemeCategories()
-                .forEach(t -> {
-                    themeService.saveTheme(t.getThemeCategory(), post);
-                });
 
     }
 
