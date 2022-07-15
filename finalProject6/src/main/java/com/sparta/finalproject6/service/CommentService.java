@@ -29,6 +29,7 @@ public class CommentService {
 
 
     // 댓글 조회
+    @Transactional
     public List<CommentResponseDto> getComment(Long postId) {
 
         Post post = postRepository.findById(postId).orElseThrow(
@@ -64,12 +65,14 @@ public class CommentService {
         User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다"));
 
+        int commentCount = post.getCommentCount();
+        post.setCommentCount(commentCount+1);
+
         Comment comment = new Comment(commentRequestDto.getComment(), post, user);
         commentRepository.save(comment);
 
-        int commentCount = post.getCommentCount();
-        commentCount++;
-        post.updateCommentCount(commentCount);
+        // commentCount++;
+        // post.updateCommentCount(commentCount);
     }
 
     // 댓글 수정
@@ -89,21 +92,22 @@ public class CommentService {
 
     // 댓글 삭제
     @Transactional
-    public void deleteComment(Long commentId, String nickname) {
+    public void deleteComment(Long commentId, UserDetailsImpl userDetails) {
 
         Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
+                () -> new NullPointerException("댓글이 존재하지 않습니다."));
 
         Post post = postRepository.findById(comment.getPost().getId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
 
-        int commentCount = post.getCommentCount();
-        String commentWriter = comment.getNickname();
+        Long userId = comment.getUser().getId();
+        Long user = userDetails.getUser().getId();
+        int commentCount = comment.getPost().getCommentCount();
+        comment.getPost().setCommentCount(commentCount-1);
+        // comment.getPost().updateCommentCount(commentCount);
 
-        if (commentWriter.equals(nickname)) {
+        if (userId.equals(user)) {
             commentRepository.delete(comment);
-            commentCount--;
-            post.updateCommentCount(commentCount);
         } else {
             throw new IllegalArgumentException("댓글을 작성한 유저가 아닙니다.");
         }
