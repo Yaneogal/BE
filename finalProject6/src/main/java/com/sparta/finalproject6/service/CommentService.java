@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,22 +29,24 @@ public class CommentService {
 
 
     // 댓글 조회
-    public List<CommentResponseDto> getComment(Long postId, String nickname, Pageable pageable) {
+    public List<CommentResponseDto> getComment(Long postId) {
+
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 없습니다.")
         );
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 //        List<Comment> comments = post.getComments();
-        Page<Comment> comments = commentRepository.findAllByPostIdOrderByCreatedAtDesc(postId, pageable);
+        List<Comment> comments = commentRepository.findAllByPostIdOrderByCreatedAtDesc(postId);
 
 
         for(Comment comment : comments) {
-            Long id = comment.getId();
+            Long commentId = comment.getId();
+            String nickname = comment.getNickname();
+            String userImgUrl = comment.getUserImgUrl();
             String myComment = comment.getComment();
             LocalDateTime createdAt = comment.getPost().getCreatedAt();
-            LocalDateTime modifiedAt = comment.getPost().getModifiedAt();
 
-            CommentResponseDto commentResponseDto = new CommentResponseDto(postId, id, nickname, myComment, createdAt, modifiedAt);
+            CommentResponseDto commentResponseDto = new CommentResponseDto(postId, commentId, myComment, nickname, userImgUrl, createdAt);
             commentResponseDtoList.add(commentResponseDto);
         }
         return commentResponseDtoList;
@@ -51,6 +54,7 @@ public class CommentService {
     }
 
     // 댓글 작성
+    @Transactional
     public void addComment(Long postId, CommentRequestDto commentRequestDto, UserDetailsImpl userDetails) {
 
         Post post = postRepository.findById(postId).orElseThrow(
@@ -59,21 +63,13 @@ public class CommentService {
 
         User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다"));
-//        Long userId = user.getId();
-//        User commentWriter = userRepository.findById(userId).orElseThrow(
-//                () -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다.")
-//        );
-        String getComment = commentRequestDto.getComment();
-         Comment comment = new Comment(user, post, getComment);
 
+        Comment comment = new Comment(commentRequestDto.getComment(), post, user);
         commentRepository.save(comment);
+
         int commentCount = post.getCommentCount();
         commentCount++;
         post.updateCommentCount(commentCount);
-
-
-        List<Comment> comments = post.getComments();
-        comments.add(comment);
     }
 
     // 댓글 수정
