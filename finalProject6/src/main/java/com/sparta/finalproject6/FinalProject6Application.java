@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
-@SuppressWarnings("unchecked")
 @EnableJpaAuditing
 public class FinalProject6Application {
 

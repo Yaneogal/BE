@@ -20,6 +20,7 @@ public class MYPostListDto {
     private String imgUrl;
     private int viewCount;
     private int loveCount;
+
     // private int bookmarkCount;
     private int commentCount;
     private String regionCategory;

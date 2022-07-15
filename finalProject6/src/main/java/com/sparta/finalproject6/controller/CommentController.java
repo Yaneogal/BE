@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 
 @Validated
@@ -21,7 +22,18 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    @PostMapping("/api/post/{postId}/comment")
+    @GetMapping("/api/comment/{postId}")
+    public ResponseEntity<List<CommentResponseDto>> getComments(@PathVariable Long postId,
+                                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        try {
+            List<CommentResponseDto> commentList = commentService.getComment(postId);
+            return new ResponseEntity<>(commentList, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/api/comment/{postId}")
     public ResponseEntity<String> commentWrite(@PathVariable Long postId,
                                                            @RequestBody CommentRequestDto commentRequestDto,
                                                            @AuthenticationPrincipal UserDetailsImpl userDetails){

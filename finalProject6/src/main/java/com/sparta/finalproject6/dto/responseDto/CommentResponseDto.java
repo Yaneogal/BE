@@ -13,11 +13,9 @@ import java.time.LocalDateTime;
 public class CommentResponseDto {
 
     private Long postId;
-    private Long id;
-    @NotNull(message = "댓글을 입력해 주세요.")
+    private Long commentId;
     private String comment;
     private String nickname;
+    private String userImgUrl;
     private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
-
 }

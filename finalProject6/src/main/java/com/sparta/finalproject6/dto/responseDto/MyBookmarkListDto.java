@@ -17,6 +17,7 @@ public class MyBookmarkListDto {
     private String title;
     private String imgUrl;
     private int viewCount;
+
     private int loveCount;
     // private int bookmarkCount;
     private int commentCount;
