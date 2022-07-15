@@ -68,7 +68,7 @@ public class CommentService {
         int commentCount = post.getCommentCount();
         post.setCommentCount(commentCount+1);
 
-        Comment comment = new Comment(commentRequestDto.getComment(), post, user);
+        Comment comment = new Comment(commentRequestDto.getComment(), post, user, user.getNickname(), user.getUserImgUrl());
         commentRepository.save(comment);
 
         // commentCount++;
@@ -104,7 +104,7 @@ public class CommentService {
         Long user = userDetails.getUser().getId();
         int commentCount = comment.getPost().getCommentCount();
         comment.getPost().setCommentCount(commentCount-1);
-        // comment.getPost().updateCommentCount(commentCount);
+         comment.getPost().updateCommentCount(commentCount);
 
         if (userId.equals(user)) {
             commentRepository.delete(comment);

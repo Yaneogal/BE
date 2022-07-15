@@ -49,9 +49,11 @@ public class Comment extends Timestamped {
         this.comment = getComment;
     }
 
-    public Comment(String comment, Post post, User user) {
+    public Comment(String comment, Post post, User user, String nickname, String userImgUrl) {
         this.comment = comment;
         this.user = user;
         this.post = post;
+        this.nickname = nickname;
+        this.userImgUrl = userImgUrl;
     }
 }

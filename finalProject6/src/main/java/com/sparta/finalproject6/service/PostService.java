@@ -208,7 +208,7 @@ public class PostService {
 
             PostCommentResponseDto postCommentResponseDto = PostCommentResponseDto.builder()
                     .commentId(comment.getId())
-                    .userImgUrl(comment.getPost().getUser().getUserImgUrl())
+                    .userImgUrl(comment.getUserImgUrl())
                     .comment(comment.getComment())
                     .nickname(comment.getNickname())
                     .createdAt(createdAt)
@@ -486,7 +486,6 @@ public class PostService {
 
         try{
             validateUser(userDetails,post);
-            postRepository.delete(post);
             //게시물 삭제시 좋아요 햇던 유저한테서도 삭제
             loveRepository.deleteAllByPostId(postId);
 
@@ -494,13 +493,12 @@ public class PostService {
             //게시글 삭제시 장소도 삭제
             placeRepository.deleteAllByPostId(postId);
 
+            postRepository.delete(post);
+
         }
         catch(IllegalArgumentException e){
             System.out.println(e.getMessage());
         }
-
-        //테마카테고리 삭제 로직
-//        themeRepository.deleteByPost_Id(postId);
 
     }
 
