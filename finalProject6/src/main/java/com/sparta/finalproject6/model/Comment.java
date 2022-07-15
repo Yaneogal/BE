@@ -1,8 +1,5 @@
 package com.sparta.finalproject6.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.sparta.finalproject6.dto.responseDto.CommentResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,19 +26,20 @@ public class Comment extends Timestamped {
     @Column
     private String userImgUrl;
 
+
     @Column
     private int commentCount;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "POST_ID")
-    @JsonBackReference
+//    @JsonBackReference
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
-    @JsonBackReference // 순환참조 방지
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+//    @JsonBackReference // 순환참조 방지
+//    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User user;
 
     @Builder
@@ -51,8 +49,8 @@ public class Comment extends Timestamped {
         this.comment = getComment;
     }
 
-    public Comment(CommentResponseDto commentResponseDto, Post post, User user) {
-        this.comment = commentResponseDto.getComment();
+    public Comment(String comment, Post post, User user) {
+        this.comment = comment;
         this.user = user;
         this.post = post;
     }
