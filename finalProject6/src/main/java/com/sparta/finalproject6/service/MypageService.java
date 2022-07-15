@@ -1,22 +1,14 @@
 package com.sparta.finalproject6.service;
 
 import com.sparta.finalproject6.dto.requestDto.ProfileUpdateRequestDto;
+import com.sparta.finalproject6.dto.requestDto.ThemeCategoryDto;
 import com.sparta.finalproject6.dto.responseDto.*;
-import com.sparta.finalproject6.model.Bookmark;
-import com.sparta.finalproject6.model.Post;
-import com.sparta.finalproject6.model.User;
-import com.sparta.finalproject6.model.UserImg;
-import com.sparta.finalproject6.repository.BookmarkRepository;
-import com.sparta.finalproject6.repository.PostRepository;
-import com.sparta.finalproject6.repository.ThemeCategoryRepository;
-import com.sparta.finalproject6.repository.UserRepository;
+import com.sparta.finalproject6.model.*;
+import com.sparta.finalproject6.repository.*;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import com.sparta.finalproject6.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -38,6 +30,8 @@ public class MypageService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final BookmarkRepository bookmarkRepository;
+    private final ThemeCategoryRepository themeRepository;
+    private final PlaceRepository placeRepository;
     private final S3Service s3Service;
     private final UserValidator userValidator;
 
@@ -179,11 +173,38 @@ public class MypageService {
         return bookmarkList;
     }
 
-    // Paging
-//    private Pageable getPageable(int pageNo) {
-//        Sort.Direction direction = Sort.Direction.DESC;
-//        Sort sort = Sort.by(direction, "id");
-//        return PageRequest.of(pageNo, 6, sort);
-//    }
+
+    //내가 작성한 게시글만 조회(이호진)
+    @Transactional(readOnly = true)
+    public ResponseEntity<Slice<MyWrittenPostResponseDto>> getMyWrittenPosts(UserDetailsImpl userDetails,
+                                                                             Pageable pageable) {
+        Long userId = userDetails.getUser().getId();
+        Slice<MyWrittenPostResponseDto> content = postRepository.getMyWrittenPosts(userId, pageable);
+
+        content.forEach(c -> {
+            Post post = postRepository.findById(c.getPostId())
+                    .orElseThrow(() -> new IllegalArgumentException("post does not exist"));
+
+
+            List<Place> place = placeRepository.findAllByPostId(post.getId());
+            String imgUrl = null;
+            for (int i = 0; i < place.size(); i++) {
+                imgUrl = place.get(i).getImgUrl().get(0);
+            }
+            c.setImgUrl(imgUrl);
+
+            List<ThemeCategoryDto> themeCategory = themeRepository.findByPost_Id(c.getPostId())
+                    .stream()
+                    .map(theme ->
+                            new ThemeCategoryDto(theme.getThemeCategory()))
+                    .collect(Collectors.toList());
+            c.setThemeCategory(themeCategory);
+        });
+
+        return new ResponseEntity<>(content, HttpStatus.OK);
+
+    }
+
+
 
 }
