@@ -106,11 +106,12 @@ public class MypageService {
 
 
     // 내가 작성한 포스트 리스트
-    public MypageResponseDto getMyPostList (int pageNo, int sizeNo, UserDetailsImpl userDetails) {
+    public List<MYPostListDto> getMyPostList (int pageNo, int sizeNo, UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
         Pageable sortedByModifiedAtDesc = PageRequest.of(1, 6, Sort.by("modifiedAt").descending());
+        PageRequest pegeable = PageRequest.of(pageNo, sizeNo);
 
-        List<MYPostListDto> postListDto = new ArrayList<>();
+        List<MYPostListDto> myPostList = new ArrayList<>();
         List<Post> myPost = postRepository.findAllByUserOrderByCreatedAtDesc(user, sortedByModifiedAtDesc);
 
 
@@ -125,25 +126,11 @@ public class MypageService {
                     .priceCategory(post.getPriceCategory())
                     .themeCategory(post.getThemeCategories())
                     .loveCount(post.getLoveCount())
-//                    .commentCount(post.getComments())
-//                    .createdAt(post.getCreatedAt())
-//                    .modifiedAt(post.getModifiedAt())
+                    .commentCount(post.getCommentCount())
                     .build();
-            postListDto.add(postDto);
+            myPostList.add(postDto);
         }
-
-        return (MypageResponseDto) postListDto;
-//        MypageResponseDto responseDto = MypageResponseDto.builder()
-//                .userId(user.getId())
-//                .nickname(user.getNickname())
-//                .userImgUrl(user.getUserImgUrl())
-//                .userInfo(user.getUserInfo())
-//                .myPostList(postListDto)
-//                .myBookmarkList(bookmarkListDto)
-//                .build();
-//
-//        return responseDto;
-
+        return myPostList;
     }
 
 
@@ -153,7 +140,8 @@ public class MypageService {
         User user = userDetails.getUser();
         Long userId = user.getId();
 
-        Pageable sortedByModifiedAtDesc = PageRequest.of(pageNo, sizeNo, Sort.by("modifiedAt").descending());
+        // Pageable sortedByModifiedAtDesc = PageRequest.of(pageNo, sizeNo, Sort.by("modifiedAt").descending());
+        PageRequest pegeable = PageRequest.of(pageNo, sizeNo);
 
         // 북마크 한 포스트 리스트
         List<MyBookmarkListDto> bookmarkList = new ArrayList<>();
