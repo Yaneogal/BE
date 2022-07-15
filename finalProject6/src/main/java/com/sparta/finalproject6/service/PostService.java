@@ -68,12 +68,21 @@ public class PostService {
                 post.setIsBookmark(true);
             }
 
-            loveRepository.findByPostIdAndUserIdOrderByCreatedAtDesc(c.getPostId(), userId)
-                    .forEach(love ->{
-                        if (love != null) {
-                            c.setLoveStatus(true);
-                        }
-                    });
+            c.setBookmarkStatus(post.getIsBookmark());
+
+            Optional<Love> love = loveRepository.findByPostIdAndUserId(post.getId(),userId);
+            if(love.isPresent()){
+                post.setIsLove(true);
+            }
+
+            c.setLoveStatus(post.getIsLove());
+
+//            loveRepository.findByPostIdAndUserIdOrderByCreatedAtDesc(c.getPostId(), userId)
+//                    .forEach(love ->{
+//                        if (love != null) {
+//                            c.setLoveStatus(true);
+//                        }
+//                    });
 
             List<ThemeCategoryDto> themeCategory = themeRepository.findByPost_Id(c.getPostId())
                     .stream()
