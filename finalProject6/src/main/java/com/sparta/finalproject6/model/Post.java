@@ -1,5 +1,7 @@
 package com.sparta.finalproject6.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sparta.finalproject6.dto.requestDto.PostRequestDto;
 import lombok.*;
@@ -64,7 +66,7 @@ public class Post extends Timestamped{
     private List<ThemeCategory> themeCategories;
 
     @OneToMany(mappedBy = "post", orphanRemoval = true) // 부모 객체 삭제시 하위 객첵도 삭제
-    @JsonManagedReference //직렬화 허용
+    @JsonIgnore
     private List<Comment> comments;
 
     //isLove는 게시글 조회에서 좋아요 상태를 요청할때 유저별로 좋아요 상태를 반환해주기 위한
