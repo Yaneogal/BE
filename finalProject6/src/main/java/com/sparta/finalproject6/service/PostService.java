@@ -3,15 +3,14 @@ package com.sparta.finalproject6.service;
 import com.sparta.finalproject6.dto.requestDto.PlaceRequestDto;
 import com.sparta.finalproject6.dto.requestDto.PostRequestDto;
 import com.sparta.finalproject6.dto.requestDto.ThemeCategoryDto;
+import com.sparta.finalproject6.dto.responseDto.PlaceResponseDto;
 import com.sparta.finalproject6.dto.responseDto.PostCommentResponseDto;
+import com.sparta.finalproject6.dto.responseDto.PostDetailResponseDto;
 import com.sparta.finalproject6.dto.responseDto.PostResponseDto;
-import com.sparta.finalproject6.dto.responseDto.*;
 import com.sparta.finalproject6.model.*;
 import com.sparta.finalproject6.repository.*;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -21,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -189,11 +190,15 @@ public class PostService {
         List<Comment> comments = commentRepository.findAllByPostId(postId);
         List<PostCommentResponseDto> commentList = new ArrayList<>();
         for (Comment comment : comments) {
+
+            String createdAt = convertLocalTimeToTime(comment.getCreatedAt());
+
             PostCommentResponseDto postCommentResponseDto = PostCommentResponseDto.builder()
                     .commentId(comment.getId())
                     .userImgUrl(comment.getPost().getUser().getUserImgUrl())
                     .comment(comment.getComment())
                     .nickname(comment.getNickname())
+                    .createdAt(createdAt)
                     .build();
             commentList.add(postCommentResponseDto);
         }
@@ -528,6 +533,36 @@ public class PostService {
             imagesResult.add(mapImageResult);
         }
         return imagesResult;
+    }
+
+    public static String convertLocalTimeToTime(LocalDateTime localDateTime) {
+
+        LocalDateTime now = LocalDateTime.now();
+
+        long SEC = 60;
+        long MIN = 3600;
+        long HOUR = 86400;
+        long DAY = 2678400;
+        long MONTH = 32140800;
+
+        long diffTime = localDateTime.until(now, ChronoUnit.SECONDS);
+
+        if (diffTime <= SEC) {
+            return diffTime + "초 전";
+        }
+        if (diffTime < MIN) {
+            return diffTime / SEC + "분 전";
+        }
+        if (diffTime < HOUR) {
+            return diffTime / MIN+ "시간 전";
+        }
+        if (diffTime < DAY) {
+            return diffTime / HOUR + "일 전";
+        }
+        if (diffTime < MONTH) {
+            return diffTime / DAY + "개월 전";
+        }
+        return diffTime / MONTH + "년 전";
     }
 }
 
