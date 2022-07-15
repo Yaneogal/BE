@@ -1,6 +1,7 @@
 package com.sparta.finalproject6.controller;
 
 
+import com.sparta.finalproject6.dto.responseDto.TrueFalseDto;
 import com.sparta.finalproject6.repository.BookmarkRepository;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import com.sparta.finalproject6.service.BookmarkService;
@@ -22,8 +23,10 @@ public class BookmarkController {
     private final BookmarkService bookmarkService;
 
     @PostMapping("/api/bookmark/{postId}")
-    public ResponseEntity<String> addBookmark(@PathVariable Long postId , @AuthenticationPrincipal UserDetailsImpl userDetails){
-        bookmarkService.bookmark(postId,userDetails);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public TrueFalseDto addBookmark(@PathVariable Long postId , @AuthenticationPrincipal UserDetailsImpl userDetails){
+        Boolean isBookmark = bookmarkService.bookmark(postId,userDetails);
+        return TrueFalseDto.builder().trueOrFalse(isBookmark)
+                .postId(postId)
+                .build();
     }
 }

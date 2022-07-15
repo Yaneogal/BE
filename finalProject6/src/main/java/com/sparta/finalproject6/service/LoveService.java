@@ -29,7 +29,7 @@ public class LoveService {
     //좋아요 등록 or 취소
     //이미 좋아요가 되어있으면 취소하기
     @Transactional
-    public void love(UserDetailsImpl userDetails , Long postId){
+    public Boolean love(UserDetailsImpl userDetails , Long postId){
         HttpStatus result = HttpStatus.OK;
 
         User user = userRepo.findByUsername(userDetails.getUsername()).orElseThrow(
@@ -58,5 +58,6 @@ public class LoveService {
         }
         post.updateLikeCount(countUp);
 
+        return countUp;
     }
 }

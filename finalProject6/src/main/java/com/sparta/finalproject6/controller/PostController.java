@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,6 +34,14 @@ public class PostController {
     public ResponseEntity<Slice<PostResponseDto>> getAllPosts(@RequestParam(value = "keyword") String keyword,
                                                               @AuthenticationPrincipal UserDetailsImpl userDetails,
                                                               Pageable pageable) {
+
+        System.out.println("----------------------------------------------");
+        System.out.println("keyword is " + keyword);
+        System.out.println("sort is " + pageable.getSort());
+        System.out.println("page size is " + pageable.getPageSize());
+        System.out.println("page number is " + pageable.getPageNumber());
+        System.out.println("----------------------------------------------");
+
         return postService.getPosts(keyword, pageable, userDetails);
     }
 
@@ -54,6 +63,18 @@ public class PostController {
                                                                  @RequestParam(value = "theme") List<String> theme,
                                                                  Pageable pageable,
                                                                  @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        System.out.println("----------------------------------------------");
+        System.out.println("region is " + region);
+        System.out.println("price is " + price);
+        for (String s : theme) {
+            System.out.println("theme is " + s);
+        }
+        System.out.println("sort is " + pageable.getSort());
+        System.out.println("page size is " + pageable.getPageSize());
+        System.out.println("page number is " + pageable.getPageNumber());
+        System.out.println("----------------------------------------------");
+
         return postService.getFilterPosts(region, price, theme, pageable, userDetails);
     }
 
@@ -81,6 +102,7 @@ public class PostController {
 
     // 포스트 등록
     // form-data 받아오는 형식으로 변경
+    @PostMapping("api/post")
     public ResponseEntity<String> createPost(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                              @RequestParam("title") String title,
                                              @RequestParam("content") String content,

@@ -1,18 +1,19 @@
 package com.sparta.finalproject6.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.finalproject6.dto.requestDto.PostRequestDto;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Entity
+
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Entity
 public class Post extends Timestamped{
 
     @Id
@@ -34,8 +35,8 @@ public class Post extends Timestamped{
 //    @CollectionTable(name = "postImagesFileName",joinColumns = {@JoinColumn(name = "post_id",referencedColumnName = "POST_ID")})
 //    private List<String> imgFileName;
 
-    @OneToMany(mappedBy = "post" , cascade = CascadeType.ALL)
-    private List<Place> place;
+//    @OneToMany(mappedBy = "post" , cascade = CascadeType.ALL)
+//    private List<Place> place;
 
     @Column(nullable = false)
     private String content;
@@ -49,6 +50,8 @@ public class Post extends Timestamped{
     @Column
     private int viewCount;
 
+    private Integer commentCount;
+
     @Column(nullable = false)
     private String regionCategory;
     @Column(nullable = false)
@@ -57,11 +60,11 @@ public class Post extends Timestamped{
     @Column(columnDefinition = "integer default 0", nullable = false)
     private int view;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<ThemeCategory> themeCategories;
+//    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+//    private List<ThemeCategory> themeCategories;
 
     @OneToMany(mappedBy = "post", orphanRemoval = true) // 부모 객체 삭제시 하위 객첵도 삭제
-    @JsonManagedReference //직렬화 허용
+    @JsonIgnore
     private List<Comment> comments;
 
     //isLove는 게시글 조회에서 좋아요 상태를 요청할때 유저별로 좋아요 상태를 반환해주기 위한
@@ -98,6 +101,18 @@ public class Post extends Timestamped{
         this.priceCategory = requestDto.getPriceCategory();
     }
 
+    @Builder
+    public Post(String title, String content, String regionCategory, String priceCategory, User user, String restroom, List<String> restroomOption) {
+        this.title = title;
+        this.content = content;
+        this.regionCategory = regionCategory;
+        this.priceCategory = priceCategory;
+        this.user = user;
+        this.restroom = restroom;
+        this.restroomOption = restroomOption;
+    }
+
+
     public void update(PostRequestDto postRequestDto) {
 //        this.user = user;
         this.title = postRequestDto.getTitle();;
@@ -130,5 +145,8 @@ public class Post extends Timestamped{
         this.viewCount++;
     }
 
+    public void updateCommentCount(int commentCount) {
 
+        this.commentCount = commentCount;
+    }
 }

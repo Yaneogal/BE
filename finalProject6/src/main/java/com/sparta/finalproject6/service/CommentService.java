@@ -1,6 +1,7 @@
 package com.sparta.finalproject6.service;
 
 import com.sparta.finalproject6.dto.requestDto.CommentRequestDto;
+import com.sparta.finalproject6.dto.responseDto.CommentResponseDto;
 import com.sparta.finalproject6.model.Comment;
 import com.sparta.finalproject6.model.Post;
 import com.sparta.finalproject6.model.User;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,45 +29,47 @@ public class CommentService {
 
 
     // 댓글 조회
-    public List<CommentRequestDto> getComment(Long postId, String nickname, Pageable pageable) {
+    public List<CommentResponseDto> getComment(Long postId) {
+
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 없습니다.")
         );
-        List<CommentRequestDto> commentRequestDtoList = new ArrayList<>();
+        List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 //        List<Comment> comments = post.getComments();
-        Page<Comment> comments = commentRepository.findAllByPostIdOrderByCreatedAtDesc(postId, pageable);
+        List<Comment> comments = commentRepository.findAllByPostIdOrderByCreatedAtDesc(postId);
+
 
         for(Comment comment : comments) {
-            Long id = comment.getId();
+            Long commentId = comment.getId();
+            String nickname = comment.getNickname();
+            String userImgUrl = comment.getUserImgUrl();
             String myComment = comment.getComment();
             LocalDateTime createdAt = comment.getPost().getCreatedAt();
-            LocalDateTime modifiedAt = comment.getPost().getModifiedAt();
 
-            CommentRequestDto commentRequestDto = new CommentRequestDto(postId, id, myComment, nickname, createdAt, modifiedAt);
-            commentRequestDtoList.add(commentRequestDto);
+            CommentResponseDto commentResponseDto = new CommentResponseDto(postId, commentId, myComment, nickname, userImgUrl, createdAt);
+            commentResponseDtoList.add(commentResponseDto);
         }
-        return commentRequestDtoList;
+        return commentResponseDtoList;
 
     }
 
     // 댓글 작성
-    public void addComment(Long postId, CommentRequestDto commentRequestDto, String nickname) {
+    @Transactional
+    public void addComment(Long postId, CommentRequestDto commentRequestDto, UserDetailsImpl userDetails) {
 
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
         );
 
-        User user = new User();
-        Long userId = user.getId();
-        User commentWriter = userRepository.findById(userId).orElseThrow(
-                () -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다.")
-        );
-        Comment comment = new Comment(commentRequestDto, post, nickname);
+        User user = userRepository.findById(userDetails.getUser().getId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다"));
+
+        Comment comment = new Comment(commentRequestDto.getComment(), post, user);
         commentRepository.save(comment);
 
-        List<Comment> comments = post.getComments();
-        comments.add(comment);
-
+        int commentCount = post.getCommentCount();
+        commentCount++;
+        post.updateCommentCount(commentCount);
     }
 
     // 댓글 수정
@@ -84,13 +88,22 @@ public class CommentService {
 //    }
 
     // 댓글 삭제
+    @Transactional
     public void deleteComment(Long commentId, String nickname) {
 
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
+
+        Post post = postRepository.findById(comment.getPost().getId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
+
+        int commentCount = post.getCommentCount();
         String commentWriter = comment.getNickname();
+
         if (commentWriter.equals(nickname)) {
             commentRepository.delete(comment);
+            commentCount--;
+            post.updateCommentCount(commentCount);
         } else {
             throw new IllegalArgumentException("댓글을 작성한 유저가 아닙니다.");
         }

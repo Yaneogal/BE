@@ -3,15 +3,14 @@ package com.sparta.finalproject6.service;
 import com.sparta.finalproject6.dto.requestDto.PlaceRequestDto;
 import com.sparta.finalproject6.dto.requestDto.PostRequestDto;
 import com.sparta.finalproject6.dto.requestDto.ThemeCategoryDto;
+import com.sparta.finalproject6.dto.responseDto.PlaceResponseDto;
 import com.sparta.finalproject6.dto.responseDto.PostCommentResponseDto;
+import com.sparta.finalproject6.dto.responseDto.PostDetailResponseDto;
 import com.sparta.finalproject6.dto.responseDto.PostResponseDto;
-import com.sparta.finalproject6.dto.responseDto.*;
 import com.sparta.finalproject6.model.*;
 import com.sparta.finalproject6.repository.*;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -21,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -67,12 +68,14 @@ public class PostService {
                 post.setIsBookmark(true);
             }
 
-            loveRepository.findByPostIdAndUserIdOrderByCreatedAtDesc(c.getPostId(), userId)
-                    .forEach(love ->{
-                        if (love != null) {
-                            c.setLoveStatus(true);
-                        }
-                    });
+            c.setBookmarkStatus(post.getIsBookmark());
+
+            Optional<Love> love = loveRepository.findByPostIdAndUserId(post.getId(),userId);
+            if(love.isPresent()){
+                post.setIsLove(true);
+            }
+
+            c.setLoveStatus(post.getIsLove());
 
             List<ThemeCategoryDto> themeCategory = themeRepository.findByPost_Id(c.getPostId())
                     .stream()
@@ -146,7 +149,10 @@ public class PostService {
     //필터 적용 게시글 조회
     @Transactional(readOnly = true)
     public ResponseEntity<Slice<PostResponseDto>> getFilterPosts(String region, String price, List<String> theme, Pageable pageable, UserDetailsImpl userDetails) {
+
         Slice<PostResponseDto> content = postRepository.filterSearch(region, price, theme, pageable, userDetails);
+
+        Long userId = userDetails.getUser().getId();
 
         content.forEach(c -> {
             Post post = postRepository.findById(c.getPostId())
@@ -157,12 +163,20 @@ public class PostService {
                 imgUrl.addAll(place.get(i).getImgUrl());
             }
             c.setImgUrl(imgUrl);
-            loveRepository.findByPostIdAndUserIdOrderByCreatedAtDesc(c.getPostId(), userDetails.getUser().getId())
-                    .forEach(love -> {
-                        if (love != null) {
-                            c.setLoveStatus(true);
-                        }
-                    });
+
+            Optional<Bookmark> bookmark = bookmarkRepository.findByPostIdAndUserId(post.getId(),userId);
+            if(bookmark.isPresent()){
+                post.setIsBookmark(true);
+            }
+
+            c.setBookmarkStatus(post.getIsBookmark());
+
+            Optional<Love> love = loveRepository.findByPostIdAndUserId(post.getId(),userId);
+            if(love.isPresent()){
+                post.setIsLove(true);
+            }
+
+            c.setLoveStatus(post.getIsLove());
 
             List<ThemeCategoryDto> themeCateroies = themeRepository.findByPost_Id(c.getPostId())
                     .stream()
@@ -189,11 +203,15 @@ public class PostService {
         List<Comment> comments = commentRepository.findAllByPostId(postId);
         List<PostCommentResponseDto> commentList = new ArrayList<>();
         for (Comment comment : comments) {
+
+            String createdAt = convertLocalTimeToTime(comment.getCreatedAt());
+
             PostCommentResponseDto postCommentResponseDto = PostCommentResponseDto.builder()
                     .commentId(comment.getId())
                     .userImgUrl(comment.getPost().getUser().getUserImgUrl())
                     .comment(comment.getComment())
                     .nickname(comment.getNickname())
+                    .createdAt(createdAt)
                     .build();
             commentList.add(postCommentResponseDto);
         }
@@ -276,6 +294,7 @@ public class PostService {
         User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
         );
+
         Post post = Post.builder()
                 .title(requestDto.getTitle())
                 .content(requestDto.getContent())
@@ -287,6 +306,11 @@ public class PostService {
                 .build();
 
         postRepository.save(post);
+
+        requestDto.getThemeCategories()
+                .forEach(t -> {
+                    themeService.saveTheme(t.getThemeCategory(), post);
+                });
 
         int count = 0;
 
@@ -349,19 +373,6 @@ public class PostService {
 //            imgUrls.add(getImage.get("url"));
 //            imgFileNames.add(getImage.get("fileName"));
 //        }
-
-
-
-        // post 등록시 테마 카테고리 복수 저장 로직.
-//        requestDto.getThemeCategories()
-//                .forEach(t -> {
-//                    themeRepository.save(new ThemeCategory(t, post));
-//                });
-
-        requestDto.getThemeCategories()
-                .forEach(t -> {
-                    themeService.saveTheme(t.getThemeCategory(), post);
-                });
 
     }
 
@@ -528,6 +539,36 @@ public class PostService {
             imagesResult.add(mapImageResult);
         }
         return imagesResult;
+    }
+
+    public static String convertLocalTimeToTime(LocalDateTime localDateTime) {
+
+        LocalDateTime now = LocalDateTime.now();
+
+        long SEC = 60;
+        long MIN = 3600;
+        long HOUR = 86400;
+        long DAY = 2678400;
+        long MONTH = 32140800;
+
+        long diffTime = localDateTime.until(now, ChronoUnit.SECONDS);
+
+        if (diffTime <= SEC) {
+            return diffTime + "초 전";
+        }
+        if (diffTime < MIN) {
+            return diffTime / SEC + "분 전";
+        }
+        if (diffTime < HOUR) {
+            return diffTime / MIN+ "시간 전";
+        }
+        if (diffTime < DAY) {
+            return diffTime / HOUR + "일 전";
+        }
+        if (diffTime < MONTH) {
+            return diffTime / DAY + "개월 전";
+        }
+        return diffTime / MONTH + "년 전";
     }
 }
 

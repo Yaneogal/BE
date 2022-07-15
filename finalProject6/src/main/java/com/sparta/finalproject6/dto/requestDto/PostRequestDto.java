@@ -10,10 +10,7 @@ import lombok.*;
 import java.util.List;
 
 @Getter
-@Setter
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class PostRequestDto {
 
     private String title;
@@ -29,6 +26,7 @@ public class PostRequestDto {
     private List<String> restroomOption;
 
 
+    @Builder
     public PostRequestDto(String title, String content,String regionCategory, String priceCategory, String restroom,List<String> restroomOption ,List<ThemeCategoryDto> themeCategories) {
         this.title = title;
         this.content = content;

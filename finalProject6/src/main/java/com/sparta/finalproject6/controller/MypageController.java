@@ -1,15 +1,15 @@
 package com.sparta.finalproject6.controller;
 
 import com.sparta.finalproject6.dto.requestDto.ProfileUpdateRequestDto;
+import com.sparta.finalproject6.dto.responseDto.MYPostListDto;
 import com.sparta.finalproject6.dto.responseDto.MyBookmarkListDto;
 import com.sparta.finalproject6.dto.responseDto.MypageResponseDto;
 import com.sparta.finalproject6.dto.responseDto.ProfileUpdateResponseDto;
 import com.sparta.finalproject6.model.User;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import com.sparta.finalproject6.service.MypageService;
-import com.sparta.finalproject6.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -23,48 +23,53 @@ import java.util.List;
 public class MypageController {
 
     private final MypageService mypageService;
-    private final UserService userService;
 
     // My Page 회원정보 조회 API
-    @GetMapping("/api/user/{userId}")
+    @GetMapping("/api/user")
     public ProfileUpdateResponseDto getMyProfile (
-            @PathVariable Long userId,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         return mypageService.getMyProfile(userDetails);
     }
 
     // 마이페이지 회원정보 수정
-    @PostMapping("/api/user/{userId}")
-    public ProfileUpdateResponseDto updateProfile (
-            @PathVariable Long userId,
-            @RequestPart MultipartFile multipartFile,
-            @RequestPart ProfileUpdateRequestDto updateRequestDto,
-            @AuthenticationPrincipal UserDetailsImpl userDetails)
-        throws IOException {
+    @PutMapping ("/api/user")
+    public ResponseEntity<String> updateProfile (
+            @RequestPart("userImgUrl") MultipartFile multipartFile,
+            @RequestParam("nickname") String nickname,
+            @RequestParam("userInfo") String userInfo,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        return mypageService.updateProfile(multipartFile, updateRequestDto, userDetails);
+        ProfileUpdateRequestDto updateRequestDto = new ProfileUpdateRequestDto(nickname, userInfo);
+        try {
+            mypageService.updateProfile(multipartFile, updateRequestDto, userDetails);
+            return new ResponseEntity<>("회원정보를 수정 했습니다.", HttpStatus.OK);
+        }catch(IOException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     // 마이페이지 내가 쓴 게시글
-    @GetMapping("/api/user/{userId}/mypost")
-    public MypageResponseDto getMyPostList (
-            @PathVariable Long userId,
-            @RequestParam int pageNo,
-            @RequestParam int sizeNo,
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
-        return mypageService.getMyPostList(pageNo, sizeNo, userDetails);
+    @GetMapping("/api/user/mypost")
+    public ResponseEntity<List<MYPostListDto>> getMyPostList (
+            @AuthenticationPrincipal UserDetailsImpl userDetails) { //@RequestParam int pageNo,
+        //@RequestParam int sizeNo,
+        // User user = userDetails.getUser();
+        try {
+            List<MYPostListDto> myPostListDto = mypageService.getMyPostList(userDetails); //pageNo, sizeNo,
+            return new ResponseEntity<>(myPostListDto, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     // 마이페이지 내가 북마크 한 게시글
-    @GetMapping("/api/user/{userId}/mybookmark")
-    public List<MyBookmarkListDto> getMyBookmarkList (
-            @PathVariable Long userId,
-            @RequestParam int pageNo,
-            @RequestParam int sizeNo,
+    @GetMapping("/api/user/mybookmark")
+    public ResponseEntity<List<MyBookmarkListDto>> getMyBookmarkList (
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        return mypageService.getMyBookmark(pageNo, sizeNo, userDetails);
+            List<MyBookmarkListDto> myBookmarkListDto = mypageService.getMyBookmark(userDetails);
+            return new ResponseEntity<>(myBookmarkListDto, HttpStatus.OK);
+
     }
 }

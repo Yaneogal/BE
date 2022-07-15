@@ -1,19 +1,21 @@
 package com.sparta.finalproject6.dto.responseDto;
 
-import com.sparta.finalproject6.model.Comment;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class CommentResponseDto {
 
-    private Long id;
+    private Long postId;
+    private Long commentId;
     private String comment;
-
-    @Builder
-    public CommentResponseDto(Comment comment) {
-        this.id = comment.getId();
-        this.comment = comment.getComment();
-    }
+    private String nickname;
+    private String userImgUrl;
+    private LocalDateTime createdAt;
 }

@@ -1,10 +1,9 @@
 package com.sparta.finalproject6.model;
 
 
+import com.sparta.finalproject6.dto.requestDto.ProfileUpdateRequestDto;
 import com.sparta.finalproject6.dto.requestDto.SignUpRequestDto;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,7 +12,9 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "Users")
 public class User {
 
@@ -40,9 +41,6 @@ public class User {
     @Column
     private String userInfo;
 
-    @OneToMany
-    private List<Post> posts = new ArrayList<>();
-
     public User(String username, String nickname, String password) {
         this.username = username;
         this.nickname = nickname;
@@ -60,5 +58,11 @@ public class User {
         this.password = password;
         this.userImgUrl = thumbnailImage;
         this.kakaoId = kakaoId;
+    }
+
+    public void updateUser(String nickname, String userInfo, String userImgUrl) {
+        this.nickname = nickname;
+        this.userInfo = userInfo;
+        this.userImgUrl = userImgUrl;
     }
 }
