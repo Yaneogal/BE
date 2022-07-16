@@ -1,14 +1,12 @@
 package com.sparta.finalproject6.controller;
 
 import com.sparta.finalproject6.dto.requestDto.ProfileUpdateRequestDto;
-import com.sparta.finalproject6.dto.responseDto.MYPostListDto;
-import com.sparta.finalproject6.dto.responseDto.MyBookmarkListDto;
-import com.sparta.finalproject6.dto.responseDto.MypageResponseDto;
-import com.sparta.finalproject6.dto.responseDto.ProfileUpdateResponseDto;
-import com.sparta.finalproject6.model.User;
+import com.sparta.finalproject6.dto.responseDto.*;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import com.sparta.finalproject6.service.MypageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -50,26 +48,42 @@ public class MypageController {
     }
 
     // 마이페이지 내가 쓴 게시글
-    @GetMapping("/api/user/mypost")
-    public ResponseEntity<List<MYPostListDto>> getMyPostList (
-            @RequestParam int pageNo,
-            @RequestParam int sizeNo,
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        // User user = userDetails.getUser();
-        List<MYPostListDto> myPostListDto = mypageService.getMyPostList(pageNo, sizeNo, userDetails);
-        return new ResponseEntity<>(myPostListDto, HttpStatus.OK);
+//    @GetMapping("/api/user/mypost")
+//    public ResponseEntity<List<MYPostListDto>> getMyPostList (
+//            @AuthenticationPrincipal UserDetailsImpl userDetails) { //@RequestParam int pageNo,
+//        //@RequestParam int sizeNo,
+//        // User user = userDetails.getUser();
+//        try {
+//            List<MYPostListDto> myPostListDto = mypageService.getMyPostList(userDetails); //pageNo, sizeNo,
+//            return new ResponseEntity<>(myPostListDto, HttpStatus.OK);
+//        } catch (IllegalArgumentException e) {
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }
+//    }
 
+    // 마이페이지 내가 쓴 게시글(이호진)
+    @GetMapping("/api/user/mypost")
+    public ResponseEntity<Slice<MyPagePostResponseDto>> getMyWrittenPosts(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                                          Pageable pageable) {
+
+        return mypageService.getMyWrittenPosts(userDetails, pageable);
+    }
+
+    //마이페이지 내가 북마크 한 게시글(이호진)
+    @GetMapping("/api/user/mybookmark")
+    public ResponseEntity<Slice<MyPagePostResponseDto>> getMyBookmarkPosts(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                                           Pageable pageable) {
+
+        return mypageService.getMyBookmarkPosts(userDetails, pageable);
     }
 
     // 마이페이지 내가 북마크 한 게시글
-    @GetMapping("/api/user/mybookmark")
-    public ResponseEntity<List<MyBookmarkListDto>> getMyBookmarkList (
-            @RequestParam int pageNo,
-            @RequestParam int sizeNo,
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
-            List<MyBookmarkListDto> myBookmarkListDto = mypageService.getMyBookmark(pageNo, sizeNo, userDetails);
-            return new ResponseEntity<>(myBookmarkListDto, HttpStatus.OK);
-
-    }
+//    @GetMapping("/api/user/mybookmark")
+//    public ResponseEntity<List<MyBookmarkListDto>> getMyBookmarkList (
+//            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//
+//            List<MyBookmarkListDto> myBookmarkListDto = mypageService.getMyBookmark(userDetails);
+//            return new ResponseEntity<>(myBookmarkListDto, HttpStatus.OK);
+//
+//    }
 }

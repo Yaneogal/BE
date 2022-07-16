@@ -14,8 +14,8 @@ public class CommentResponseDto {
 
     private Long postId;
     private Long commentId;
-    private String comment;
     private String nickname;
+    private String comment;
     private String userImgUrl;
     private LocalDateTime createdAt;
 }

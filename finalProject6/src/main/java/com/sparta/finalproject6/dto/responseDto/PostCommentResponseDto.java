@@ -7,7 +7,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class PostCommentResponseDto {
+public class
+PostCommentResponseDto {
 
     private Long commentId;
     private String nickname;

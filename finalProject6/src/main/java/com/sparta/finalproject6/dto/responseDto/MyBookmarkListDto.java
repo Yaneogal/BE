@@ -23,7 +23,7 @@ public class MyBookmarkListDto {
     private int commentCount;
     private String regionCategory;
     private String priceCategory;
-    private List<ThemeCategory> themeCategory;
+//    private List<ThemeCategory> themeCategory;
 
 
 }

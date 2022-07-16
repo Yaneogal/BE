@@ -40,7 +40,7 @@ public class Place{
     private String id;
 
     @Column
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "placeImagesUrl",joinColumns = {@JoinColumn(name = "place_id",referencedColumnName = "PLACE_ID")})
     private List<String> imgUrl;
 
