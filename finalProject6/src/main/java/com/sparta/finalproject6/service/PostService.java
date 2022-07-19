@@ -315,15 +315,6 @@ public class PostService {
         int count = 0;
 
         for (int i = 0; i < placeRequestDto.size(); i++) {
-            /*------------------------------프론트에서 Json 과 이미지파일을 같이 못받아올 때 사용--------------------------
-            List<MultipartFile> files = new ArrayList<>();
-            for (int j = 0; j < placeRequestDto.get(i).getImgCount(); j++) {
-                files.add(multipartFile.get(count));
-                count++;
-            }
-                        List<Map<String, String>> imgResult = getImageList(files);
-            ------------------------------프론트에서 Json 과 이미지파일을 같이 못받아올 때 사용--------------------------*/
-
             List<MultipartFile> files = new ArrayList<>();
 //            List<Integer> imgOrder =placeRequestDto.get(i).getImgOrder();
 //            for (int j = 0; j < imgOrder.size(); j++) {
@@ -361,18 +352,9 @@ public class PostService {
                     .y(placeRequestDto.get(i).getY())
                     .post(post)
                     .build();
+
             placeRepository.save(place);
         }
-
-
-//        List<Map<String, String>> imgResult = getImageList(multipartFile);
-//        List<String> imgUrls = new ArrayList<>(imgResult.size());
-//        List<String> imgFileNames = new ArrayList<>(imgResult.size());
-//
-//        for(Map<String , String> getImage : imgResult){
-//            imgUrls.add(getImage.get("url"));
-//            imgFileNames.add(getImage.get("fileName"));
-//        }
 
     }
 
@@ -390,15 +372,7 @@ public class PostService {
         int count = 0;
 
         for (int i = 0; i < placeRequestDto.size(); i++) {
-                /*------------------------------프론트에서 Json 과 이미지파일을 같이 못받아올 때 사용--------------------------
-                List<MultipartFile> files = new ArrayList<>();
-                for (int k = 0; k < placeRequestDto.get(i).getImgCount(); k++) {
-                    files.add(multipartFile.get(count));
-                    count++;
-                }
 
-                List<Map<String, String>> imgResult = updateImage(places.get(i),files);
-                ------------------------------프론트에서 Json 과 이미지파일을 같이 못받아올 때 사용--------------------------*/
             List<Map<String, String>> imgResult = new ArrayList<>();
             List<MultipartFile> files = new ArrayList<>();
 
@@ -443,6 +417,7 @@ public class PostService {
                     imgUrls.add(getImage.get("url"));
                     imgFileNames.add(getImage.get("fileName"));
                 }
+
                 Place place = Place.builder()
                         .addressName(placeRequestDto.get(i).getAddress_name())
                         .categoryGroupCode(placeRequestDto.get(i).getCategory_group_code())
