@@ -86,7 +86,7 @@ public class Place{
     }
     public void updatePlaceImage(List<String> imgUrl,List<String> imgFileName,List<String> deleteImgUrl){
         this.imgUrl.addAll(imgUrl);
-        if(!deleteImgUrl.isEmpty()){
+        if(deleteImgUrl != null){
             this.imgUrl.removeAll(deleteImgUrl);
         }
 
