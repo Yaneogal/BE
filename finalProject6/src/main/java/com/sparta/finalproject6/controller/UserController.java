@@ -35,19 +35,9 @@ public class UserController {
     //회원가입
     @PostMapping("/api/user/signup")
     public ResponseEntity<HttpResponse> signUp(@RequestBody @Valid SignUpRequestDto dto, BindingResult bindingResult){
-
-        Map<String, String> errorMap = new HashMap<>();
-        if (bindingResult.hasErrors()) {
-            for (FieldError error : bindingResult.getFieldErrors()) {
-                errorMap.put(error.getField(), error.getDefaultMessage());
-            }
-            throw new CustomSignUpValidException("회원가입 실패", errorMap);
-        } else {
-//            service.signUp(dto);
             HttpResponse httpResponse = new HttpResponse();
             httpResponse = service.signUp(dto);
             return new ResponseEntity<>(httpResponse,httpResponse.getStatus());
-        }
     }
 
     //로그인
