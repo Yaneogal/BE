@@ -24,20 +24,6 @@ public class Post extends Timestamped{
     @Column(length = 50, nullable = false)
     private String title;
 
-//    @ElementCollection
-//    @CollectionTable(name = "postImagesUrl",joinColumns = {@JoinColumn(name = "post_id",referencedColumnName = "POST_ID")})
-//    private List<String> imgUrl;
-//
-//    //TODO : 20220701
-//    //S3에서 기존 파일을 삭제하기 위해 추가한 파일네임.
-//    @Column
-//    @ElementCollection
-//    @CollectionTable(name = "postImagesFileName",joinColumns = {@JoinColumn(name = "post_id",referencedColumnName = "POST_ID")})
-//    private List<String> imgFileName;
-
-//    @OneToMany(mappedBy = "post" , cascade = CascadeType.ALL)
-//    private List<Place> place;
-
     @Column(nullable = false)
     private String content;
 
@@ -56,9 +42,6 @@ public class Post extends Timestamped{
     private String regionCategory;
     @Column(nullable = false)
     private String priceCategory;
-
-    @Column(columnDefinition = "integer default 0", nullable = false)
-    private int view;
 
 //    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
 //    private List<ThemeCategory> themeCategories;
@@ -84,15 +67,6 @@ public class Post extends Timestamped{
     @JoinColumn(name = "USER_ID")
     private User user;
 
-    @Column
-    private String restroom;
-
-    @Column
-    @ElementCollection
-    @CollectionTable(name = "restroomOption",joinColumns ={@JoinColumn(name = "post_id",referencedColumnName = "POST_ID")})
-    private List<String> restroomOption;
-
-
     public Post(User user, PostRequestDto requestDto) {
         this.user = user;
         this.title = requestDto.getTitle();
@@ -108,8 +82,6 @@ public class Post extends Timestamped{
         this.regionCategory = regionCategory;
         this.priceCategory = priceCategory;
         this.user = user;
-        this.restroom = restroom;
-        this.restroomOption = restroomOption;
     }
 
 
@@ -119,8 +91,6 @@ public class Post extends Timestamped{
         this.content = postRequestDto.getContent();
         this.regionCategory = postRequestDto.getRegionCategory();
         this.priceCategory = postRequestDto.getPriceCategory();
-        this.restroom = postRequestDto.getRestroom();
-        this.restroomOption = postRequestDto.getRestroomOption();
     }
 
     //좋아요 수 업데이트
