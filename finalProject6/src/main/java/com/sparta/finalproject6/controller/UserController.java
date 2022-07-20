@@ -5,6 +5,7 @@ import com.sparta.finalproject6.dto.requestDto.idCheckDto;
 import com.sparta.finalproject6.dto.requestDto.logInRequestDto;
 import com.sparta.finalproject6.dto.requestDto.nickCheckDto;
 import com.sparta.finalproject6.dto.responseDto.HttpResponse;
+import com.sparta.finalproject6.handler.exception.CustomSignUpValidException;
 import com.sparta.finalproject6.security.JwtProvider;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import com.sparta.finalproject6.service.UserService;
@@ -13,29 +14,40 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
-@RestController
+
 @Slf4j
 @RequiredArgsConstructor
+@RestController
 public class UserController {
-
 
     private final UserService service;
     private final JwtProvider provider;
 
     //회원가입
     @PostMapping("/api/user/signup")
-    public ResponseEntity<HttpResponse> signUp(@RequestBody @Valid SignUpRequestDto dto){
-        HttpResponse httpResponse = new HttpResponse();
-        httpResponse = service.signUp(dto);
-        return new ResponseEntity<>(httpResponse,httpResponse.getStatus());
+    public ResponseEntity<HttpResponse> signUp(@RequestBody @Valid SignUpRequestDto dto, BindingResult bindingResult){
+
+        Map<String, String> errorMap = new HashMap<>();
+        if (bindingResult.hasErrors()) {
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                errorMap.put(error.getField(), error.getDefaultMessage());
+            }
+            throw new CustomSignUpValidException("회원가입 실패", errorMap);
+        } else {
+//            service.signUp(dto);
+            HttpResponse httpResponse = new HttpResponse();
+            httpResponse = service.signUp(dto);
+            return new ResponseEntity<>(httpResponse,httpResponse.getStatus());
+        }
     }
 
     //로그인
@@ -53,15 +65,36 @@ public class UserController {
         return new ResponseEntity<>(httpResponse,httpResponse.getStatus());
     }
 
-        @PostMapping("/api/user/idCheck")
-    public String checkId(@RequestBody @Valid idCheckDto dto){
-        return service.checkDupName(dto.getUsername());
+    @PostMapping("/api/user/idCheck")
+    public ResponseEntity<String> checkId(@RequestBody @Valid idCheckDto idCheckDto, BindingResult bindingResult){
+
+        Map<String, String> errorMap = new HashMap<>();
+        if (bindingResult.hasErrors()) {
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                errorMap.put(error.getField(), error.getDefaultMessage());
+            }
+            throw new CustomSignUpValidException("아이디 유효성 검사 실패!", errorMap);
+        }else {
+            String result = service.checkDupName(idCheckDto.getUsername());
+
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }
     }
 
     @PostMapping("/api/user/nickCheck")
-    public ResponseEntity<String> checkNick(@RequestBody @Valid nickCheckDto dto){
-        HttpResponse result = service.checkDupNick(dto.getNickname());
-        return ResponseEntity.status(result.getStatus()).body(result.getMessage());
+    public ResponseEntity<String> checkNick(@RequestBody @Valid nickCheckDto nickCheckDto ,BindingResult bindingResult) {
+
+        Map<String, String> errorMap = new HashMap<>();
+        if (bindingResult.hasErrors()) {
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                errorMap.put(error.getField(), error.getDefaultMessage());
+            }
+            throw new CustomSignUpValidException("닉네임 유효성 검사 실패!", errorMap);
+        } else {
+            String result = service.checkDupNick(nickCheckDto.getNickname());
+
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }
     }
 
     @GetMapping("/user/test")
