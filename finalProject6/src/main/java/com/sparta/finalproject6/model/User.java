@@ -1,18 +1,15 @@
 package com.sparta.finalproject6.model;
 
 
-import com.sparta.finalproject6.dto.requestDto.ProfileUpdateRequestDto;
 import com.sparta.finalproject6.dto.requestDto.SignUpRequestDto;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Users")
@@ -41,25 +38,26 @@ public class User {
     @Column
     private String userInfo;
 
+    @Column(nullable = false)
     private int totalPoint;
 
     @Enumerated(EnumType.STRING)
-    private Rank rank = Rank.BRONZE;
+    private Grade grade;
 
     public User(String username, int totalPoint) {
         this.username = username;
         this.totalPoint = totalPoint;
     }
 
-    public boolean availableRankUp() {
-        return Rank.availableRankUp(this.getRank(), this.getTotalPoint());
+    public boolean availableGradeUp() {
+        return Grade.availableGradeUp(this.getGrade(), this.getTotalPoint());
     }
 
-    public Rank rankUp() {
-        Rank nextRank = Rank.getNextRank((this.getTotalPoint()));
-        this.rank = nextRank;
+    public Grade gradeUp() {
+        Grade nextGrade = Grade.getNextGrade((this.getTotalPoint()));
+        this.grade = nextGrade;
 
-        return nextRank;
+        return nextGrade;
     }
     public User(String username, String nickname, String password) {
         this.username = username;
