@@ -9,7 +9,8 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @NoArgsConstructor
 public class idCheckDto {
-    @Email
-    @NotBlank
+
+    @Email(message = "이메일 형식을 확인해주세요!")
+    @NotBlank(message = "아이디를 입력해주세요!")
     private String username;
 }
