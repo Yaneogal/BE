@@ -288,6 +288,7 @@ public class PostService {
         return postRepository.updateView(postId);
     }
 
+    // 포스트 작성
     @Transactional
     public void addPost(UserDetailsImpl userDetails, PostRequestDto requestDto, List<PlaceRequestDto> placeRequestDto, List<MultipartFile> multipartFile) {
 
@@ -354,8 +355,9 @@ public class PostService {
                     .build();
 
             placeRepository.save(place);
-        }
 
+        }
+        user.updatePoint(50);
     }
 
     // 포스트 수정
@@ -474,6 +476,7 @@ public class PostService {
         catch(IllegalArgumentException e){
             System.out.println(e.getMessage());
         }
+
 
     }
 

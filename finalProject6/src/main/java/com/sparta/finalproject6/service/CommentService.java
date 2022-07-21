@@ -73,6 +73,7 @@ public class CommentService {
 
         // commentCount++;
         // post.updateCommentCount(commentCount);
+
     }
 
     // 댓글 수정
