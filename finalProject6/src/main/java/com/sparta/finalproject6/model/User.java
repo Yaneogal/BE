@@ -41,6 +41,26 @@ public class User {
     @Column
     private String userInfo;
 
+    private int totalPoint;
+
+    @Enumerated(EnumType.STRING)
+    private Rank rank = Rank.BRONZE;
+
+    public User(String username, int totalPoint) {
+        this.username = username;
+        this.totalPoint = totalPoint;
+    }
+
+    public boolean availableRankUp() {
+        return Rank.availableRankUp(this.getRank(), this.getTotalPoint());
+    }
+
+    public Rank rankUp() {
+        Rank nextRank = Rank.getNextRank((this.getTotalPoint()));
+        this.rank = nextRank;
+
+        return nextRank;
+    }
     public User(String username, String nickname, String password) {
         this.username = username;
         this.nickname = nickname;
@@ -64,5 +84,12 @@ public class User {
         this.nickname = nickname;
         this.userInfo = userInfo;
         this.userImgUrl = userImgUrl;
+    }
+
+    public void updatePoint(int totalPoint) {
+        this.totalPoint += totalPoint;
+        if(this.totalPoint <= 0) {
+            this.totalPoint = 0;
+        }
     }
 }
