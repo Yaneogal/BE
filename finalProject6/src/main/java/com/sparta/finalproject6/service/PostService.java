@@ -356,8 +356,8 @@ public class PostService {
 
         }
         user.updatePoint(50);
-        user.availableRankUp();
-        user.rankUp();
+        user.availableGradeUp();
+        user.gradeUp();
     }
 
     // 포스트 수정
