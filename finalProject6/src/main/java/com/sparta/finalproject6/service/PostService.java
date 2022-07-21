@@ -548,6 +548,12 @@ public class PostService {
 
             postRepository.delete(post);
 
+            User user = userRepository.findById(userDetails.getUser().getId())
+                    .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다"));
+            user.updatePoint(-50);
+            user.availableGradeUp();
+            user.gradeUp();
+
         }
         catch(IllegalArgumentException e){
             System.out.println(e.getMessage());
@@ -555,7 +561,6 @@ public class PostService {
 
 
     }
-
 
     private void validateUser(UserDetailsImpl userDetails, Post post) {
         log.info("userDetails = {}", userDetails);
