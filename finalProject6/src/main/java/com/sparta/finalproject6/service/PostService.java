@@ -383,10 +383,9 @@ public class PostService {
                 }
             }
 
-            List<String> deleteImgUrl = checkImgUrl(placeRequestDto.get(i),places.get(i));
-
             //장소 수 가 아직 기존장소 수 보다 작을때
             if(i < (places.size())) {
+                List<String> deleteImgUrl = checkImgUrl(placeRequestDto.get(i),places.get(i));
                 if(!multipartFile.isEmpty()){
                     imgResult = getImageList(files);
                     List<String> imgUrls = new ArrayList<>(imgResult.size());
