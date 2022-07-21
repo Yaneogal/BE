@@ -113,6 +113,7 @@ public class PostController {
                                              @RequestPart("places") List<PlaceRequestDto> placeRequestDto,
                                              @RequestPart("imgUrl") List<MultipartFile> multipartFile) {
         log.info("postUserDetails = {}", userDetails);
+
         PostRequestDto requestDto = new PostRequestDto(title,content,regionCategory,priceCategory,restroom,restroomOption,themeCategory);
         try{
             postService.addPost(userDetails, requestDto, placeRequestDto ,multipartFile);
