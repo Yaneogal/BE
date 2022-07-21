@@ -38,11 +38,10 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
     @EntityGraph(attributePaths = "themeCategories")
     List<Post> findAllByUserIdOrderByCreatedAtDesc(Long userId);
 
-    @EntityGraph(attributePaths = "restroomOption")
     Optional<Post> findById(Long postId);
 
-    @Modifying
-    @Query("update Post p set p.view = p.view + 1 where p.id = :id ")
-    int updateView(Long id);
+//    @Modifying
+//    @Query("update Post p set p.view = p.view + 1 where p.id = :id ")
+//    int updateView(Long id);
 
 }

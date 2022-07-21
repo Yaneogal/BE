@@ -274,19 +274,17 @@ public class PostService {
                 .modifiedAt(post.getModifiedAt())
                 .comments(commentList)
                 .place(placeResponseDtos)
-                .restroom(post.getRestroom())
-                .restroomOption(post.getRestroomOption())
                 .build();
 
         return new ResponseEntity<>(detailResponseDto, HttpStatus.OK);
     }
 
     // 조회수 Views counting
-    @Transactional
-    public int updateView(Long postId) {
-        Optional<Post> post = postRepository.findById(postId);
-        return postRepository.updateView(postId);
-    }
+//    @Transactional
+//    public int updateView(Long postId) {
+//        Optional<Post> post = postRepository.findById(postId);
+//        return postRepository.updateView(postId);
+//    }
 
     @Transactional
     public void addPost(UserDetailsImpl userDetails, PostRequestDto requestDto, List<PlaceRequestDto> placeRequestDto, List<MultipartFile> multipartFile) {
@@ -301,8 +299,6 @@ public class PostService {
                 .regionCategory(requestDto.getRegionCategory())
                 .priceCategory(requestDto.getPriceCategory())
                 .user(userDetails.getUser())
-                .restroom(requestDto.getRestroom())
-                .restroomOption(requestDto.getRestroomOption())
                 .build();
 
         postRepository.save(post);
@@ -334,7 +330,9 @@ public class PostService {
                 imgUrls.add(getImage.get("url"));
                 imgFileNames.add(getImage.get("fileName"));
             }
-
+            for (int j = 0; j < imgResult.size(); j++) {
+                System.out.println("imgResult.get(j).get(\"fileName\") = " + imgResult.get(j).get("fileName"));
+            }
             Place place = Place.builder()
                     .addressName(placeRequestDto.get(i).getAddress_name())
                     .categoryGroupCode(placeRequestDto.get(i).getCategory_group_code())
@@ -366,39 +364,42 @@ public class PostService {
         );
         validateUser(userDetails, post);
 
-        //TODO : 장소가 늘어났을때랑 줄어들었을때 이미지랑 장소를 어떻게 해야할지 생각
-
         List<Place> places = placeRepository.findAllByPostId(postId);
+
         int count = 0;
 
         for (int i = 0; i < placeRequestDto.size(); i++) {
-
-            List<Map<String, String>> imgResult = new ArrayList<>();
-            List<MultipartFile> files = new ArrayList<>();
-
 //            List<Integer> imgOrder =placeRequestDto.get(i).getImgOrder();
 //            for (int k = 0; k < imgOrder.size(); k++) {
 //                files.add(multipartFile.get(imgOrder.get(k)-1));
-//            }
-
-            for (int k = 0; k < placeRequestDto.get(i).getImgCount(); k++) {
-                files.add(multipartFile.get(count));
-                count++;
+//          }
+            List<Map<String, String>> imgResult = new ArrayList<>();
+            List<MultipartFile> files = new ArrayList<>();
+            //사진을 뭔가 한개라도 넘겨줫을때만
+            if(!multipartFile.isEmpty()){
+                for (int k = 0; k < placeRequestDto.get(i).getImgCount(); k++) {
+                    files.add(multipartFile.get(count));
+                    count++;
+                }
             }
+
+            List<String> deleteImgUrl = checkImgUrl(placeRequestDto.get(i),places.get(i));
 
             //장소 수 가 아직 기존장소 수 보다 작을때
             if(i < (places.size())) {
-                imgResult = updateImage(places.get(i),files);
-                List<String> imgUrls = new ArrayList<>(imgResult.size());
-                List<String> imgFileNames = new ArrayList<>(imgResult.size());
+                if(!multipartFile.isEmpty()){
+                    imgResult = getImageList(files);
+                    List<String> imgUrls = new ArrayList<>(imgResult.size());
+                    List<String> imgFileNames = new ArrayList<>(imgResult.size());
 
-                for (Map<String, String> getImage : imgResult) {
-                    imgUrls.add(getImage.get("url"));
-                    imgFileNames.add(getImage.get("fileName"));
+                    for (Map<String, String> getImage : imgResult) {
+                        imgUrls.add(getImage.get("url"));
+                        imgFileNames.add(getImage.get("fileName"));
+                    }
+                    places.get(i).updatePlaceImage(imgUrls, imgFileNames , deleteImgUrl);
                 }
 
                 places.get(i).updatePlace(placeRequestDto.get(i));
-                places.get(i).updatePlaceImage(imgUrls, imgFileNames);
 
                 //수정된 내용이 기존내용보다 숫자가 적을때
                 if(i == (placeRequestDto.size()-1)){
@@ -439,6 +440,62 @@ public class PostService {
             }
         }
 
+
+//            //장소 수 가 아직 기존장소 수 보다 작을때
+//            if(i < (places.size())) {
+//                if(multipartFile != null){
+//                    imgResult = updateImage(places.get(i),files);
+//                    List<String> imgUrls = new ArrayList<>(imgResult.size());
+//                    List<String> imgFileNames = new ArrayList<>(imgResult.size());
+//
+//                    for (Map<String, String> getImage : imgResult) {
+//                        imgUrls.add(getImage.get("url"));
+//                        imgFileNames.add(getImage.get("fileName"));
+//                    }
+//                    places.get(i).updatePlaceImage(imgUrls, imgFileNames);
+//                }
+//
+//                places.get(i).updatePlace(placeRequestDto.get(i));
+//
+//
+//                //수정된 내용이 기존내용보다 숫자가 적을때
+//                if(i == (placeRequestDto.size()-1)){
+//                    for (int j = i+1; j < places.size(); j++) {
+//                        placeRepository.delete(places.get(j));
+//                    }
+//                }
+//            }
+//
+//            //수정해서 장소가 더 늘어났을때는 등록해주기
+//            else {
+//                imgResult = getImageList(files);
+//                List<String> imgUrls = new ArrayList<>(imgResult.size());
+//                List<String> imgFileNames = new ArrayList<>(imgResult.size());
+//                for (Map<String, String> getImage : imgResult) {
+//                    imgUrls.add(getImage.get("url"));
+//                    imgFileNames.add(getImage.get("fileName"));
+//                }
+//                Place place = Place.builder()
+//                        .addressName(placeRequestDto.get(i).getAddress_name())
+//                        .categoryGroupCode(placeRequestDto.get(i).getCategory_group_code())
+//                        .categoryGroupName(placeRequestDto.get(i).getCategory_name())
+//                        .categoryName(placeRequestDto.get(i).getCategory_name())
+//                        .distance(placeRequestDto.get(i).getDistance())
+//                        .imgUrl(imgUrls)
+//                        .imgFileName(imgFileNames)
+//                        .id(placeRequestDto.get(i).getId())
+//                        .phone(placeRequestDto.get(i).getPhone())
+//                        .place_name(placeRequestDto.get(i).getPlace_name())
+//                        .place_url(placeRequestDto.get(i).getPlace_url())
+//                        .road_address_name(placeRequestDto.get(i).getRoad_address_name())
+//                        .x(placeRequestDto.get(i).getX())
+//                        .y(placeRequestDto.get(i).getY())
+//                        .post(post)
+//                        .build();
+//                placeRepository.save(place);
+//            }
+//        }
+
         post.update(requestDto);
 
         //테마 카테고리 수정 로직
@@ -449,6 +506,24 @@ public class PostService {
                 });
     }
 
+    private List<String> checkImgUrl(PlaceRequestDto dto , Place place){
+        //경우의 수
+        //1. dto와 place의 이미지 url이 일치할 때  --> 변동없음
+        //2. 나머지는 dto에 존재하지 않는 imgUrl은 지우고 일치하는건 유지 새로운건 추가
+        //3. imgUrl = 1,2,3  modUrl = 1,2
+        List<String> dtoImgUrl = dto.getModImgUrl();
+        List<String> imgUrl = new ArrayList<>(place.getImgUrl());
+
+        imgUrl.removeAll(dtoImgUrl);
+
+        if(imgUrl.isEmpty()){
+            return null;
+        }
+        else{
+            return imgUrl;
+        }
+
+    }
 
     // 포스트 삭제
     @Transactional

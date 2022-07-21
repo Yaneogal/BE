@@ -2,8 +2,10 @@ package com.sparta.finalproject6.model;
 
 import com.sparta.finalproject6.dto.requestDto.PlaceRequestDto;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
+import java.io.File;
 import java.util.List;
 
 @Getter
@@ -40,7 +42,7 @@ public class Place{
     private String id;
 
     @Column
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection
     @CollectionTable(name = "placeImagesUrl",joinColumns = {@JoinColumn(name = "place_id",referencedColumnName = "PLACE_ID")})
     private List<String> imgUrl;
 
@@ -49,6 +51,11 @@ public class Place{
     @ElementCollection
     @CollectionTable(name = "placeImagesFileName",joinColumns = {@JoinColumn(name = "place_id",referencedColumnName = "PLACE_ID")})
     private List<String> imgFileName;
+
+    @Column
+    @ElementCollection
+    @CollectionTable(name = "placeImagesFile",joinColumns = {@JoinColumn(name = "place_id",referencedColumnName = "PLACE_ID")})
+    private List<File> imgFile;
 
     @Column
     private String phone;
@@ -77,8 +84,12 @@ public class Place{
         this.x = dto.getX();
         this.y = dto.getY();
     }
-    public void updatePlaceImage(List<String> imgUrl,List<String> imgFileName){
-        this.imgUrl = imgUrl;
-        this.imgFileName = imgFileName;
+    public void updatePlaceImage(List<String> imgUrl,List<String> imgFileName,List<String> deleteImgUrl){
+        this.imgUrl.addAll(imgUrl);
+        if(deleteImgUrl != null){
+            this.imgUrl.removeAll(deleteImgUrl);
+        }
+
+        this.imgFileName.addAll(imgFileName);
     }
 }
