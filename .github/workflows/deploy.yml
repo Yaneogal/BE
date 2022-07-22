@@ -26,10 +26,12 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
         shell: bash
+        working-directory: ./finalProject6
       
       - name: Build with Gradle
         run: ./gradlew build
         shell: bash
+        working-directory: ./finalProject6
         
       - name: Make Zip File
         run: zip -qq -r ./$GITHUB_SHA.zip .
@@ -44,6 +46,8 @@ jobs:
       
       - name: Upload to S3
         run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip
+        working-directory: ./finalProject6
 
       - name: Code Deploy
         run: aws deploy create-deployment --application-name $CODE_DEPLOY_APP_NAME --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name $DEPLOYMENT_GROUP_NAME --s3-location bucket=$BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip
+        working-directory: ./finalProject6
