@@ -36,6 +36,7 @@ jobs:
       - name: Make Zip File
         run: zip -qq -r ./$GITHUB_SHA.zip .
         shell: bash
+        working-directory: ./finalProject6
       
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -49,5 +50,5 @@ jobs:
         working-directory: ./finalProject6
 
       - name: Code Deploy
-        run: aws deploy create-deployment --application-name $CODE_DEPLOY_APP_NAME --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name $DEPLOYMENT_GROUP_NAME --s3-location bucket=$BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip
+        run: aws deploy create-deployment --application-name ${{env.CODE_DEPLOY_APP_NAME}} --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name ${{env.DEPLOYMENT_GROUP_NAME}} --s3-location bucket=${{env.BUCKET_NAME}},bundleType=zip,key=${{env.PROJECT_NAME}}/$GITHUB_SHA.zip
         working-directory: ./finalProject6
