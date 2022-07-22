@@ -10,31 +10,30 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@SequenceGenerator(
-        name = "BOOKMARK_A",
-        sequenceName = "BOOKMARK_B",
-        initialValue = 1, allocationSize = 50)
 public class Bookmark {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator = "BOOKMARK_A")
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "BOOKMARK_ID")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "USER_ID")
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "POST_ID")
-    private Post post;
+//    @ManyToOne
+//    @JoinColumn(name = "USER_ID")
+//    private User user;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "POST_ID")
+//    private Post post;
 
     @Column
-    private Boolean bookmarkStatus;
+    private Long postId;
 
-    public Bookmark(User user, Post post, Boolean bookmarkStatus) {
-        this.user = user;
-        this.post = post;
-        this.bookmarkStatus = bookmarkStatus;
+    @Column
+    private Long userId;
+
+
+    public Bookmark(Long postId, Long userId) {
+        this.postId = postId;
+        this.userId = userId;
     }
 }

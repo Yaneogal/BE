@@ -2,27 +2,21 @@ package com.sparta.finalproject6.model;
 
 
 import com.sparta.finalproject6.dto.requestDto.SignUpRequestDto;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@SequenceGenerator(
-        name = "USER_A",
-        sequenceName = "USER_B",
-        initialValue = 1, allocationSize = 50)
+@AllArgsConstructor
 @Table(name = "Users")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USER_A")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "USER_ID")
     private Long id;
 
@@ -41,8 +35,30 @@ public class User {
     @Column
     private Long kakaoId;
 
-    @OneToMany
-    private List<Post> posts = new ArrayList<>();
+    @Column
+    private String userInfo;
+
+    @Column(nullable = false)
+    private int totalPoint;
+
+    @Enumerated(EnumType.STRING)
+    private Grade grade;
+
+    public User(String username, int totalPoint) {
+        this.username = username;
+        this.totalPoint = totalPoint;
+    }
+
+    public boolean availableGradeUp() {
+        return Grade.availableGradeUp(this.getGrade(), this.getTotalPoint());
+    }
+
+    public Grade gradeUp() {
+        Grade nextGrade = Grade.getNextGrade((this.getTotalPoint()));
+        this.grade = nextGrade;
+
+        return nextGrade;
+    }
 
     public User(String username, String nickname, String password) {
         this.username = username;
@@ -61,5 +77,18 @@ public class User {
         this.password = password;
         this.userImgUrl = thumbnailImage;
         this.kakaoId = kakaoId;
+    }
+
+    public void updateUser(String nickname, String userInfo, String userImgUrl) {
+        this.nickname = nickname;
+        this.userInfo = userInfo;
+        this.userImgUrl = userImgUrl;
+    }
+
+    public void updatePoint(int totalPoint) {
+        this.totalPoint += totalPoint;
+        if(this.totalPoint <= 0) {
+            this.totalPoint = 0;
+        }
     }
 }

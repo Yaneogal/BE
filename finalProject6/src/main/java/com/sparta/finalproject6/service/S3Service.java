@@ -23,7 +23,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class S3Service {
 
-    @Value("")
+    @Value("testairbnbbucket")
     private String bucket;
     private final AmazonS3 amazonS3;
 
@@ -48,7 +48,9 @@ public class S3Service {
 
         Map<String, String> result = new HashMap<>();
         result.put("url", String.valueOf(amazonS3.getUrl(bucket, fileName)));
-        result.put("transImgFileName", fileName);
+        result.put("fileName", fileName);
+        System.out.println(result.get("url"));
+        System.out.println(result.get("transImgFileName"));
         return result;
     }
 

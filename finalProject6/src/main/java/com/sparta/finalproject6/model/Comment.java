@@ -1,7 +1,5 @@
 package com.sparta.finalproject6.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.sparta.finalproject6.dto.requestDto.CommentRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,14 +11,10 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@SequenceGenerator(
-        name = "COMMENT_A",
-        sequenceName = "COMMENT_B",
-        initialValue = 1, allocationSize = 50)
-public class Comment {
+public class Comment extends Timestamped {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COMMENT_A")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "COMMENT_ID")
     private Long id;
 
@@ -32,14 +26,20 @@ public class Comment {
     @Column
     private String userImgUrl;
 
-    @ManyToOne
+
+    @Column
+    private int commentCount;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "POST_ID")
-    @JsonBackReference
+//    @JsonBackReference
     private Post post;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
-    @JsonBackReference // 순환참조 방지
+//    @JsonBackReference // 순환참조 방지
+//    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User user;
 
     @Builder
@@ -49,9 +49,11 @@ public class Comment {
         this.comment = getComment;
     }
 
-    public Comment(CommentRequestDto commentRequestDto, Post post, String nickname) {
-        this.comment = commentRequestDto.getComment();
-        this.nickname = nickname;
+    public Comment(String comment, Post post, User user, String nickname, String userImgUrl) {
+        this.comment = comment;
+        this.user = user;
         this.post = post;
+        this.nickname = nickname;
+        this.userImgUrl = userImgUrl;
     }
 }

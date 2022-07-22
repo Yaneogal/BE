@@ -1,27 +1,31 @@
 package com.sparta.finalproject6.dto.requestDto;
 
-import com.sparta.finalproject6.repository.UserRepository;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @Getter
 @NoArgsConstructor
 public class SignUpRequestDto {
 
     //이메일이어야 한다.
-    @Email
+    @Email(message = "이메일 형식을 확인해주세요!")
+    @NotBlank(message = "아이디를 입력해주세요!")
     private String username;
 
+    @NotBlank(message = "닉네임을 입력해주세요!")
+    @Pattern(regexp = "^[a-zA-Z가-힣_\\d]{2,8}$", message = "닉네임 형식을 확인해주세요!")
     private String nickname;
+    @NotBlank(message = "비밀번호를 입력해주세요!")
+    @Pattern(regexp = "^[a-zA-Z\\d]{8,16}$", message = "비밀번호의 형식을 확인해주세요!")
     private String password;
+
+    @NotBlank(message = "비밀번호 확인을 입력해주세요!")
     private String passwordCheck;
 
-    public void signUpValidation(SignUpRequestDto dto){
-
-    }
     public void pwEncoding(String password){
         this.password = password;
     }
