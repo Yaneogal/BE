@@ -380,7 +380,7 @@ public class PostService {
             List<Map<String, String>> imgResult = new ArrayList<>();
             List<MultipartFile> files = new ArrayList<>();
             //사진을 뭔가 한개라도 넘겨줫을때만
-            if(!multipartFile.isEmpty()){
+            if(multipartFile != null){
                 for (int k = 0; k < placeRequestDto.get(i).getImgCount(); k++) {
                     files.add(multipartFile.get(count));
                     count++;
@@ -390,7 +390,7 @@ public class PostService {
             //장소 수 가 아직 기존장소 수 보다 작을때
             if(i < (places.size())) {
                 List<String> deleteImgUrl = checkImgUrl(placeRequestDto.get(i),places.get(i));
-                if(!multipartFile.isEmpty()){
+                if(multipartFile != null){
                     imgResult = getImageList(files);
                     List<String> imgUrls = new ArrayList<>(imgResult.size());
                     List<String> imgFileNames = new ArrayList<>(imgResult.size());
