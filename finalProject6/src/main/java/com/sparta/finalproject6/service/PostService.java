@@ -198,7 +198,7 @@ public class PostService {
 
         post.viewCountUp();
 
-        User user = userDetails.getUser();
+        User user = post.getUser();
 
         List<Comment> comments = commentRepository.findAllByPostId(postId);
         List<PostCommentResponseDto> commentList = new ArrayList<>();
@@ -274,6 +274,8 @@ public class PostService {
                 .modifiedAt(post.getModifiedAt())
                 .comments(commentList)
                 .place(placeResponseDtos)
+                .grade(user.getGrade())
+                .totalPoint(user.getTotalPoint())
                 .build();
 
         return new ResponseEntity<>(detailResponseDto, HttpStatus.OK);

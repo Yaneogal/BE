@@ -49,6 +49,8 @@ public class MypageService {
                 .nickname(found.getNickname())
                 .userImgUrl(found.getUserImgUrl())
                 .userInfo(found.getUserInfo())
+                .grade(found.getGrade())
+                .totalPoint(found.getTotalPoint())
                 .build();
     }
 
