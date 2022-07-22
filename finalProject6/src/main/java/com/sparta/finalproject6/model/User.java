@@ -59,6 +59,7 @@ public class User {
 
         return nextGrade;
     }
+
     public User(String username, String nickname, String password) {
         this.username = username;
         this.nickname = nickname;

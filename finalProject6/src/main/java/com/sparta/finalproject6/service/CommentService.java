@@ -63,13 +63,17 @@ public class CommentService {
         );
 
         User user = userRepository.findById(userDetails.getUser().getId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다"));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
         int commentCount = post.getCommentCount();
         post.setCommentCount(commentCount+1);
 
         Comment comment = new Comment(commentRequestDto.getComment(), post, user, user.getNickname(), user.getUserImgUrl());
         commentRepository.save(comment);
+
+        user.updatePoint(5);
+        user.availableGradeUp();
+        user.gradeUp();
 
         // commentCount++;
         // post.updateCommentCount(commentCount);
@@ -102,16 +106,23 @@ public class CommentService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
 
         Long userId = comment.getUser().getId();
-        Long user = userDetails.getUser().getId();
+        Long user1 = userDetails.getUser().getId();
         int commentCount = comment.getPost().getCommentCount();
         comment.getPost().setCommentCount(commentCount-1);
-         comment.getPost().updateCommentCount(commentCount);
+        comment.getPost().updateCommentCount(commentCount);
 
-        if (userId.equals(user)) {
+        if (userId.equals(user1)) {
             commentRepository.delete(comment);
+
+            User user = userRepository.findById(userDetails.getUser().getId())
+                    .orElseThrow(() -> new IllegalArgumentException("User not found."));
+
+            user.updatePoint(-5);
+            user.availableGradeUp();
+            user.gradeUp();
+
         } else {
             throw new IllegalArgumentException("댓글을 작성한 유저가 아닙니다.");
         }
     }
-
 }

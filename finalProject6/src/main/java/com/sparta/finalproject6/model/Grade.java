@@ -7,7 +7,9 @@ public enum Grade {
     DIAMOND(600, MASTER),
     GOLD(400, DIAMOND),
     SILVER(200, GOLD),
-    BRONZE(50, SILVER);
+    BRONZE(50, SILVER),
+
+    NORMAL(10, BRONZE);
 
     private final int nextPoint;
     private final Grade nextGrade;
@@ -50,6 +52,10 @@ public enum Grade {
             return BRONZE.nextGrade;
         }
 
-        return BRONZE;
+        if(totalPoint >= Grade.NORMAL.nextPoint) {
+            return NORMAL.nextGrade;
+        }
+
+        return NORMAL;
     }
 }
