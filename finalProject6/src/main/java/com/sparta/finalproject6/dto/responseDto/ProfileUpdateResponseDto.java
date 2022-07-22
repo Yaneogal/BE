@@ -1,5 +1,6 @@
 package com.sparta.finalproject6.dto.responseDto;
 
+import com.sparta.finalproject6.model.Grade;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,5 +16,7 @@ public class ProfileUpdateResponseDto {
     private String userImgUrl;
     private String nickname;
     private String userInfo;
+    private Grade grade;
+    private int totalPoint;
     // private List<MYPostListDto> myPostList;
 }
