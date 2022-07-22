@@ -6,7 +6,7 @@ on:
     branches: [ main ]
 
 env:
-  PROJECT_NAME: hanghae99-final-6
+  PROJECT_NAME: hanghae99-final-6/BE
   BUCKET_NAME: testairbnbbucket
   CODE_DEPLOY_APP_NAME: Github-Actions-Deploy
   DEPLOYMENT_GROUP_NAME: Github-Actions-Group
