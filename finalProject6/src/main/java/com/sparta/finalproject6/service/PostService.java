@@ -157,6 +157,8 @@ public class PostService {
         content.forEach(c -> {
             Post post = postRepository.findById(c.getPostId())
                     .orElseThrow(() -> new IllegalArgumentException("post does not exist"));
+            c.setGrade(post.getUser().getGrade());
+            c.setTotalPoint(post.getUser().getTotalPoint());
             List<Place> place = placeRepository.findAllByPostId(post.getId());
             List<String> imgUrl = new ArrayList<>();
             for (int i = 0; i < place.size(); i++) {
