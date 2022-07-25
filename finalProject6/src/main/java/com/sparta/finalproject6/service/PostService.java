@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -292,7 +293,7 @@ public class PostService {
 
     // 포스트 작성
     @Transactional
-    public void addPost(UserDetailsImpl userDetails, PostRequestDto requestDto, List<PlaceRequestDto> placeRequestDto, List<MultipartFile> multipartFile) {
+    public void addPost(UserDetailsImpl userDetails, PostRequestDto requestDto, List<PlaceRequestDto> placeRequestDto, List<MultipartFile> multipartFile) throws IOException{
 
         User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
@@ -366,7 +367,7 @@ public class PostService {
 
     // 포스트 수정
     @Transactional
-    public void modifyPost(UserDetailsImpl userDetails, PostRequestDto requestDto, List<PlaceRequestDto> placeRequestDto, List<MultipartFile> multipartFile, Long postId) {
+    public void modifyPost(UserDetailsImpl userDetails, PostRequestDto requestDto, List<PlaceRequestDto> placeRequestDto, List<MultipartFile> multipartFile, Long postId) throws IOException{
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 게시글입니다.")
         );
@@ -574,7 +575,7 @@ public class PostService {
     }
 
     //이미지를 여러장 받기위한 메서드
-    public List<Map<String , String>> getImageList(List<MultipartFile> images){
+    public List<Map<String , String>> getImageList(List<MultipartFile> images) throws IOException {
         List<Map<String,String>> imagesResult = new ArrayList<>();
         Map<String,String> mapImageResult = new HashMap<>();
 
@@ -586,7 +587,7 @@ public class PostService {
     }
 
     //포스트 수정 API에서 이미지 수정을 위한 메서드
-    public List<Map<String, String>> updateImage(Place place, List<MultipartFile> images) {
+    public List<Map<String, String>> updateImage(Place place, List<MultipartFile> images) throws IOException{
         List<Map<String, String>> imagesResult = new ArrayList<>();
         Map<String, String> mapImageResult = new HashMap<>();
 

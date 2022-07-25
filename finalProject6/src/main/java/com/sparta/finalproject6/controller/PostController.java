@@ -115,7 +115,7 @@ public class PostController {
                                              @RequestParam("themeCategory") List<ThemeCategoryDto> themeCategory,
                                              @RequestParam("priceCategory") String priceCategory,
                                              @RequestPart("places") List<PlaceRequestDto> placeRequestDto,
-                                             @RequestPart("imgUrl") List<MultipartFile> multipartFile) {
+                                             @RequestPart("imgUrl") List<MultipartFile> multipartFile) throws IOException{
         log.info("postUserDetails = {}", userDetails);
         PostRequestDto requestDto = new PostRequestDto(title,content,regionCategory,priceCategory,themeCategory);
         try{
@@ -136,7 +136,7 @@ public class PostController {
                                              @RequestParam("themeCategory") List<ThemeCategoryDto> themeCategory,
                                              @RequestParam("priceCategory") String priceCategory,
                                              @RequestPart("places") List<PlaceRequestDto> placeRequestDto,
-                                             @RequestPart(value = "imgUrl",required = false) List<MultipartFile> multipartFile){
+                                             @RequestPart(value = "imgUrl",required = false) List<MultipartFile> multipartFile) throws IOException{
         PostRequestDto requestDto = new PostRequestDto(title,content,regionCategory,priceCategory,themeCategory);
         try{
             postService.modifyPost(userDetails, requestDto, placeRequestDto,multipartFile,postId);
