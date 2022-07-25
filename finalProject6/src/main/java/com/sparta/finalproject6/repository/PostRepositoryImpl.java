@@ -21,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.sparta.finalproject6.model.QPlace.place;
 import static com.sparta.finalproject6.model.QPost.post;
 import static com.sparta.finalproject6.model.QThemeCategory.themeCategory1;
 
@@ -47,9 +48,11 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                         post.modifiedAt
                 ))
                 .from(post)
-                .leftJoin(post.user)
+                .innerJoin(post.user)
                 .leftJoin(themeCategory1)
                 .on(post.id.eq(themeCategory1.post.id))
+                .leftJoin(place)
+                .on(themeCategory1.post.id.eq(place.post.id))
                 .where(keywordFinder(keyword))
                 .groupBy(post.id)
                 .orderBy(getOrderSpecifier(pageable.getSort()).stream().toArray(OrderSpecifier[]::new))
@@ -120,6 +123,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                         post.commentCount
                 ))
                 .from(post)
+                .innerJoin(post.user)
                 .where(post.user.id.eq(userId))
                 .orderBy(getOrderSpecifier(pageable.getSort()).stream().toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset())
@@ -150,6 +154,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                         post.commentCount
                 ))
                 .from(post)
+                .innerJoin(post.user)
                 .where(post.id.in(postsId))
                 .orderBy(getOrderSpecifier(pageable.getSort()).stream().toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset())
@@ -171,7 +176,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
         return post.title.contains(keyword)
                 .or(post.regionCategory.contains(keyword))
                 .or(post.priceCategory.contains(keyword))
-                .or(themeCategory1.themeCategory.contains(keyword));
+                .or(themeCategory1.themeCategory.contains(keyword))
+                .or(place.place_name.contains(keyword));
     }
 
     private BooleanExpression regionFilter(String region) {
