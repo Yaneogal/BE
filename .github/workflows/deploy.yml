@@ -7,7 +7,7 @@ on:
 
 env:
 #   PROJECT_NAME: hanghae99-final-6/BE
-  BUCKET_NAME: testairbnbbucket
+  BUCKET_NAME: cicdbucket6
   CODE_DEPLOY_APP_NAME: Github-Actions-Deploy
   DEPLOYMENT_GROUP_NAME: Github-Actions-Group
 
@@ -46,7 +46,7 @@ jobs:
           aws-region: ap-northeast-2
       
       - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$BUCKET_NAME/$GITHUB_SHA.zip
         working-directory: ./finalProject6
 
       - name: Code Deploy
