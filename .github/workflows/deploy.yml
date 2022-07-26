@@ -54,7 +54,7 @@ jobs:
           aws-region: ap-northeast-2
       
       - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$BUCKET_NAME/$GITHUB_SHA.zip
+        run: aws deploy push --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$BUCKET_NAME/$GITHUB_SHA.zip
         working-directory: ./finalProject6
 
       - name: Code Deploy
