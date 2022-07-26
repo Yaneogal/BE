@@ -159,4 +159,9 @@ public class PostController {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/api/test")
+    public String test() {
+        return "ci/cd 테스트 잘되나여?";
+    }
 }
