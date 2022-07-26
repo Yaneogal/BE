@@ -59,7 +59,8 @@ public class PostService {
             for (int i = 0; i < place.size(); i++) {
                 imgUrl.addAll(place.get(i).getImgUrl());
             }
-            c.setImgUrl(imgUrl);
+            c.setGrade(post.getUser().getGrade());
+            c.setTotalPoint(post.getUser().getTotalPoint());
 
             System.out.println("imgUrl = " + imgUrl);
 
