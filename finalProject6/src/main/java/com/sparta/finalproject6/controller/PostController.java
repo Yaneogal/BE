@@ -162,6 +162,6 @@ public class PostController {
 
     @GetMapping("/api/test")
     public String test() {
-        return "ci/cd 테스트 잘되나여?";
+        return "갓형준짱짱맨!!!!";
     }
 }
