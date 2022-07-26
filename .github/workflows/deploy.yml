@@ -7,7 +7,7 @@ on:
 
 env:
 #   PROJECT_NAME: hanghae99-final-6/BE
-  BUCKET_NAME: testairbnbbucket
+  BUCKET_NAME: cicdbucket6
   CODE_DEPLOY_APP_NAME: Github-Actions-Deploy
   DEPLOYMENT_GROUP_NAME: Github-Actions-Group
 
