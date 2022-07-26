@@ -187,10 +187,8 @@ public class MypageService {
 
 
             List<Place> place = placeRepository.findAllByPostId(post.getId());
-            String imgUrl = null;
-            for (int i = 0; i < place.size(); i++) {
-                imgUrl = place.get(i).getImgUrl().get(0);
-            }
+            String imgUrl = place.get(0).getImgUrl().get(0);
+
             c.setImgUrl(imgUrl);
 
             List<ThemeCategoryDto> themeCategory = themeRepository.findByPost_Id(c.getPostId())
@@ -223,12 +221,9 @@ public class MypageService {
             Post post = postRepository.findById(c.getPostId())
                     .orElseThrow(() -> new IllegalArgumentException("post does not exist"));
 
-
             List<Place> place = placeRepository.findAllByPostId(post.getId());
-            String imgUrl = null;
-            for (int i = 0; i < place.size(); i++) {
-                imgUrl = place.get(i).getImgUrl().get(0);
-            }
+            String imgUrl = place.get(0).getImgUrl().get(0);
+
             c.setImgUrl(imgUrl);
 
             List<ThemeCategoryDto> themeCategory = themeRepository.findByPost_Id(c.getPostId())
