@@ -1,3 +1,4 @@
+#!/bin/bash
 REPOSITORY=/home/ubuntu/sparta
 cd $REPOSITORY
 
