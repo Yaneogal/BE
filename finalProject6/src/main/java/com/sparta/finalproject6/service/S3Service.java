@@ -38,14 +38,19 @@ public class S3Service {
         objectMetadata.setContentType(multipartFile.getContentType());
         objectMetadata.setContentLength(multipartFile.getSize());
 
+
         //fileName에 파라미터로 들어온 파일의 이름을 할당.
         String rawFileName = multipartFile.getOriginalFilename();
         String fileName = createFileName(rawFileName);
         try (InputStream inputStream = multipartFile.getInputStream()) {
-
+//            여기서부터 이미지 리사이징 코드
+            //마이페이지 사이즈 width : 355 , height : 221
+            //상세페이지 사이즈 width : 343 , height : 256
             BufferedImage srcImage = ImageIO.read(inputStream);
+
             System.out.println("srcImage = " + multipartFile.getSize());
             System.out.println("contentLength is same as getSize = " + objectMetadata.getContentLength());
+
             int targetHeight = 300;
             int width = (targetHeight*srcImage.getWidth())/srcImage.getHeight();
             int height = targetHeight;
@@ -71,6 +76,10 @@ public class S3Service {
             //amazonS3객체의 putObject 메서드로 db에 저장
             amazonS3.putObject(new PutObjectRequest(bucket, fileName, is, meta)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
+
+//            //기존코드
+//            amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
+//                    .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
         }
