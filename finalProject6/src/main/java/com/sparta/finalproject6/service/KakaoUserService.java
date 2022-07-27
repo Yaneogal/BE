@@ -51,6 +51,7 @@ public class KakaoUserService {
         body.add("grant_type", "authorization_code");
         body.add("client_id", "7548692288977811b3f5662db1d5d3ad");
         body.add("redirect_uri", "http://yaneogal.site/oauth/kakao/callback");
+        body.add("redirect_uri", "http://localhost:3000/oauth/kakao/callback");
         body.add("code", code);
 
         // HTTP 요청 보내기
