@@ -1,6 +1,7 @@
 package com.sparta.finalproject6.dto.responseDto;
 
 import com.sparta.finalproject6.dto.requestDto.ThemeCategoryDto;
+import com.sparta.finalproject6.model.Grade;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,8 +30,9 @@ public class PostDetailResponseDto {
     private LocalDateTime modifiedAt;
     private List<PostCommentResponseDto> comments;
 
-    private String restroom;
-    private List<String> restroomOption;
+    //TODO : 게시글 상세페이지 랭크, 점수 리턴
+    private Grade grade;
+    private int totalPoint;
 
     private List<PlaceResponseDto> place;
 }

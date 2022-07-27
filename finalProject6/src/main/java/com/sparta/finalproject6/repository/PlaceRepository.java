@@ -9,7 +9,8 @@ import java.util.List;
 
 public interface PlaceRepository extends JpaRepository<Place,Long> {
     void deleteAllByPostId(Long postId);
-
     @EntityGraph(attributePaths = "imgUrl")
     List<Place> findAllByPostId(Long postId);
+
+    Place findByPostId(Long postId);
 }

@@ -2,6 +2,7 @@ package com.sparta.finalproject6.dto.responseDto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import com.sparta.finalproject6.dto.requestDto.ThemeCategoryDto;
+import com.sparta.finalproject6.model.Grade;
 import com.sparta.finalproject6.model.Place;
 import lombok.Builder;
 import lombok.Data;
@@ -32,10 +33,12 @@ public class PostResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private List<PostCommentResponseDto> comments;
-//    private List<LoveResponseDto> loves;
+
+    private Grade grade;
+    private int totalPoint;
 
 
-    public PostResponseDto(Long postId, String nickName, String userImgUrl, String title, List<String> imgUrl, String content, int viewCount, int loveCount, int bookmarkCount, int commentCount, String regionCategory, String priceCategory, Boolean loveStatus, Boolean bookmarkStatus, List<ThemeCategoryDto> themeCategory, LocalDateTime createdAt, LocalDateTime modifiedAt, List<PostCommentResponseDto> comments) {
+    public PostResponseDto(Long postId, String nickName, String userImgUrl, String title, List<String> imgUrl, String content, int viewCount, int loveCount, int bookmarkCount, int commentCount, String regionCategory, String priceCategory, Boolean loveStatus, Boolean bookmarkStatus, List<ThemeCategoryDto> themeCategory, LocalDateTime createdAt, LocalDateTime modifiedAt, List<PostCommentResponseDto> comments,Grade grade , int totalPoint) {
         this.postId = postId;
         this.nickName = nickName;
         this.userImgUrl = userImgUrl;
@@ -54,6 +57,8 @@ public class PostResponseDto {
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
         this.comments = comments;
+        this.grade = grade;
+        this.totalPoint = totalPoint;
     }
 
     @QueryProjection

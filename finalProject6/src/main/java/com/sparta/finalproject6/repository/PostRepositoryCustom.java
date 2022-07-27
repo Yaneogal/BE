@@ -9,6 +9,7 @@ import org.springframework.data.domain.Slice;
 import java.util.List;
 
 public interface PostRepositoryCustom {
+    
     Slice<PostResponseDto> keywordSearch(String keyword, Pageable pageable);
     Slice<PostResponseDto> filterSearch(String region, String price, List<String> theme, Pageable pageable, UserDetailsImpl userDetails);
     Slice<MyPagePostResponseDto> getMyWrittenPosts(Long userId, Pageable pageable);

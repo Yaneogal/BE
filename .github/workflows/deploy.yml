@@ -6,8 +6,8 @@ on:
     branches: [ main ]
 
 env:
-  PROJECT_NAME: hanghae99-final-6
-  BUCKET_NAME: testairbnbbucket
+#   PROJECT_NAME: hanghae99-final-6/BE
+  BUCKET_NAME: cicdbucket6
   CODE_DEPLOY_APP_NAME: Github-Actions-Deploy
   DEPLOYMENT_GROUP_NAME: Github-Actions-Group
 
@@ -23,17 +23,29 @@ jobs:
         with:
           java-version: 11
 
+      - name: make application.properties
+        run: |
+          mkdir -p ./src/main/resources
+          cd ./src/main/resources
+          touch ./application.properties
+          echo "${{ secrets.PROPERTIES_PROD }}" > ./application.properties
+        shell: bash
+        working-directory: ./finalProject6
+
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
         shell: bash
+        working-directory: ./finalProject6
       
       - name: Build with Gradle
         run: ./gradlew build
         shell: bash
+        working-directory: ./finalProject6
         
       - name: Make Zip File
         run: zip -qq -r ./$GITHUB_SHA.zip .
         shell: bash
+        working-directory: ./finalProject6
       
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -43,7 +55,9 @@ jobs:
           aws-region: ap-northeast-2
       
       - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$BUCKET_NAME/$GITHUB_SHA.zip
+        working-directory: ./finalProject6
 
       - name: Code Deploy
-        run: aws deploy create-deployment --application-name $CODE_DEPLOY_APP_NAME --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name $DEPLOYMENT_GROUP_NAME --s3-location bucket=$BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip
+        run: aws deploy create-deployment --application-name $CODE_DEPLOY_APP_NAME --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name $DEPLOYMENT_GROUP_NAME --s3-location bucket=$BUCKET_NAME,key=$GITHUB_SHA.zip,bundleType=zip
+        working-directory: ./finalProject6
