@@ -59,7 +59,8 @@ public class PostService {
             for (int i = 0; i < place.size(); i++) {
                 imgUrl.addAll(place.get(i).getImgUrl());
             }
-            c.setImgUrl(imgUrl);
+            c.setGrade(post.getUser().getGrade());
+            c.setTotalPoint(post.getUser().getTotalPoint());
 
             System.out.println("imgUrl = " + imgUrl);
 
@@ -157,6 +158,8 @@ public class PostService {
         content.forEach(c -> {
             Post post = postRepository.findById(c.getPostId())
                     .orElseThrow(() -> new IllegalArgumentException("post does not exist"));
+            c.setGrade(post.getUser().getGrade());
+            c.setTotalPoint(post.getUser().getTotalPoint());
             List<Place> place = placeRepository.findAllByPostId(post.getId());
             List<String> imgUrl = new ArrayList<>();
             for (int i = 0; i < place.size(); i++) {
@@ -198,7 +201,7 @@ public class PostService {
 
         post.viewCountUp();
 
-        User user = userDetails.getUser();
+        User user = post.getUser();
 
         List<Comment> comments = commentRepository.findAllByPostId(postId);
         List<PostCommentResponseDto> commentList = new ArrayList<>();
@@ -274,6 +277,8 @@ public class PostService {
                 .modifiedAt(post.getModifiedAt())
                 .comments(commentList)
                 .place(placeResponseDtos)
+                .grade(user.getGrade())
+                .totalPoint(user.getTotalPoint())
                 .build();
 
         return new ResponseEntity<>(detailResponseDto, HttpStatus.OK);

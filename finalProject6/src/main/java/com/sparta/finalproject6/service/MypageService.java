@@ -51,6 +51,7 @@ public class MypageService {
                 .userInfo(found.getUserInfo())
                 .totalPoint(found.getTotalPoint())
                 .grade(found.getGrade())
+                .totalPoint(found.getTotalPoint())
                 .build();
     }
 

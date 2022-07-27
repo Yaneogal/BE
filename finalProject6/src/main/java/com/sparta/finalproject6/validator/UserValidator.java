@@ -25,7 +25,7 @@ public class UserValidator {
 
         if (!Pattern.matches("^[a-zA-Z0-9가-힣]{2,8}$", nickname)) {
             throw new IllegalArgumentException(
-                    "닉네임은 영문, 한글, 숫자로 이루어진 2~6자로 작성해주세요.");
+                    "닉네임은 영문, 한글, 숫자로 이루어진 2~8자로 작성해주세요.");
         }
     }
 }

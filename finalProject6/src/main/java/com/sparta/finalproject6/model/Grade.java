@@ -8,18 +8,20 @@ public enum Grade {
     GOLD(400, DIAMOND),
     SILVER(200, GOLD),
     BRONZE(50, SILVER),
-
     NORMAL(10, BRONZE);
 
     private final int nextPoint;
     private final Grade nextGrade;
 
     Grade(int nextPoint, Grade nextGrade) {
+
         this.nextPoint = nextPoint;
         this.nextGrade = nextGrade;
     }
 
+    // 회원등급 변경 가능여부
     public static boolean availableGradeUp(Grade grade, int totalPoint) {
+
         if(Objects.isNull(grade)) {
             return false;
         }
@@ -31,7 +33,9 @@ public enum Grade {
         return totalPoint >= grade.nextPoint;
     }
 
+    // 회원등급 변경시 필요한 조건
     static Grade getNextGrade(int totalPoint) {
+
         if(totalPoint >= Grade.MASTER.nextPoint) {
             return MASTER;
         }
