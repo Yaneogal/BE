@@ -7,6 +7,7 @@ import com.sparta.finalproject6.dto.responseDto.PlaceResponseDto;
 import com.sparta.finalproject6.dto.responseDto.PostCommentResponseDto;
 import com.sparta.finalproject6.dto.responseDto.PostDetailResponseDto;
 import com.sparta.finalproject6.dto.responseDto.PostResponseDto;
+import com.sparta.finalproject6.handler.exception.UserIdNotFoundException;
 import com.sparta.finalproject6.model.*;
 import com.sparta.finalproject6.repository.*;
 import com.sparta.finalproject6.security.UserDetailsImpl;
@@ -49,6 +50,7 @@ public class PostService {
         Slice<PostResponseDto> content = postRepository.keywordSearch(keyword, pageable);
 
         Long userId = userDetails.getUser().getId();
+        checkUserId(userId);
 
         content.forEach(c ->{
             Post post = postRepository.findById(c.getPostId())
@@ -60,8 +62,6 @@ public class PostService {
                 imgUrl.addAll(place.get(i).getImgUrl());
             }
             c.setImgUrl(imgUrl);
-
-            System.out.println("imgUrl = " + imgUrl);
 
             Optional<Bookmark> bookmark = bookmarkRepository.findByPostIdAndUserId(post.getId(),userId);
             if(bookmark.isPresent()){
@@ -153,6 +153,7 @@ public class PostService {
         Slice<PostResponseDto> content = postRepository.filterSearch(region, price, theme, pageable, userDetails);
 
         Long userId = userDetails.getUser().getId();
+        checkUserId(userId);
 
         content.forEach(c -> {
             Post post = postRepository.findById(c.getPostId())
@@ -199,6 +200,9 @@ public class PostService {
         );
 
         post.viewCountUp();
+
+        Long userId = userDetails.getUser().getId();
+        checkUserId(userId);
 
         User user = post.getUser();
 
@@ -260,8 +264,8 @@ public class PostService {
 
         PostDetailResponseDto detailResponseDto = PostDetailResponseDto.builder()
                 .postId(post.getId())
-                .nickname(post.getUser().getNickname())
-                .userImgUrl(post.getUser().getUserImgUrl())
+                .nickname(user.getNickname())
+                .userImgUrl(user.getUserImgUrl())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .regionCategory(post.getRegionCategory())
@@ -295,7 +299,7 @@ public class PostService {
     public void addPost(UserDetailsImpl userDetails, PostRequestDto requestDto, List<PlaceRequestDto> placeRequestDto, List<MultipartFile> multipartFile) {
 
         User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
+                () -> new UserIdNotFoundException("유저가 존재하지 않습니다.")
         );
 
         Post post = Post.builder()
@@ -600,6 +604,11 @@ public class PostService {
             imagesResult.add(mapImageResult);
         }
         return imagesResult;
+    }
+
+    public void checkUserId(Long userId) {
+        if (userId == null)
+            throw new UserIdNotFoundException("유효하지 않은 사용자 정보");
     }
 
     public static String convertLocalTimeToTime(LocalDateTime localDateTime) {
