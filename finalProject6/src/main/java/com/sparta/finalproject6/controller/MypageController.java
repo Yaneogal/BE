@@ -33,7 +33,7 @@ public class MypageController {
     // 마이페이지 회원정보 수정
     @PutMapping ("/api/user")
     public ResponseEntity<String> updateProfile (
-            @RequestPart("userImgUrl") MultipartFile multipartFile,
+            @RequestPart(value = "userImgUrl", required = false) MultipartFile multipartFile,
             @RequestParam("nickname") String nickname,
             @RequestParam("userInfo") String userInfo,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
