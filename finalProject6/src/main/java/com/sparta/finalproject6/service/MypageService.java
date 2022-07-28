@@ -109,8 +109,7 @@ public class MypageService {
         content.forEach(c -> {
             Post post = postRepository.findById(c.getPostId())
                     .orElseThrow(() -> new IllegalArgumentException("post does not exist"));
-
-
+            
             List<Place> place = placeRepository.findAllByPostId(post.getId());
             String imgUrl = place.get(0).getImgUrl().get(0);
 
