@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-public class Place{
+public class Place extends Timestamped{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PLACE_ID")

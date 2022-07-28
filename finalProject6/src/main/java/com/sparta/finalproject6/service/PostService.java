@@ -519,7 +519,7 @@ public class PostService {
                 });
     }
 
-    private List<String> checkImgUrl(PlaceRequestDto dto , Place place){
+    private List<String> checkImgUrl(PlaceRequestDto dto, Place place){
         //경우의 수
         //1. dto와 place의 이미지 url이 일치할 때  --> 변동없음
         //2. 나머지는 dto에 존재하지 않는 imgUrl은 지우고 일치하는건 유지 새로운건 추가

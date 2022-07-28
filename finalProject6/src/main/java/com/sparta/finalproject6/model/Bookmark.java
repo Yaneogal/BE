@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Bookmark {
+public class Bookmark extends Timestamped{
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
