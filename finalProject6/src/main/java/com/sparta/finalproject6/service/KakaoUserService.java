@@ -144,10 +144,4 @@ public class KakaoUserService {
         return kakaoUser;
     }
 
-//    private void forceLogin(User kakaoUser) {
-//        UserDetails userDetails = new MemberDetailServiceImpl();
-//        UserDetails userDetails = memberDetailService.loadUserByUsername(kakaoUser.getUsername());
-//        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//    }
 }

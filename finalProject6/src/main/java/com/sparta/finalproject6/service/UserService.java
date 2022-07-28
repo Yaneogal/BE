@@ -42,21 +42,6 @@ public class UserService {
 
         checkLogin(dto);
 
-//        HttpResponse httpResponse = new HttpResponse();
-//        Optional<User> user = userRepo.findByUsername(dto.getUsername());
-
-//        if(!user.isPresent()){
-//            status = HttpStatus.INTERNAL_SERVER_ERROR;
-//            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-//            message = "존재하지 않는 아이디입니다.";
-//        }
-//        else{
-//            if(!encoder.matches(dto.getPassword(),user.get().getPassword())){
-//                status = HttpStatus.BAD_REQUEST;
-//                statusCode = HttpStatus.BAD_REQUEST.value();
-//                message = "비밀번호가 일치하지 않습니다.";
-//            }
-//        }
 
         return HttpResponse.builder()
                 .status(status)

@@ -22,24 +22,18 @@ public class Comment extends Timestamped {
     private String nickname;
     @Column
     private String comment;
-
     @Column
     private String userImgUrl;
-
 
     @Column
     private int commentCount;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "POST_ID")
-//    @JsonBackReference
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
-//    @JsonBackReference // 순환참조 방지
-//    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User user;
 
     @Builder

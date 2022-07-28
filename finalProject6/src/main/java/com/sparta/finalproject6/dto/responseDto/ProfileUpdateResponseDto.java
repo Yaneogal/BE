@@ -18,5 +18,5 @@ public class ProfileUpdateResponseDto {
     private String userInfo;
     private Grade grade;
     private int totalPoint;
-    // private List<MYPostListDto> myPostList;
+
 }

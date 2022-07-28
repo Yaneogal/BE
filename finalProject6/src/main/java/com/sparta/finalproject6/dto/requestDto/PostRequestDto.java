@@ -16,14 +16,9 @@ public class PostRequestDto {
     private String title;
     private String content;
 
-//    private String imgUrl;
-
     private String regionCategory;
     private String priceCategory;
     private List<ThemeCategoryDto> themeCategories;
-    //화장실 추가
-//    private String restroom;
-//    private List<String> restroomOption;
 
 
     @Builder
@@ -34,8 +29,5 @@ public class PostRequestDto {
         this.priceCategory = priceCategory;
         this.themeCategories = themeCategories;
     }
-
-    //TODO : 20220701 restroom추가
-//    private String restroom;
 
 }
