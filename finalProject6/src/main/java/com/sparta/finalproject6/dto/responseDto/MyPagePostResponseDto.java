@@ -16,9 +16,11 @@ public class MyPagePostResponseDto {
     private Long postId;
     private Long userId;
     private String title;
+
     private String imgUrl;
     private String regionCategory;
     private String priceCategory;
+
     private List<ThemeCategoryDto> themeCategory;
     private int viewCount;
     private int loveCount;

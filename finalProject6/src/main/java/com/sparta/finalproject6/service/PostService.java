@@ -90,63 +90,6 @@ public class PostService {
         return new ResponseEntity(content, HttpStatus.OK);
     }
 
-//        List<Post> posts;
-//        if (keyword != null) {
-//            posts = postRepository.findSearchKeyword(keyword, pageable);
-//        } else {
-//            posts = postRepository.findAllByOrderByCreatedAtDesc(pageable);
-//        }
-
-//        Slice<Post> posts = postRepository.keywordSearch(keyword, pageable);
-
-//        Long userId = userDetails.getUser().getId();
-//        List<PostResponseDto> postList = new ArrayList<>();
-//
-//        Slice<PostResponseDto> postSlice = null;
-//        for (Post post : posts) {
-//            Optional<Love> love = loveRepository.findByPostIdAndUserId(post.getId(), userId);
-//            if (love.isPresent()) {
-//                post.setIsLove(true);
-//            }
-//
-//            List<ThemeCategory> themes = post.getThemeCategories();
-//            List<ThemeCategoryDto> themesToDto = themes.stream()
-//                    .map(t ->
-//                            new ThemeCategoryDto(t.getThemeCategory())
-//                    )
-//                    .collect(Collectors.toList());
-//
-//            post.getImgUrl().get(0);
-//            PostResponseDto postResponseDto = PostResponseDto.builder()
-//                    .postId(post.getId())
-//                    .nickName(post.getUser().getNickname())
-//                    .userImgUrl(post.getUser().getUserImgUrl())
-//                    .title(post.getTitle())
-//                    .imgUrl(post.getImgUrl())
-//                    .content(post.getContent())
-//                    .loveStatus(post.getIsLove())
-//                    .regionCategory(post.getRegionCategory())
-//                    .priceCategory(post.getPriceCategory())
-//                    .themeCategory(themesToDto)
-//                    .viewCount(post.getViewCount())
-//                    .loveCount(post.getLoveCount())
-//                    .bookmarkCount(post.getBookmarkCount())
-//                    .createdAt(post.getCreatedAt())
-//                    .modifiedAt(post.getModifiedAt())
-//                    .build();
-//
-//            postList.add(postResponseDto);
-//            postSlice = new SliceImpl<>(postList);
-//        }
-
-
-//    public Page<Post> getAllPosts(int page, int size, String sortBy, boolean isAsc) {
-//        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
-//        Sort sort = Sort.by(direction, sortBy);
-//        org.springframework.data.domain.Pageable pageable = PageRequest.of(page, size, sort);
-//
-//        return postRepository.findAll(pageable);
-//    }
 
     //필터 적용 게시글 조회
     @Transactional(readOnly = true)
@@ -289,12 +232,6 @@ public class PostService {
         return new ResponseEntity<>(detailResponseDto, HttpStatus.OK);
     }
 
-    // 조회수 Views counting
-//    @Transactional
-//    public int updateView(Long postId) {
-//        Optional<Post> post = postRepository.findById(postId);
-//        return postRepository.updateView(postId);
-//    }
 
     // 포스트 작성
     @Transactional
@@ -389,7 +326,7 @@ public class PostService {
 //          }
             List<Map<String, String>> imgResult = new ArrayList<>();
             List<MultipartFile> files = new ArrayList<>();
-            //사진을 뭔가 한개라도 넘겨줫을때만
+            //사진을 한개 넘겨줫을때
             if(multipartFile != null){
                 for (int k = 0; k < placeRequestDto.get(i).getImgCount(); k++) {
                     files.add(multipartFile.get(count));
@@ -452,62 +389,6 @@ public class PostService {
                 placeRepository.save(place);
             }
         }
-
-
-//            //장소 수 가 아직 기존장소 수 보다 작을때
-//            if(i < (places.size())) {
-//                if(multipartFile != null){
-//                    imgResult = updateImage(places.get(i),files);
-//                    List<String> imgUrls = new ArrayList<>(imgResult.size());
-//                    List<String> imgFileNames = new ArrayList<>(imgResult.size());
-//
-//                    for (Map<String, String> getImage : imgResult) {
-//                        imgUrls.add(getImage.get("url"));
-//                        imgFileNames.add(getImage.get("fileName"));
-//                    }
-//                    places.get(i).updatePlaceImage(imgUrls, imgFileNames);
-//                }
-//
-//                places.get(i).updatePlace(placeRequestDto.get(i));
-//
-//
-//                //수정된 내용이 기존내용보다 숫자가 적을때
-//                if(i == (placeRequestDto.size()-1)){
-//                    for (int j = i+1; j < places.size(); j++) {
-//                        placeRepository.delete(places.get(j));
-//                    }
-//                }
-//            }
-//
-//            //수정해서 장소가 더 늘어났을때는 등록해주기
-//            else {
-//                imgResult = getImageList(files);
-//                List<String> imgUrls = new ArrayList<>(imgResult.size());
-//                List<String> imgFileNames = new ArrayList<>(imgResult.size());
-//                for (Map<String, String> getImage : imgResult) {
-//                    imgUrls.add(getImage.get("url"));
-//                    imgFileNames.add(getImage.get("fileName"));
-//                }
-//                Place place = Place.builder()
-//                        .addressName(placeRequestDto.get(i).getAddress_name())
-//                        .categoryGroupCode(placeRequestDto.get(i).getCategory_group_code())
-//                        .categoryGroupName(placeRequestDto.get(i).getCategory_name())
-//                        .categoryName(placeRequestDto.get(i).getCategory_name())
-//                        .distance(placeRequestDto.get(i).getDistance())
-//                        .imgUrl(imgUrls)
-//                        .imgFileName(imgFileNames)
-//                        .id(placeRequestDto.get(i).getId())
-//                        .phone(placeRequestDto.get(i).getPhone())
-//                        .place_name(placeRequestDto.get(i).getPlace_name())
-//                        .place_url(placeRequestDto.get(i).getPlace_url())
-//                        .road_address_name(placeRequestDto.get(i).getRoad_address_name())
-//                        .x(placeRequestDto.get(i).getX())
-//                        .y(placeRequestDto.get(i).getY())
-//                        .post(post)
-//                        .build();
-//                placeRepository.save(place);
-//            }
-//        }
 
         post.update(requestDto);
 
@@ -591,22 +472,6 @@ public class PostService {
         return imagesResult;
     }
 
-    //포스트 수정 API에서 이미지 수정을 위한 메서드
-    public List<Map<String, String>> updateImage(Place place, List<MultipartFile> images) {
-        List<Map<String, String>> imagesResult = new ArrayList<>();
-        Map<String, String> mapImageResult = new HashMap<>();
-
-        //기존 이미지 제거
-        for (int i = 0; i < place.getImgFileName().size(); i++) {
-            s3Service.deleteFile(place.getImgFileName().get(i));
-        }
-        //새로 들어온 이미지들 업로드
-        for (int i = 0; i < images.size(); i++) {
-            mapImageResult = s3Service.uploadFile(images.get(i));
-            imagesResult.add(mapImageResult);
-        }
-        return imagesResult;
-    }
 
     public void checkUserId(Long userId) {
         if (userId == null)

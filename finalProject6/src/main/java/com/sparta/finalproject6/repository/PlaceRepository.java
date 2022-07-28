@@ -12,5 +12,4 @@ public interface PlaceRepository extends JpaRepository<Place,Long> {
     @EntityGraph(attributePaths = "imgUrl")
     List<Place> findAllByPostId(Long postId);
 
-    Place findByPostId(Long postId);
 }

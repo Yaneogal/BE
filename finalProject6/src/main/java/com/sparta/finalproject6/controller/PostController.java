@@ -33,26 +33,9 @@ public class PostController {
                                                               @AuthenticationPrincipal UserDetailsImpl userDetails,
                                                               Pageable pageable) {
 
-        System.out.println("----------------------------------------------");
-        System.out.println("keyword is " + keyword);
-        System.out.println("sort is " + pageable.getSort());
-        System.out.println("page size is " + pageable.getPageSize());
-        System.out.println("page number is " + pageable.getPageNumber());
-        System.out.println("----------------------------------------------");
-
         return postService.getPosts(keyword, pageable, userDetails);
     }
 
-//    @GetMapping("/api/admin/posts")
-//    public Page<Post> getAllProducts(
-//            @RequestParam("page") int page,
-//            @RequestParam("size") int size,
-//            @RequestParam("sortBy") String sortBy,
-//            @RequestParam("isAsc") boolean isAsc
-//    ) {
-//        page = page -1;
-//        return postService.getAllPosts(page, size, sortBy, isAsc);
-//    }
 
     //필터 적용된 게시물 조회
     @GetMapping("/api/posts/filter")
@@ -61,17 +44,6 @@ public class PostController {
                                                                  @RequestParam(value = "theme") List<String> theme,
                                                                  Pageable pageable,
                                                                  @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
-        System.out.println("----------------------------------------------");
-        System.out.println("region is " + region);
-        System.out.println("price is " + price);
-        for (String s : theme) {
-            System.out.println("theme is " + s);
-        }
-        System.out.println("sort is " + pageable.getSort());
-        System.out.println("page size is " + pageable.getPageSize());
-        System.out.println("page number is " + pageable.getPageNumber());
-        System.out.println("----------------------------------------------");
 
         return postService.getFilterPosts(region, price, theme, pageable, userDetails);
     }
@@ -88,18 +60,7 @@ public class PostController {
     }
 
 
-    // 조회수 Counting
-//    @GetMapping("api/posts/read/{postId}")
-//    public String updateView(@PathVariable Long postId, Model model) {
-//        PostResponseDto dto = PostResponseDto.builder().build();
-//        postService.updateView(postId);
-//        model.addAttribute("post", dto);
-//
-//        return "post-read";
-//    }
-
     // 포스트 등록
-    // form-data 받아오는 형식으로 변경
     @PostMapping("api/post")
     public ResponseEntity<String> createPost(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                              @RequestParam("title") String title,
@@ -118,6 +79,7 @@ public class PostController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
 
     // 포스트 수정
     @PutMapping("/api/post/{postId}")
@@ -140,6 +102,7 @@ public class PostController {
 
     }
 
+
     // 포스트 삭제
     @DeleteMapping("/api/post/{postId}")
     public ResponseEntity<String> deletePost(@AuthenticationPrincipal UserDetailsImpl userDetails ,
@@ -153,9 +116,4 @@ public class PostController {
         }
     }
 
-    @GetMapping("/api/test")
-    public String test() {
-
-        return "CICD 테스트!!";
-    }
 }
