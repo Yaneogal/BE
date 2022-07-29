@@ -159,9 +159,10 @@ public class PostService {
 
             PostCommentResponseDto postCommentResponseDto = PostCommentResponseDto.builder()
                     .commentId(comment.getId())
-                    .userImgUrl(comment.getUserImgUrl())
+                    .userId(comment.getUser().getId())
+                    .userImgUrl(comment.getUser().getUserImgUrl())
+                    .nickname(comment.getUser().getNickname())
                     .comment(comment.getComment())
-                    .nickname(comment.getNickname())
                     .createdAt(createdAt)
                     .build();
             commentList.add(postCommentResponseDto);

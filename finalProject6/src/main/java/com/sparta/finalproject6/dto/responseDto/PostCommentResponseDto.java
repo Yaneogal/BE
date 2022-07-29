@@ -9,6 +9,7 @@ public class
 PostCommentResponseDto {
 
     private Long commentId;
+    private Long userId;
     private String nickname;
     private String userImgUrl;
     private String comment;
