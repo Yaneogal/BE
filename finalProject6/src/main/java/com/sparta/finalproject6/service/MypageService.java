@@ -48,6 +48,7 @@ public class MypageService {
 
         return ProfileUpdateResponseDto.builder()
                 .nickname(found.getNickname())
+                .userId(found.getId())
                 .userImgUrl(found.getUserImgUrl())
                 .userInfo(found.getUserInfo())
                 .totalPoint(found.getTotalPoint())
