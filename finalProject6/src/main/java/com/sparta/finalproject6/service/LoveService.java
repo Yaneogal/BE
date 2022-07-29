@@ -10,7 +10,6 @@ import com.sparta.finalproject6.repository.UserRepository;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,13 +20,11 @@ import java.util.Optional;
 public class LoveService {
 
     private final LoveRepository loveRepo;
-
     private final UserRepository userRepo;
     private final PostRepository postRepo;
 
 
     //좋아요 등록 or 취소
-    //이미 좋아요가 되어있으면 취소하기
     @Transactional
     public Boolean love(UserDetailsImpl userDetails , Long postId){
         HttpStatus result = HttpStatus.OK;

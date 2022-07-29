@@ -2,13 +2,15 @@ package com.sparta.finalproject6.service;
 
 import com.sparta.finalproject6.dto.requestDto.ProfileUpdateRequestDto;
 import com.sparta.finalproject6.dto.requestDto.ThemeCategoryDto;
-import com.sparta.finalproject6.dto.responseDto.*;
+import com.sparta.finalproject6.dto.responseDto.MyPagePostResponseDto;
+import com.sparta.finalproject6.dto.responseDto.ProfileUpdateResponseDto;
 import com.sparta.finalproject6.model.*;
 import com.sparta.finalproject6.repository.*;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import com.sparta.finalproject6.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -94,89 +95,12 @@ public class MypageService {
 
             user.updateUser(updateDto.getNickname(), updateDto.getUserInfo(), userImgUrl);
 
-
         }
 
-        // String userInfo = updateDto.getUserInfo();
     }
 
 
-    // 내가 작성한 포스트 리스트
-    @Transactional(readOnly = true)
-    public List<MYPostListDto> getMyPostList (UserDetailsImpl userDetails) throws IllegalArgumentException { //int pageNo, int sizeNo,
-
-        User user = userRepository.findById(userDetails.getUser().getId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-
-//        User user = userDetails.getUser();
-//        Pageable sortedByModifiedAtDesc = PageRequest.of(0, 6, Sort.by("modifiedAt").descending());
-//        PageRequest pegeable = PageRequest.of(pageNo, sizeNo);
-
-        List<MYPostListDto> myPostList = new ArrayList<>();
-//        List<Post> myPost = postRepository.findAllByUserOrderByCreatedAtDesc(user);
-        List<Post> myPost = postRepository.findAllByUserIdOrderByCreatedAtDesc(user.getId());
-
-        for (Post post : myPost) {
-
-            MYPostListDto postDto = MYPostListDto.builder()
-                    .postId(post.getId())
-                    .userId(post.getUser().getId())
-                    .title(post.getTitle())
-//                    .imgUrl(post.getPlace().get(0).getImgUrl().get(0))
-                    .regionCategory(post.getRegionCategory())
-                    .priceCategory(post.getPriceCategory())
-//                    .themeCategory(post.getThemeCategories())
-                    .loveCount(post.getLoveCount())
-//                    .commentCount(post.getCommentCount())
-                    .build();
-            myPostList.add(postDto);
-        }
-        return myPostList;
-    }
-
-
-    // 내가 Bookmark 한 포스트 리스트
-    @Transactional(readOnly = true)
-    public List<MyBookmarkListDto> getMyBookmark(UserDetailsImpl userDetails) {
-
-        User user = userDetails.getUser();
-        Long userId = user.getId();
-
-        // Pageable sortedByModifiedAtDesc = PageRequest.of(pageNo, sizeNo, Sort.by("modifiedAt").descending());
-
-        // 북마크 한 포스트 리스트
-        List<MyBookmarkListDto> bookmarkList = new ArrayList<>();
-
-        // 북마크 entity에서 북마크 한 포스트 가져오기
-        List<Bookmark> bookmarks = bookmarkRepository.findAllByUserId(userDetails.getUser().getId());
-
-//        Pageable paging = PageRequest.of(0,6,Sort.Direction.DESC);
-
-        for (Bookmark bookmark : bookmarks) {
-            Optional<Post> postOptional = postRepository.findById(bookmark.getPostId());
-            if (postOptional.isPresent()) {
-                Post post = postOptional.get();
-                post.setIsBookmark(true);
-
-                MyBookmarkListDto myBookmarkListDto = MyBookmarkListDto.builder()
-                        .postId(post.getId())
-                        .userId(post.getUser().getId())
-                        .title(post.getTitle())
-//                        .imgUrl(post.getPlace().get(0).getImgUrl().get(0))
-                        .regionCategory(post.getRegionCategory())
-                        .priceCategory(post.getPriceCategory())
-//                        .themeCategory(post.getThemeCategories())
-                        .loveCount(post.getLoveCount())
-//                        .commentCount(post.getCommentCount())
-                        .build();
-                bookmarkList.add(myBookmarkListDto);
-            }
-        }
-        return bookmarkList;
-    }
-
-
-    //내가 작성한 게시글만 조회(이호진)
+    // 내가 작성한 포스트 리스트 조회
     @Transactional(readOnly = true)
     public ResponseEntity<Slice<MyPagePostResponseDto>> getMyWrittenPosts(UserDetailsImpl userDetails, Pageable pageable) {
         Long userId = userDetails.getUser().getId();
@@ -185,8 +109,7 @@ public class MypageService {
         content.forEach(c -> {
             Post post = postRepository.findById(c.getPostId())
                     .orElseThrow(() -> new IllegalArgumentException("post does not exist"));
-
-
+            
             List<Place> place = placeRepository.findAllByPostId(post.getId());
             String imgUrl = place.get(0).getImgUrl().get(0);
 
@@ -204,7 +127,7 @@ public class MypageService {
 
     }
 
-    //내가 북마크한 게시글만 조회(이호진)
+    //내가 북마크한 게시글 조회
     @Transactional(readOnly = true)
     public ResponseEntity<Slice<MyPagePostResponseDto>> getMyBookmarkPosts(UserDetailsImpl userDetails, Pageable pageable) {
 
@@ -237,7 +160,5 @@ public class MypageService {
 
         return new ResponseEntity<>(content, HttpStatus.OK);
     }
-
-
 
 }

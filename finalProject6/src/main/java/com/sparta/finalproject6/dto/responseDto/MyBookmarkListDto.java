@@ -1,9 +1,7 @@
 package com.sparta.finalproject6.dto.responseDto;
 
-import com.sparta.finalproject6.model.ThemeCategory;
 import lombok.*;
 
-import java.util.List;
 
 @Builder
 @Getter
@@ -17,13 +15,9 @@ public class MyBookmarkListDto {
     private String title;
     private String imgUrl;
     private int viewCount;
-
     private int loveCount;
-    // private int bookmarkCount;
     private int commentCount;
     private String regionCategory;
     private String priceCategory;
-//    private List<ThemeCategory> themeCategory;
-
 
 }

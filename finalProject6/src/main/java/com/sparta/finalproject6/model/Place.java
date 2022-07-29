@@ -1,8 +1,10 @@
 package com.sparta.finalproject6.model;
 
 import com.sparta.finalproject6.dto.requestDto.PlaceRequestDto;
-import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.File;
@@ -13,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-public class Place{
+public class Place extends Timestamped{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PLACE_ID")
@@ -46,7 +48,7 @@ public class Place{
     @CollectionTable(name = "placeImagesUrl",joinColumns = {@JoinColumn(name = "place_id",referencedColumnName = "PLACE_ID")})
     private List<String> imgUrl;
 
-    //S3에서 기존 파일을 삭제하기 위해 추가한 파일네임.
+    //S3에서 기존 파일을 삭제하기 위해 추가한 파일네임
     @Column
     @ElementCollection
     @CollectionTable(name = "placeImagesFileName",joinColumns = {@JoinColumn(name = "place_id",referencedColumnName = "PLACE_ID")})

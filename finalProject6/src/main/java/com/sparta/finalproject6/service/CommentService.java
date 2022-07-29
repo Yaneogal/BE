@@ -10,8 +10,6 @@ import com.sparta.finalproject6.repository.PostRepository;
 import com.sparta.finalproject6.repository.UserRepository;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +34,7 @@ public class CommentService {
                 () -> new IllegalArgumentException("게시글이 없습니다.")
         );
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
-//        List<Comment> comments = post.getComments();
+
         List<Comment> comments = commentRepository.findAllByPostIdOrderByCreatedAtDesc(postId);
 
 
@@ -75,25 +73,8 @@ public class CommentService {
         user.availableGradeUp();
         user.gradeUp();
 
-        // commentCount++;
-        // post.updateCommentCount(commentCount);
-
     }
 
-    // 댓글 수정
-//    public void updateComment(Long commentId, CommentRequestDto requestDto, UserDetailsImpl userDetails) {
-//        Comment comment = commentRepository.findById(commentId).orElseThrow(
-//                () -> new NullPointerException("댓글이 없습니다.")
-//        );
-//        String username = comment.getUser().getUsername();
-//        if (username.equals(userDetails.getUsername())) {
-//            comment.setComment(requestDto.getComment());
-//            commentRepository.save(comment);
-//        }
-//        else {
-//            throw new IllegalArgumentException("본인이 작성한 댓글만 수정할 수 있습니다.");
-//        }
-//    }
 
     // 댓글 삭제
     @Transactional

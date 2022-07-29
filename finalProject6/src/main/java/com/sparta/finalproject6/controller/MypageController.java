@@ -33,7 +33,7 @@ public class MypageController {
     // 마이페이지 회원정보 수정
     @PutMapping ("/api/user")
     public ResponseEntity<String> updateProfile (
-            @RequestPart("userImgUrl") MultipartFile multipartFile,
+            @RequestPart(value = "userImgUrl", required = false) MultipartFile multipartFile,
             @RequestParam("nickname") String nickname,
             @RequestParam("userInfo") String userInfo,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -47,21 +47,8 @@ public class MypageController {
         }
     }
 
-    // 마이페이지 내가 쓴 게시글
-//    @GetMapping("/api/user/mypost")
-//    public ResponseEntity<List<MYPostListDto>> getMyPostList (
-//            @AuthenticationPrincipal UserDetailsImpl userDetails) { //@RequestParam int pageNo,
-//        //@RequestParam int sizeNo,
-//        // User user = userDetails.getUser();
-//        try {
-//            List<MYPostListDto> myPostListDto = mypageService.getMyPostList(userDetails); //pageNo, sizeNo,
-//            return new ResponseEntity<>(myPostListDto, HttpStatus.OK);
-//        } catch (IllegalArgumentException e) {
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
-//    }
 
-    // 마이페이지 내가 쓴 게시글(이호진)
+    // 마이페이지 내가 쓴 게시글
     @GetMapping("/api/user/mypost")
     public ResponseEntity<Slice<MyPagePostResponseDto>> getMyWrittenPosts(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                                           Pageable pageable) {
@@ -69,7 +56,7 @@ public class MypageController {
         return mypageService.getMyWrittenPosts(userDetails, pageable);
     }
 
-    //마이페이지 내가 북마크 한 게시글(이호진)
+    //마이페이지 내가 북마크 한 게시글
     @GetMapping("/api/user/mybookmark")
     public ResponseEntity<Slice<MyPagePostResponseDto>> getMyBookmarkPosts(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                                            Pageable pageable) {
@@ -77,13 +64,4 @@ public class MypageController {
         return mypageService.getMyBookmarkPosts(userDetails, pageable);
     }
 
-    // 마이페이지 내가 북마크 한 게시글
-//    @GetMapping("/api/user/mybookmark")
-//    public ResponseEntity<List<MyBookmarkListDto>> getMyBookmarkList (
-//            @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//
-//            List<MyBookmarkListDto> myBookmarkListDto = mypageService.getMyBookmark(userDetails);
-//            return new ResponseEntity<>(myBookmarkListDto, HttpStatus.OK);
-//
-//    }
 }

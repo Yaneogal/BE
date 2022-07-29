@@ -3,10 +3,8 @@ package com.sparta.finalproject6.dto.responseDto;
 import com.querydsl.core.annotations.QueryProjection;
 import com.sparta.finalproject6.dto.requestDto.ThemeCategoryDto;
 import com.sparta.finalproject6.model.Grade;
-import com.sparta.finalproject6.model.Place;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;

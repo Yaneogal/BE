@@ -10,20 +10,12 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Bookmark {
+public class Bookmark extends Timestamped{
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "BOOKMARK_ID")
     private Long id;
-
-//    @ManyToOne
-//    @JoinColumn(name = "USER_ID")
-//    private User user;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "POST_ID")
-//    private Post post;
 
     @Column
     private Long postId;

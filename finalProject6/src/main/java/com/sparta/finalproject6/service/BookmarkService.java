@@ -6,7 +6,6 @@ import com.sparta.finalproject6.model.Post;
 import com.sparta.finalproject6.model.User;
 import com.sparta.finalproject6.repository.BookmarkRepository;
 import com.sparta.finalproject6.repository.PostRepository;
-import com.sparta.finalproject6.repository.UserRepository;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

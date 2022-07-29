@@ -1,6 +1,5 @@
 package com.sparta.finalproject6.model;
 
-import com.sparta.finalproject6.dto.responseDto.PostLoveDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
