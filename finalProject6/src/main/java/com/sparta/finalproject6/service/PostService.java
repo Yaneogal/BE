@@ -159,6 +159,7 @@ public class PostService {
 
             PostCommentResponseDto postCommentResponseDto = PostCommentResponseDto.builder()
                     .commentId(comment.getId())
+                    .userId(comment.getUser().getId())
                     .userImgUrl(comment.getUserImgUrl())
                     .comment(comment.getComment())
                     .nickname(comment.getNickname())
