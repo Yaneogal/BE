@@ -39,7 +39,7 @@ public class CommentService {
 
 
         for(Comment comment : comments) {
-            Long commentId = comment.getUser().getId();
+            Long commentId = comment.getId();
             String nickname = comment.getUser().getNickname();
             String userImgUrl = comment.getUser().getUserImgUrl();
             String myComment = comment.getComment();
