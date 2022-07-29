@@ -39,9 +39,9 @@ public class CommentService {
 
 
         for(Comment comment : comments) {
-            Long commentId = comment.getId();
-            String nickname = comment.getNickname();
-            String userImgUrl = comment.getUserImgUrl();
+            Long commentId = comment.getUser().getId();
+            String nickname = comment.getUser().getNickname();
+            String userImgUrl = comment.getUser().getUserImgUrl();
             String myComment = comment.getComment();
             LocalDateTime createdAt = comment.getPost().getCreatedAt();
 
