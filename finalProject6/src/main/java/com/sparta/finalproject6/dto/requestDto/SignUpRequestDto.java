@@ -20,7 +20,7 @@ public class SignUpRequestDto {
     @Pattern(regexp = "^[a-zA-Z가-힣_\\d]{2,8}$", message = "닉네임 형식을 확인해주세요!")
     private String nickname;
     @NotBlank(message = "비밀번호를 입력해주세요!")
-    @Pattern(regexp = "^[a-zA-Z\\d]{8,16}$", message = "비밀번호의 형식을 확인해주세요!")
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&])[A-Za-z[0-9]$@$!%*#?&]{8,16}$", message = "비밀번호의 형식을 확인해주세요!")
     private String password;
 
     @NotBlank(message = "비밀번호 확인을 입력해주세요!")
