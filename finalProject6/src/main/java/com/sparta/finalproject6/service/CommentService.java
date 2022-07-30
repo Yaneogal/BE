@@ -63,6 +63,10 @@ public class CommentService {
         User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
+        if (commentRequestDto.getComment() == null) {
+            throw new IllegalArgumentException("내용을 입력해주세요!");
+        }
+
         int commentCount = post.getCommentCount();
         post.setCommentCount(commentCount+1);
 
