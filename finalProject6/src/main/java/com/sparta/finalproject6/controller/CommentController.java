@@ -11,6 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -34,7 +35,7 @@ public class CommentController {
 
     @PostMapping("/api/comment/{postId}")
     public ResponseEntity<String> commentWrite(@PathVariable Long postId,
-                                                           @RequestBody CommentRequestDto commentRequestDto,
+                                                           @RequestBody @Valid CommentRequestDto commentRequestDto,
                                                            @AuthenticationPrincipal UserDetailsImpl userDetails){
         try {
             commentService.addComment(postId, commentRequestDto, userDetails);
