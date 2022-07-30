@@ -37,14 +37,24 @@ public class MypageService {
 
     // My Page Profile 조회
     @Transactional(readOnly = true)
-    public ProfileUpdateResponseDto getMyProfile(UserDetailsImpl userDetails) {
+    public ProfileUpdateResponseDto getMyProfile(Long userId, UserDetailsImpl userDetails) {
+
+        boolean isMine;
+        if (userId.equals(userDetails.getUser().getId())) {
+            isMine = true;
+        } else {
+            isMine = false;
+        }
+
         if (userDetails == null) {
             throw new IllegalArgumentException("승인되지 않은 사용자 입니다.");
         }
-        User found = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
+//        User found = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
+//                () -> new IllegalArgumentException("사용자를 찾을 수 없습니다.")
+//        );
+        User found = userRepository.findById(userId).orElseThrow(
                 () -> new IllegalArgumentException("사용자를 찾을 수 없습니다.")
         );
-        String nickname = found.getUsername();
 
         return ProfileUpdateResponseDto.builder()
                 .nickname(found.getNickname())
@@ -54,6 +64,7 @@ public class MypageService {
                 .totalPoint(found.getTotalPoint())
                 .grade(found.getGrade())
                 .totalPoint(found.getTotalPoint())
+                .isMine(isMine)
                 .build();
     }
 
@@ -103,8 +114,8 @@ public class MypageService {
 
     // 내가 작성한 포스트 리스트 조회
     @Transactional(readOnly = true)
-    public ResponseEntity<Slice<MyPagePostResponseDto>> getMyWrittenPosts(UserDetailsImpl userDetails, Pageable pageable) {
-        Long userId = userDetails.getUser().getId();
+    public ResponseEntity<Slice<MyPagePostResponseDto>> getMyWrittenPosts(Long userId, UserDetailsImpl userDetails, Pageable pageable) {
+        // Long userId = userDetails.getUser().getId();
         Slice<MyPagePostResponseDto> content = postRepository.getMyWrittenPosts(userId, pageable);
 
         content.forEach(c -> {
@@ -130,9 +141,9 @@ public class MypageService {
 
     //내가 북마크한 게시글 조회
     @Transactional(readOnly = true)
-    public ResponseEntity<Slice<MyPagePostResponseDto>> getMyBookmarkPosts(UserDetailsImpl userDetails, Pageable pageable) {
+    public ResponseEntity<Slice<MyPagePostResponseDto>> getMyBookmarkPosts(Long userId, UserDetailsImpl userDetails, Pageable pageable) {
 
-        Long userId = userDetails.getUser().getId();
+        // Long userId = userDetails.getUser().getId();
 
         List<Bookmark> bookmarks = bookmarkRepository.findAllByUserId(userId);
 

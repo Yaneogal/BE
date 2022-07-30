@@ -1,13 +1,11 @@
 package com.sparta.finalproject6.dto.responseDto;
 
 import com.sparta.finalproject6.model.Grade;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProfileUpdateResponseDto {
@@ -18,5 +16,6 @@ public class ProfileUpdateResponseDto {
     private String userInfo;
     private Grade grade;
     private int totalPoint;
+    private boolean isMine;
 
 }
