@@ -9,7 +9,6 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Builder
 @Data
 public class PostResponseDto {
 
