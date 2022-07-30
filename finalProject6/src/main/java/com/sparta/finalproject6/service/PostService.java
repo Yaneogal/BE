@@ -271,6 +271,7 @@ public class PostService {
 
         PostDetailResponseDto detailResponseDto = PostDetailResponseDto.builder()
                 .postId(post.getId())
+                .userId(user.getId())
                 .nickname(user.getNickname())
                 .userImgUrl(user.getUserImgUrl())
                 .title(post.getTitle())

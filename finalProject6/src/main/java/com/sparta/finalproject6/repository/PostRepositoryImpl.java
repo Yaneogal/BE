@@ -36,6 +36,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
         List<PostResponseDto> content = queryFactory
                 .select(new QPostResponseDto(
                         post.id,
+                        post.user.id,
                         post.user.nickname,
                         post.user.userImgUrl,
                         post.title,
@@ -75,6 +76,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
         List<PostResponseDto> content = queryFactory
                 .select(new QPostResponseDto(
                         post.id,
+                        post.user.id,
                         post.user.nickname,
                         post.user.userImgUrl,
                         post.title,

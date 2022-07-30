@@ -60,9 +60,10 @@ public class PostController {
 
     // 포스트 상세페이지
     @GetMapping("/api/post/{postId}")
-    public ResponseEntity<PostDetailResponseDto> getPostDetail(@PathVariable Long postId , @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<PostDetailResponseDto> getPostDetail(@PathVariable Long postId,
+                                                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try{
-            return new ResponseEntity(postService.getPostDetail(postId , userDetails), HttpStatus.OK);
+            return new ResponseEntity(postService.getPostDetail(postId, userDetails), HttpStatus.OK);
         }catch(IllegalArgumentException e){
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
