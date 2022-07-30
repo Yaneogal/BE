@@ -138,6 +138,7 @@ public class PostService {
 
 
     // 포스트 상세 페이지
+    /* 변경사항 적용 Test */
     @Transactional(readOnly = true)
     public ResponseEntity<PostDetailResponseDto> getPostDetail(Long postId, UserDetailsImpl userDetails) {
         Post post = postRepository.findById(postId).orElseThrow(
