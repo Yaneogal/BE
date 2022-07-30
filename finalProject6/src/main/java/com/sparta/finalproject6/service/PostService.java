@@ -107,6 +107,7 @@ public class PostService {
             c.setImgUrl(imgUrl);
             c.setLoveStatus(false);
             c.setBookmarkStatus(false);
+            c.setGrade(post.getUser().getGrade());
 
             List<ThemeCategoryDto> themeCategory = themeRepository.findByPost_Id(c.getPostId())
                     .stream()
@@ -183,6 +184,7 @@ public class PostService {
             c.setImgUrl(imgUrl);
             c.setBookmarkStatus(false);
             c.setLoveStatus(false);
+            c.setGrade(post.getUser().getGrade());
 
             List<ThemeCategoryDto> themeCateroies = themeRepository.findByPost_Id(c.getPostId())
                     .stream()
