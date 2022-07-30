@@ -33,7 +33,11 @@ public class PostController {
                                                               @AuthenticationPrincipal UserDetailsImpl userDetails,
                                                               Pageable pageable) {
 
-        return postService.getPosts(keyword, pageable, userDetails);
+        if (userDetails == null) {
+            return postService.getGuestPosts(keyword, pageable);
+        } else {
+            return postService.getPosts(keyword, pageable, userDetails);
+        }
     }
 
 
@@ -45,7 +49,12 @@ public class PostController {
                                                                  Pageable pageable,
                                                                  @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        return postService.getFilterPosts(region, price, theme, pageable, userDetails);
+        if (userDetails == null) {
+            return postService.getGuestFilterPosts(region, price, theme, pageable);
+        } else {
+            return postService.getFilterPosts(region, price, theme, pageable, userDetails);
+        }
+
     }
 
 

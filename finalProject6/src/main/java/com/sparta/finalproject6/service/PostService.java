@@ -90,12 +90,41 @@ public class PostService {
         return new ResponseEntity(content, HttpStatus.OK);
     }
 
+    @Transactional(readOnly = true)
+    public ResponseEntity<Slice<PostResponseDto>> getGuestPosts(String keyword, Pageable pageable) {
+
+        Slice<PostResponseDto> content = postRepository.keywordSearch(keyword, pageable);
+
+        content.forEach(c ->{
+            Post post = postRepository.findById(c.getPostId())
+                    .orElseThrow(() -> new IllegalArgumentException("post does not exist"));
+
+            List<Place> place = placeRepository.findAllByPostId(post.getId());
+            List<String> imgUrl = new ArrayList<>();
+            for (int i = 0; i < place.size(); i++) {
+                imgUrl.addAll(place.get(i).getImgUrl());
+            }
+            c.setImgUrl(imgUrl);
+            c.setLoveStatus(false);
+            c.setBookmarkStatus(false);
+
+            List<ThemeCategoryDto> themeCategory = themeRepository.findByPost_Id(c.getPostId())
+                    .stream()
+                    .map(theme ->
+                            new ThemeCategoryDto(theme.getThemeCategory()))
+                    .collect(Collectors.toList());
+            c.setThemeCategory(themeCategory);
+        });
+
+        return new ResponseEntity(content, HttpStatus.OK);
+    }
+
 
     //필터 적용 게시글 조회
     @Transactional(readOnly = true)
     public ResponseEntity<Slice<PostResponseDto>> getFilterPosts(String region, String price, List<String> theme, Pageable pageable, UserDetailsImpl userDetails) {
 
-        Slice<PostResponseDto> content = postRepository.filterSearch(region, price, theme, pageable, userDetails);
+        Slice<PostResponseDto> content = postRepository.filterSearch(region, price, theme, pageable);
 
         Long userId = userDetails.getUser().getId();
         checkUserId(userId);
@@ -125,6 +154,35 @@ public class PostService {
             }
 
             c.setLoveStatus(post.getIsLove());
+
+            List<ThemeCategoryDto> themeCateroies = themeRepository.findByPost_Id(c.getPostId())
+                    .stream()
+                    .map(t ->
+                            new ThemeCategoryDto(t.getThemeCategory()))
+                    .collect(Collectors.toList());
+            c.setThemeCategory(themeCateroies);
+        });
+        return new ResponseEntity(content, HttpStatus.OK);
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseEntity<Slice<PostResponseDto>> getGuestFilterPosts(String region, String price, List<String> theme, Pageable pageable) {
+
+        Slice<PostResponseDto> content = postRepository.filterSearch(region, price, theme, pageable);
+
+        content.forEach(c -> {
+            Post post = postRepository.findById(c.getPostId())
+                    .orElseThrow(() -> new IllegalArgumentException("post does not exist"));
+            c.setGrade(post.getUser().getGrade());
+            c.setTotalPoint(post.getUser().getTotalPoint());
+            List<Place> place = placeRepository.findAllByPostId(post.getId());
+            List<String> imgUrl = new ArrayList<>();
+            for (int i = 0; i < place.size(); i++) {
+                imgUrl.addAll(place.get(i).getImgUrl());
+            }
+            c.setImgUrl(imgUrl);
+            c.setBookmarkStatus(false);
+            c.setLoveStatus(false);
 
             List<ThemeCategoryDto> themeCateroies = themeRepository.findByPost_Id(c.getPostId())
                     .stream()
