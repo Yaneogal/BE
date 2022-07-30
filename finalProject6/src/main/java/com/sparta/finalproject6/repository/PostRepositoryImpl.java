@@ -70,7 +70,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
     }
 
     @Override
-    public Slice<PostResponseDto> filterSearch(String region, String price, List<String> theme, Pageable pageable, UserDetailsImpl userDetails) {
+    public Slice<PostResponseDto> filterSearch(String region, String price, List<String> theme, Pageable pageable) {
 
         List<PostResponseDto> content = queryFactory
                 .select(new QPostResponseDto(
