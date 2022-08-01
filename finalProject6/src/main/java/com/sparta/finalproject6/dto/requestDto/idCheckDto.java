@@ -11,7 +11,7 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 public class idCheckDto {
 
-    @Pattern(regexp = "^[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-z]+$", message = "이메일 형식을 확인해주세요!")
+    @Pattern(regexp = "^[a-zA-Z0-9-._$@$!%*#?&]+@[a-zA-Z0-9]+\\.[a-z]+$", message = "이메일 형식을 확인해주세요!")
     @NotBlank(message = "아이디를 입력해주세요!")
     private String username;
 }

@@ -12,7 +12,7 @@ import javax.validation.constraints.Pattern;
 public class SignUpRequestDto {
 
     //이메일이어야 한다.
-    @Pattern(regexp = "^[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-z]+$", message = "이메일 형식을 확인해주세요!")
+    @Pattern(regexp = "^[a-zA-Z0-9-._$@$!%*#?&]+@[a-zA-Z0-9]+\\.[a-z]+$", message = "이메일 형식을 확인해주세요!")
     @NotBlank(message = "이메일을 입력해주세요!")
     private String username;
 

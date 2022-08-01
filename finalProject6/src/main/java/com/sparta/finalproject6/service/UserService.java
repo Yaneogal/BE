@@ -91,7 +91,7 @@ public class UserService {
 
         user = userRepo.findByNickname(dto.getNickname());
         if (user.isPresent()) {
-            throw new UserDuplicateException("이미 존재하는 아이디입니다!");
+            throw new UserDuplicateException("이미 존재하는 닉네임입니다!");
         }
     }
 }
