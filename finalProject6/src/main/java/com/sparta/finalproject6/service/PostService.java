@@ -231,12 +231,12 @@ public class PostService {
 
         //TODO : 게시글의 전체 좋아요 수랑 유저의 좋아요 유무 판단하기
         //postId와 userId를 넘겨서 좋아요가 존재하면 상태를 true로
-        Optional<Love> love = loveRepository.findByPostIdAndUserId(postId, user.getId());
+        Optional<Love> love = loveRepository.findByPostIdAndUserId(postId, userId);
         if(love.isPresent()){
             post.setIsLove(true);
         }
 
-        Optional<Bookmark> bookmark = bookmarkRepository.findByPostIdAndUserId(post.getId(),user.getId());
+        Optional<Bookmark> bookmark = bookmarkRepository.findByPostIdAndUserId(post.getId(),userId);
         if(bookmark.isPresent()){
             post.setIsBookmark(true);
         }
