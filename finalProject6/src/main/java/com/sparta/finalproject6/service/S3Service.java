@@ -31,7 +31,7 @@ public class S3Service {
     private final AmazonS3 amazonS3;
 
     @Transactional
-    public Map<String, String> uploadFile(MultipartFile multipartFile) throws  IOException{
+    public Map<String, String> uploadThumbnail(MultipartFile multipartFile) throws  IOException{
         ObjectMetadata objectMetadata = new ObjectMetadata();
 
         //objectMetaData에 파라미터로 들어온 파일의 타입 , 크기를 할당.
@@ -42,16 +42,22 @@ public class S3Service {
         //fileName에 파라미터로 들어온 파일의 이름을 할당.
         String rawFileName = multipartFile.getOriginalFilename();
         String fileName = createFileName(rawFileName);
+        String resizedFileName = "resizedImage" + "/" + fileName;
         try (InputStream inputStream = multipartFile.getInputStream()) {
+            System.out.println("fileName = " + fileName);
+            amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
 //            여기서부터 이미지 리사이징 코드
             //마이페이지 사이즈 width : 355 , height : 221
             //상세페이지 사이즈 width : 343 , height : 256
-            BufferedImage srcImage = ImageIO.read(inputStream);
+            S3Object s3Object = amazonS3.getObject(bucket,fileName);
+            InputStream inputStream1 = s3Object.getObjectContent();
+            BufferedImage srcImage = ImageIO.read(inputStream1);
 
             System.out.println("srcImage = " + multipartFile.getSize());
             System.out.println("contentLength is same as getSize = " + objectMetadata.getContentLength());
 
-            int targetHeight = 300;
+            int targetHeight = 100;
             int width = (targetHeight*srcImage.getWidth())/srcImage.getHeight();
             int height = targetHeight;
             BufferedImage resizedImage = new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
@@ -72,14 +78,44 @@ public class S3Service {
 
             meta.setContentLength(os.size());
             meta.setContentType(multipartFile.getContentType());
+            //기존코드
+
+            System.out.println("resizedFileName = " + resizedFileName);
 
             //amazonS3객체의 putObject 메서드로 db에 저장
-            amazonS3.putObject(new PutObjectRequest(bucket, fileName, is, meta)
+            amazonS3.putObject(new PutObjectRequest(bucket, resizedFileName, is, meta)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
 
-//            //기존코드
-//            amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
-//                    .withCannedAcl(CannedAccessControlList.PublicRead));
+
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
+        }
+
+        Map<String, String> result = new HashMap<>();
+        result.put("fileName", fileName);
+        result.put("resizedFileName",resizedFileName);
+        result.put("url", String.valueOf(amazonS3.getUrl(bucket, fileName)));
+        result.put("resizedUrl",String.valueOf(amazonS3.getUrl(bucket,resizedFileName)));
+
+        return result;
+    }
+
+    @Transactional
+    public Map<String, String> uploadFile(MultipartFile multipartFile) throws  IOException{
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+
+        //objectMetaData에 파라미터로 들어온 파일의 타입 , 크기를 할당.
+        objectMetadata.setContentType(multipartFile.getContentType());
+        objectMetadata.setContentLength(multipartFile.getSize());
+
+
+        //fileName에 파라미터로 들어온 파일의 이름을 할당.
+        String rawFileName = multipartFile.getOriginalFilename();
+        String fileName = createFileName(rawFileName);
+        try (InputStream inputStream = multipartFile.getInputStream()) {
+            System.out.println("fileName = " + fileName);
+            amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
         }
@@ -87,15 +123,6 @@ public class S3Service {
         Map<String, String> result = new HashMap<>();
         result.put("url", String.valueOf(amazonS3.getUrl(bucket, fileName)));
         result.put("fileName", fileName);
-        S3Object s3Object = amazonS3.getObject(bucket,fileName);
-
-        System.out.println("s3Object = " + s3Object.getObjectMetadata().getContentLength());
-
-
-
-
-
-
 
         System.out.println(result.get("url"));
         System.out.println(result.get("transImgFileName"));

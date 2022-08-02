@@ -62,7 +62,6 @@ public class PostService {
             }
             c.setImgUrl(imgUrl);
 
-            System.out.println("imgUrl = " + imgUrl);
 
             Optional<Bookmark> bookmark = bookmarkRepository.findByPostIdAndUserId(post.getId(),userId);
             if(bookmark.isPresent()){
@@ -298,12 +297,14 @@ public class PostService {
         User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
         );
+        Map<String , String> thumbnailResult = s3Service.uploadThumbnail(multipartFile.get(0));
 
         Post post = Post.builder()
                 .title(requestDto.getTitle())
                 .content(requestDto.getContent())
                 .regionCategory(requestDto.getRegionCategory())
                 .priceCategory(requestDto.getPriceCategory())
+                .thumbnail(thumbnailResult.get("resizedUrl"))
                 .user(userDetails.getUser())
                 .build();
 
@@ -326,14 +327,15 @@ public class PostService {
                 files.add(multipartFile.get(count));
                 count++;
             }
-
             List<Map<String, String>> imgResult = getImageList(files);
 
             List<String> imgUrls = new ArrayList<>(imgResult.size());
+            List<String> resizedImgUrls = new ArrayList<>(imgResult.size());
             List<String> imgFileNames = new ArrayList<>(imgResult.size());
 
             for(Map<String , String> getImage : imgResult){
                 imgUrls.add(getImage.get("url"));
+                resizedImgUrls.add(getImage.get("resizedUrl"));
                 imgFileNames.add(getImage.get("fileName"));
             }
             for (int j = 0; j < imgResult.size(); j++) {
@@ -355,6 +357,7 @@ public class PostService {
                     .x(placeRequestDto.get(i).getX())
                     .y(placeRequestDto.get(i).getY())
                     .post(post)
+                    .resizedUrl(resizedImgUrls)
                     .build();
 
             placeRepository.save(place);

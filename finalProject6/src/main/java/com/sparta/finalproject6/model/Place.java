@@ -46,16 +46,16 @@ public class Place{
     @CollectionTable(name = "placeImagesUrl",joinColumns = {@JoinColumn(name = "place_id",referencedColumnName = "PLACE_ID")})
     private List<String> imgUrl;
 
+    @Column
+    @ElementCollection
+    @CollectionTable(name = "placeResizedImgUrl",joinColumns = {@JoinColumn(name = "place_id",referencedColumnName = "PLACE_ID")})
+    private List<String> resizedUrl;
+
     //S3에서 기존 파일을 삭제하기 위해 추가한 파일네임.
     @Column
     @ElementCollection
     @CollectionTable(name = "placeImagesFileName",joinColumns = {@JoinColumn(name = "place_id",referencedColumnName = "PLACE_ID")})
     private List<String> imgFileName;
-
-    @Column
-    @ElementCollection
-    @CollectionTable(name = "placeImagesFile",joinColumns = {@JoinColumn(name = "place_id",referencedColumnName = "PLACE_ID")})
-    private List<File> imgFile;
 
     @Column
     private String phone;

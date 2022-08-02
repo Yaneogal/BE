@@ -20,6 +20,7 @@ public class PostResponseDto {
     private String userImgUrl;
     private String title;
     private List<String> imgUrl;
+//    private List<String> resizedUrl;
     private String content;
     private int viewCount;
     private int loveCount;
@@ -38,12 +39,13 @@ public class PostResponseDto {
     private int totalPoint;
 
 
-    public PostResponseDto(Long postId, String nickName, String userImgUrl, String title, List<String> imgUrl, String content, int viewCount, int loveCount, int bookmarkCount, int commentCount, String regionCategory, String priceCategory, Boolean loveStatus, Boolean bookmarkStatus, List<ThemeCategoryDto> themeCategory, LocalDateTime createdAt, LocalDateTime modifiedAt, List<PostCommentResponseDto> comments,Grade grade , int totalPoint) {
+    public PostResponseDto(Long postId, String nickName, String userImgUrl, String title, List<String> imgUrl,String content, int viewCount, int loveCount, int bookmarkCount, int commentCount, String regionCategory, String priceCategory, Boolean loveStatus, Boolean bookmarkStatus, List<ThemeCategoryDto> themeCategory, LocalDateTime createdAt, LocalDateTime modifiedAt, List<PostCommentResponseDto> comments,Grade grade , int totalPoint) {
         this.postId = postId;
         this.nickName = nickName;
         this.userImgUrl = userImgUrl;
         this.title = title;
         this.imgUrl = imgUrl;
+//        this.resizedUrl = resizedUrl;
         this.content = content;
         this.viewCount = viewCount;
         this.loveCount = loveCount;

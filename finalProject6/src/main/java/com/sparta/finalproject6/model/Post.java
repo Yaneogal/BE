@@ -38,6 +38,8 @@ public class Post extends Timestamped{
 
     private int commentCount;
 
+    private String thumbnail;
+
     @Column(nullable = false)
     private String regionCategory;
     @Column(nullable = false)
@@ -76,11 +78,12 @@ public class Post extends Timestamped{
     }
 
     @Builder
-    public Post(String title, String content, String regionCategory, String priceCategory, User user, String restroom, List<String> restroomOption) {
+    public Post(String title, String content, String regionCategory, String priceCategory,String thumbnail ,User user) {
         this.title = title;
         this.content = content;
         this.regionCategory = regionCategory;
         this.priceCategory = priceCategory;
+        this.thumbnail = thumbnail;
         this.user = user;
     }
 
