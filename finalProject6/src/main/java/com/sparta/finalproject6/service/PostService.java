@@ -107,6 +107,7 @@ public class PostService {
             c.setImgUrl(imgUrl);
             c.setLoveStatus(false);
             c.setBookmarkStatus(false);
+            c.setGrade(post.getUser().getGrade());
 
             List<ThemeCategoryDto> themeCategory = themeRepository.findByPost_Id(c.getPostId())
                     .stream()
@@ -183,6 +184,7 @@ public class PostService {
             c.setImgUrl(imgUrl);
             c.setBookmarkStatus(false);
             c.setLoveStatus(false);
+            c.setGrade(post.getUser().getGrade());
 
             List<ThemeCategoryDto> themeCateroies = themeRepository.findByPost_Id(c.getPostId())
                     .stream()
@@ -229,12 +231,12 @@ public class PostService {
 
         //TODO : 게시글의 전체 좋아요 수랑 유저의 좋아요 유무 판단하기
         //postId와 userId를 넘겨서 좋아요가 존재하면 상태를 true로
-        Optional<Love> love = loveRepository.findByPostIdAndUserId(postId, user.getId());
+        Optional<Love> love = loveRepository.findByPostIdAndUserId(postId, userId);
         if(love.isPresent()){
             post.setIsLove(true);
         }
 
-        Optional<Bookmark> bookmark = bookmarkRepository.findByPostIdAndUserId(post.getId(),user.getId());
+        Optional<Bookmark> bookmark = bookmarkRepository.findByPostIdAndUserId(post.getId(),userId);
         if(bookmark.isPresent()){
             post.setIsBookmark(true);
         }
@@ -269,6 +271,7 @@ public class PostService {
 
         PostDetailResponseDto detailResponseDto = PostDetailResponseDto.builder()
                 .postId(post.getId())
+                .userId(user.getId())
                 .nickname(user.getNickname())
                 .userImgUrl(user.getUserImgUrl())
                 .title(post.getTitle())

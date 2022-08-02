@@ -9,11 +9,11 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Builder
 @Data
 public class PostResponseDto {
 
     private Long postId;
+    private Long userId;
     private String nickName;
     private String userImgUrl;
     private String title;
@@ -60,8 +60,9 @@ public class PostResponseDto {
     }
 
     @QueryProjection
-    public PostResponseDto(Long postId, String nickName, String userImgUrl, String title, String content, int bookmarkCount, int loveCount, String regionCategory, String priceCategory, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    public PostResponseDto(Long postId, Long userId, String nickName, String userImgUrl, String title, String content, int bookmarkCount, int loveCount, String regionCategory, String priceCategory, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.postId = postId;
+        this.userId= userId;
         this.nickName = nickName;
         this.userImgUrl = userImgUrl;
         this.title = title;

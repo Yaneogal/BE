@@ -23,9 +23,16 @@ public class MypageController {
     private final MypageService mypageService;
 
     // My Page 회원정보 조회 API
-    @GetMapping("/api/user")
-    public ProfileUpdateResponseDto getMyProfile (
+    @GetMapping("/api/user/{userId}")
+    public ProfileUpdateResponseDto getYourProfile (
+            @PathVariable Long userId,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        return mypageService.getYourProfile(userId, userDetails);
+    }
+
+    @GetMapping("/api/user")
+    public ProfileUpdateResponseDto getMyProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         return mypageService.getMyProfile(userDetails);
     }
@@ -56,12 +63,28 @@ public class MypageController {
         return mypageService.getMyWrittenPosts(userDetails, pageable);
     }
 
+    @GetMapping("/api/user/mypost/{userId}")
+    public ResponseEntity<Slice<MyPagePostResponseDto>> getYourWrittenPosts(@PathVariable Long userId,
+                                                                            @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                                            Pageable pageable) {
+
+        return mypageService.getYourWrittenPosts(userId, userDetails, pageable);
+    }
+
     //마이페이지 내가 북마크 한 게시글
     @GetMapping("/api/user/mybookmark")
     public ResponseEntity<Slice<MyPagePostResponseDto>> getMyBookmarkPosts(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                                            Pageable pageable) {
 
         return mypageService.getMyBookmarkPosts(userDetails, pageable);
+    }
+
+    @GetMapping("/api/user/mybookmark/{userId}")
+    public ResponseEntity<Slice<MyPagePostResponseDto>> getYourBookmarkPosts(@PathVariable Long userId,
+                                                                             @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                                             Pageable pageable) {
+
+        return mypageService.getYourBookmarkPosts(userId, userDetails, pageable);
     }
 
 }
