@@ -55,6 +55,19 @@ BackEnd
 </div>
 <br/>
 
+## 📚 라이브러리 구성
+SpringBoot-'2.7.1'
+SpringBoot-Starter-Data-JPA
+SpringBoot-Starter-Oauth2.0
+SpringBoot-Starter-Security
+SpringBoot-Starter-Validation
+QueryDsl='1.0.10'
+Lombok
+jjwt-'0.9.1'
+
+
+
+
 ## 📖 아키텍처 
 ![yaneogal아키텍쳐 drawio (1)](https://user-images.githubusercontent.com/105032621/183236885-f16f7162-412e-49f5-b832-75eb0e67db1f.png)
 <br/>
