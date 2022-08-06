@@ -53,17 +53,18 @@ BackEnd
     <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
     <img src="https://img.shields.io/badge/github%20actions-0769AD?style=for-the-badge&logo=github%20actions&logoColor=white">
 </div>
-<br/>
+<br/><br/>
 
 ## 📚 라이브러리 구성
-SpringBoot-'2.7.1'
-SpringBoot-Starter-Data-JPA
-SpringBoot-Starter-Oauth2.0
-SpringBoot-Starter-Security
-SpringBoot-Starter-Validation
-QueryDsl='1.0.10'
-Lombok
-jjwt-'0.9.1'
+SpringBoot-'2.7.1'<br/>
+SpringBoot-Starter-Data-JPA<br/>
+SpringBoot-Starter-Oauth2.0<br/>
+SpringBoot-Starter-Security<br/>
+SpringBoot-Starter-Validation<br/>
+QueryDsl='1.0.10'<br/>
+Lombok<br/>
+jjwt-'0.9.1'<br/>
+<br/><br/>
 
 
 
