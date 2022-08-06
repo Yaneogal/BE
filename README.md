@@ -78,7 +78,7 @@ BackEnd
 
 ## 🎥사이트 데모
 
-<details>
+<!-- <details> -->
 <summary>데모영상</summary>
   
 |회원가입|로그인|마이페이지| 
@@ -90,6 +90,6 @@ BackEnd
 |<img src="https://velog.velcdn.com/images/hongsoom/post/152c55c0-7e27-4ce1-9e75-16ddb5cc1632/image.gif" />|<img src="https://velog.velcdn.com/images/hongsoom/post/b41390f1-fb4e-4e96-968e-6151c7fd879a/image.gif" />|<img src="https://velog.velcdn.com/images/hongsoom/post/fbce1f69-1a65-4b90-b601-9721f6ed32e2/image.gif" />|
 |검색|필터|좋아요,북마크,공유|
 |<img src="https://velog.velcdn.com/images/hongsoom/post/23f9c1aa-d549-4f89-b2f8-64b54d533ef4/image.gif" />|<img src="https://velog.velcdn.com/images/hongsoom/post/3a73dcaa-260a-480e-b851-f5f5b4779573/image.gif" />|<img src="https://velog.velcdn.com/images/hongsoom/post/d7343e7e-837e-4490-9b46-a3a812acf8f2/image.gif" />|
-</details>
+<!-- </details> -->
 
 <br />
