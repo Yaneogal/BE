@@ -56,7 +56,7 @@ BackEnd
 <br/>
 
 ## 📖 아키텍처 
-![yaneogal_architecture](https://user-images.githubusercontent.com/105188620/181704268-6daa1031-8729-4677-aae2-07a6c984d650.jpg)
+![yaneogal아키텍쳐 drawio (1)](https://user-images.githubusercontent.com/105032621/183236885-f16f7162-412e-49f5-b832-75eb0e67db1f.png)
 <br/>
 
 ## 📃 ERD
