@@ -61,9 +61,12 @@ SpringBoot-Starter-Data-JPA<br/>
 SpringBoot-Starter-Oauth2.0<br/>
 SpringBoot-Starter-Security<br/>
 SpringBoot-Starter-Validation<br/>
-QueryDsl='1.0.10'<br/>
+SpringBoot-Starter-Web<br/>
+Spring-Cloud-Starter AWS-'2.2.6'<br/>
+Apache-Httpcomponents-Httpclient-'4.5.13'<br/>
+QueryDsl-'1.0.10'<br/>
 Lombok<br/>
-jjwt-'0.9.1'<br/>
+Json Web Token-'0.9.1'<br/>
 <br/><br/>
 
 
@@ -80,7 +83,7 @@ jjwt-'0.9.1'<br/>
 ## 🔥 트러블슈팅
 <br/>
 
-## 팀원
+## 🤙🏻 팀원
 |이름|포지션|깃허브|
 |------|---|---|
 |🔹노흥진|BE|https://github.com/goodtonoh|
@@ -90,7 +93,7 @@ jjwt-'0.9.1'<br/>
 |홍수민|FE|https://github.com/hongsoom|
 |이찬율|디자이너||
 
-## 🎥사이트 데모
+## 🎥 사이트 데모
 
 <!-- <details> -->
 <summary>데모영상</summary>
