@@ -81,7 +81,33 @@ Json Web Token-'0.9.1'<br/>
 <br/>
 
 ## 🔥 트러블슈팅
+
+- ## BE
+
+    <details>
+    <summary>원본 이미지를 그대로 사용하여 성능 저하</summary>
+
+    <br/>
+
+    <img width="452" alt="BE_트러블슈팅1" src="https://user-images.githubusercontent.com/105188620/183325600-71ddb2ca-7ee7-49bb-b16d-e6811928027c.png">
+    <img width="467" alt="트러블슈팅2" src="https://user-images.githubusercontent.com/105188620/183326058-9e066047-17dd-4f44-b2d2-e2a7af87f53e.png">
+    </details>
+
+    <details>
+    <summary>CI/CD 빌드와 배포 완료 후 적용되지 않는 문제</summary>
+
+    <br/>
+
+    <img width="444" alt="트러블슈팅3" src="https://user-images.githubusercontent.com/105188620/183325991-2df8ce72-40d0-411d-99e3-52b5d667cd43.png">
+    <img width="435" alt="트러블슈팅4" src="https://user-images.githubusercontent.com/105188620/183326109-f201c32c-ee89-45ea-b14d-eea9bf307e45.png">
+    <img width="402" alt="트러블슈팅5" src="https://user-images.githubusercontent.com/105188620/183326139-5f8f2009-ae0e-4659-a36d-2f95601ab5ef.png">
+    </details>
+
+    </details>
+
+
 <br/>
+
 
 ## 🤙🏻 팀원
 |이름|포지션|깃허브|
