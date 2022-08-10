@@ -9,6 +9,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 
 @Configuration
@@ -29,13 +30,18 @@ public class SecurityConfig {
                 //h2 콘솔을 사용하기 위해 옵션을 disable
                 .headers().frameOptions().disable()
                 .and().authorizeRequests()
-                .anyRequest().permitAll()
+                .antMatchers("/api/user/**").permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
                 //Spring Security에서 session을 생성하거나 사용하지 않도록 설정
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilterBefore(jwtAuthFilter,UsernamePasswordAuthenticationFilter.class);
+                .exceptionHandling()
+                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                .and()
+                .addFilterBefore(jwtAuthFilter,UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthFilter, BasicAuthenticationFilter.class);
 
 
 

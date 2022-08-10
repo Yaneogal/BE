@@ -1,5 +1,6 @@
 package com.sparta.finalproject6.service;
 
+import com.sparta.finalproject6.dto.repository.*;
 import com.sparta.finalproject6.dto.requestDto.PlaceRequestDto;
 import com.sparta.finalproject6.dto.requestDto.PostRequestDto;
 import com.sparta.finalproject6.dto.requestDto.ThemeCategoryDto;

@@ -11,7 +11,6 @@ import com.sparta.finalproject6.dto.responseDto.PostResponseDto;
 import com.sparta.finalproject6.dto.responseDto.QMyPagePostResponseDto;
 import com.sparta.finalproject6.dto.responseDto.QPostResponseDto;
 import com.sparta.finalproject6.model.Post;
-import com.sparta.finalproject6.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;

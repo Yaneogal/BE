@@ -1,10 +1,12 @@
 package com.sparta.finalproject6.service;
 
+import com.sparta.finalproject6.dto.repository.*;
 import com.sparta.finalproject6.dto.requestDto.ProfileUpdateRequestDto;
 import com.sparta.finalproject6.dto.requestDto.ThemeCategoryDto;
 import com.sparta.finalproject6.dto.responseDto.MyPagePostResponseDto;
 import com.sparta.finalproject6.dto.responseDto.ProfileUpdateResponseDto;
 import com.sparta.finalproject6.model.*;
+
 import com.sparta.finalproject6.repository.*;
 import com.sparta.finalproject6.security.UserDetailsImpl;
 import com.sparta.finalproject6.validator.UserValidator;
